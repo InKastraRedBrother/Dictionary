@@ -1,7 +1,8 @@
 del /Q bin\*.class
 pause
 
-javac -d .\bin -sourcepath src src\*.java
+javac -encoding utf8 -d .\bin -sourcepath src src\*.java
 pause
-java -cp .\bin Main
+java -Dfile.encoding=UTF-8 -cp .\bin Main
+
 pause
