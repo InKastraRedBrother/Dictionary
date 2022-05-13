@@ -8,6 +8,8 @@ import java.util.Scanner;
  */
 class Dictionary {
 
+    Scanner in = new Scanner(System.in, StandardCharsets.UTF_8);
+
     public static final String FILE_FORMAT = ".txt";
     public static final String TEMPORARY_FILE_NAME = "temp" + FILE_FORMAT;
 
@@ -31,6 +33,8 @@ class Dictionary {
      * Mask to restrict character input
      */
     private final String pattern;
+    Console console = System.console();
+    ComWithConsole cwc = new ComWithConsole();
 
     PrintStream printStream = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
@@ -89,11 +93,10 @@ class Dictionary {
     public void search() throws IOException {
         String match = null;
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedReader brSearch = new BufferedReader(new FileReader(pathToDictionary + File.separator + fileName, StandardCharsets.UTF_8));
 
-        System.out.println("Введите формата: ключ ");
-        String s = br.readLine();
+        CommunicateMessage.inputKey();
+        String s = cwc.inputInConsole();
         String line;
         while ((line = brSearch.readLine()) != null) {
             if (line.contains(s + ":")) {
@@ -117,25 +120,20 @@ class Dictionary {
         FileWriter writer = new FileWriter(pathToDictionary + fileName, StandardCharsets.UTF_8, true);
 
 
-//        Scanner in = new Scanner(System.in);
-//        String key = in.nextLine().strip();
-//        String value = in.nextLine();
-
-        Console console = System.console();
-        System.out.println("Введите ключ");
-        String key = console.readLine();
-        System.out.println("Введите значение");
-        String value = console.readLine();
+        CommunicateMessage.inputKey();
+        String key = cwc.inputInConsole();
+        CommunicateMessage.inputValue();
+        String value = cwc.inputInConsole();
 
         try {
             if (key.matches(pattern)) {
                 writer.write("\n" + key + ":" + value);
                 System.out.println("Запись: ключ - " + key + " значение - " + value + " добавлена");
             } else {
-                System.out.println(ERR_MASK);
+                CommunicateMessage.printErrMask();
             }
         } catch (Exception e) {
-            System.out.println(ERR_MASK);
+            CommunicateMessage.printErrMask();
         }
 
         writer.close();
@@ -152,18 +150,20 @@ class Dictionary {
         temporaryFile.delete();
         temporaryFile.createNewFile();
 
-        BufferedReader brInForDelete = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Input key: ");
-        String s1 = brInForDelete.readLine();
-        if (s1.matches(pattern)) {
+        CommunicateMessage.inputKey();
+        String s = cwc.inputInConsole();
+        if (s.matches(pattern)) {
             FileWriter bw = new FileWriter(temporaryFile, StandardCharsets.UTF_8, true);
-            BufferedReader br = new BufferedReader(new FileReader(pathToDictionary + File.separator + fileName));
+            BufferedReader br = new BufferedReader(new FileReader(pathToDictionary + File.separator + fileName, StandardCharsets.UTF_8));
             String line;
             int counter = 0;
-
+            boolean isExist = false;
             while ((line = br.readLine()) != null) {
+                if (line.contains(s)){
+                    isExist = true;
+                }
 
-                if (!line.contains(s1) && !line.isBlank()) {
+                if (!line.contains(s) && !line.isBlank()) {
 
                     if (counter == 0) {
                         bw.write(line);
@@ -172,11 +172,14 @@ class Dictionary {
                         bw.write(line);
                     }
                     counter++;
-                } else {
-                    System.out.println("String with key " + s1 + " has been deleted"); //проблема дублирование вывода при пустой строке между записями
                 }
-
             }
+            if (isExist){
+                CommunicateMessage.printDeleteEntry(s);
+            } else {
+                CommunicateMessage.printErrKeyNotFound();
+            }
+
             br.close();
             bw.close();
 

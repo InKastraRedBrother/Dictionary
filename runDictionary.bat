@@ -1,8 +1,6 @@
-del /Q bin\*.class
+del /Q .\out\production\Dictionary\*.class
 pause
-
-javac -encoding utf8 -d .\bin -sourcepath src src\*.java
+javac -encoding utf8 -d .\out\production\Dictionary -sourcepath src src\*.java
 pause
-java -Dfile.encoding=UTF-8 -cp .\bin Main
-
+java -Dfile.encoding=UTF8 -cp .\out\production\Dictionary Main
 pause

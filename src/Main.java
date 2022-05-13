@@ -1,14 +1,12 @@
 import java.io.*;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Main class will have only one method which will have only 1 responsibility: Running a program.
+ */
 class Main {
 
-    private static final String ERR_UNSUPPORTED_OPERATION = "Недопустимая команда";
-    private static final String FILE_SYM = "sym";
     private static final String PATTERN_SYM = "^[a-z]{4}+$";
-    private static final String FILE_NUM = "num";
     private static final String PATTERN_NUM = "^[0-9]{5}+$";
 
     private static final String COMMAND_SEARCH = "search";
@@ -16,33 +14,43 @@ class Main {
     private static final String COMMAND_DELETE = "delete";
     private static final String COMMAND_SHOW_ALL = "show";
 
+
+
+
+    /**
+     *
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
 
+        ComWithConsole cwc = new ComWithConsole();
+
         Dictionary dictionary;
-
+        Scanner in = new Scanner(System.in);
+        Console console = System.console();
         while (true){
-            System.out.print("Choose dictionary type: " + FILE_SYM + " - Symbolic; " + FILE_NUM + " - Numeric : ");
 
-            Scanner in = new Scanner(System.in);
-            String s = in.nextLine().strip();
+            CommunicateMessage.choseDictionary();
+            String s = cwc.inputInConsole();
 
             switch (s){
-                case (FILE_SYM): {
-                    dictionary = new Dictionary(FILE_SYM, PATTERN_SYM);
+                case (CommunicateMessage.FILE_SYM): {
+                    dictionary = new Dictionary(CommunicateMessage.FILE_SYM, PATTERN_SYM);
                     break;
                 }
-                case (FILE_NUM): {
-                    dictionary = new Dictionary(FILE_NUM, PATTERN_NUM);
+                case (CommunicateMessage.FILE_NUM): {
+                    dictionary = new Dictionary(CommunicateMessage.FILE_NUM, PATTERN_NUM);
                     break;
                 }
                 default:
-                    System.out.println(ERR_UNSUPPORTED_OPERATION);
+                    CommunicateMessage.errMessageUnsupportedOperation();
                     return;
             }
 
-            System.out.print("Choose dictionary's destiny: 1 - Search; 2 - Show all; 3 - Add to the end; 4 - Delete : ");
+            CommunicateMessage.choseOperation();
 
-            s = in.nextLine().strip();
+            s = cwc.inputInConsole();
 
             switch (s) {
                 case ("1"):
@@ -65,7 +73,7 @@ class Main {
                     dictionary.deleteEntry();
                     break;
                 }
-                default: System.out.println(ERR_UNSUPPORTED_OPERATION);
+                default: CommunicateMessage.errMessageUnsupportedOperation();
            }
         }
     }
