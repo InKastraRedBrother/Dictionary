@@ -1,9 +1,19 @@
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 /**
  * Class Dictonary provides 4 methods which are showAll(); search(); add(); deleteEntry().
  */
 class Dictionary {
+
+    public static final String FILE_FORMAT = ".txt";
+    public static final String TEMPORARY_FILE_NAME = "temp" + FILE_FORMAT;
+
+    /** Message for error: the entered value does not meet the specified limits
+     */
+    public static final String ERR_MASK="Введенные ключ или значение не соотвестсвуют ограничениям";
 
     /** Full path to .txt files
      */
@@ -22,10 +32,7 @@ class Dictionary {
      */
     private final String pattern;
 
-    /**
-     *  Сharacter input limit for a key
-     */
-    private final int limit;
+    PrintStream printStream = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
     /** Initialization block that check existence of the folder "resources"
      * If not then it will be created
@@ -35,7 +42,7 @@ class Dictionary {
         if(!folder.exists()) {
             try {
                 if (folder.mkdir()) {
-                    System.out.println("Directory Created");
+                    System.out.println("Directory created");
                 } else {
                     System.out.println("Directory is not created");
                 }
@@ -49,13 +56,11 @@ class Dictionary {
      *  Initializes a newly created Dictionary object. Creates a file based on the passed parameter
      * @param fileName
      * @param pattern
-     * @param limit
      */
-    Dictionary(String fileName, String pattern, int limit) throws IOException {
-        this.fileName = fileName;
+    Dictionary(String fileName, String pattern) throws IOException {
+        this.fileName = fileName + FILE_FORMAT;
         this.pattern = pattern;
-        this.limit = limit;
-        file = new File(pathToDictionary + fileName);
+        file = new File(pathToDictionary + this.fileName);
         if (!file.exists()){
             file.createNewFile();
         }
@@ -65,10 +70,10 @@ class Dictionary {
      * @throws IOException
      */
     public void showAll() throws IOException {
-        BufferedReader brList = new BufferedReader(new FileReader(pathToDictionary + File.separator + fileName));
+        BufferedReader brList = new BufferedReader(new FileReader(pathToDictionary + File.separator + fileName, StandardCharsets.UTF_8));
         String lineList;
         while ((lineList = brList.readLine()) != null) {
-            System.out.println(lineList);
+            printStream.println(lineList);
         }
         try {
             brList.close();
@@ -85,7 +90,7 @@ class Dictionary {
         String match = null;
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedReader brSearch = new BufferedReader(new FileReader(pathToDictionary + File.separator + fileName));
+        BufferedReader brSearch = new BufferedReader(new FileReader(pathToDictionary + File.separator + fileName, StandardCharsets.UTF_8));
 
         System.out.println("Введите формата: ключ ");
         String s = br.readLine();
@@ -109,28 +114,30 @@ class Dictionary {
      */
     public void add() throws IOException {
 
-        FileWriter writer = new FileWriter(pathToDictionary + fileName, true);
-        BufferedWriter bw = new BufferedWriter(writer);
+        FileWriter writer = new FileWriter(pathToDictionary + fileName, StandardCharsets.UTF_8, true);
 
-        BufferedReader brIn = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Введите формата: ключ:значение ");
 
-        String[] end = brIn.readLine().split(":", 2);
+//        Scanner in = new Scanner(System.in);
+//        String key = in.nextLine().strip();
+//        String value = in.nextLine();
+
+        Console console = System.console();
+        System.out.println("Введите ключ");
+        String key = console.readLine();
+        System.out.println("Введите значение");
+        String value = console.readLine();
 
         try {
-            String key = end[0];
-            String value  = end[1];
-            if (key.matches(pattern) && key.length() == limit ) {
-                bw.write("\n" + key + ":" + value);
+            if (key.matches(pattern)) {
+                writer.write("\n" + key + ":" + value);
                 System.out.println("Запись: ключ - " + key + " значение - " + value + " добавлена");
             } else {
-                System.out.println("Введенные ключ или значение не соотвестсвуют ограничениям");
+                System.out.println(ERR_MASK);
             }
         } catch (Exception e) {
-            System.out.println("Введенные ключ или значение не соотвестсвуют ограничениям");
+            System.out.println(ERR_MASK);
         }
 
-        bw.close();
         writer.close();
     }
 
@@ -139,33 +146,34 @@ class Dictionary {
      * Deleting main file. Temporary file will be renamed to the name of the main file
      * @throws IOException
      */
-    public void deleteEntry() throws IOException {
-        File temporaryFile = new File(pathToDictionary + "temp.txt");
 
+    public void deleteEntry() throws IOException {
+        File temporaryFile = new File(pathToDictionary + TEMPORARY_FILE_NAME);
         temporaryFile.delete();
         temporaryFile.createNewFile();
 
         BufferedReader brInForDelete = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Введите формата: ключ ");
+        System.out.println("Input key: ");
         String s1 = brInForDelete.readLine();
-        if (s1.length() == limit && s1.matches(pattern)) {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(temporaryFile));
+        if (s1.matches(pattern)) {
+            FileWriter bw = new FileWriter(temporaryFile, StandardCharsets.UTF_8, true);
             BufferedReader br = new BufferedReader(new FileReader(pathToDictionary + File.separator + fileName));
-            String line; int counter = 0;
+            String line;
+            int counter = 0;
 
             while ((line = br.readLine()) != null) {
 
                 if (!line.contains(s1) && !line.isBlank()) {
 
-                    if (counter == 0){
+                    if (counter == 0) {
                         bw.write(line);
-                    }   else {
-                        bw.newLine();
+                    } else {
+                        bw.write(System.lineSeparator());
                         bw.write(line);
                     }
                     counter++;
                 } else {
-                    System.out.println("Строка с ключом " + s1 + " удалена"); //проблема дублирование вывода при пустой строке между записями
+                    System.out.println("String with key " + s1 + " has been deleted"); //проблема дублирование вывода при пустой строке между записями
                 }
 
             }
@@ -174,15 +182,10 @@ class Dictionary {
 
             file.delete();
             temporaryFile.renameTo(new File(pathToDictionary + fileName));
+        } else {
+            System.out.println(ERR_MASK);
         }
-        else {
-            System.out.println("Превышен лимит длины ключа или формат ключа");
-        }
-
-
 
     }
-
-
 }
 
