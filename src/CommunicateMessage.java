@@ -10,8 +10,7 @@ public class CommunicateMessage {
     private static final String ERR_UNSUPPORTED_OPERATION = "Недопустимая команда";
     private static final String INPUT_KEY = "Enter key";
     private static final String INPUT_VALUE = "Input value";
-
-    private static final String PRINT_ERR_KEY = "Key not found";
+    private static final String PRINT_ERR_KEY_NOT_FOUND = "Key not found";
 
     public static void choseDictionary(){
         System.out.println(DICTIONARY_SELECTION);
@@ -32,7 +31,7 @@ public class CommunicateMessage {
         System.out.println("Введенные ключ или значение не соотвестсвуют ограничениям");
     }
     public static void printErrKeyNotFound(){
-        System.out.println("Key not found");
+        System.out.println(PRINT_ERR_KEY_NOT_FOUND);
     }
 
     public static void printDeleteEntry(String s){

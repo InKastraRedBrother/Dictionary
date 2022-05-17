@@ -1,3 +1,4 @@
+chcp 1251
 del /Q .\out\production\Dictionary\*.class
 pause
 javac -encoding utf8 -d .\out\production\Dictionary -sourcepath src src\*.java

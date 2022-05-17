@@ -1,14 +1,14 @@
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 
 /**
- * Class Dictonary provides 4 methods which are showAll(); search(); add(); deleteEntry().
+ * Class Dictionary provides 4 methods which are showAll(); search(); add(); deleteEntry().
  */
 class Dictionary {
-
-    Scanner in = new Scanner(System.in, StandardCharsets.UTF_8);
 
     public static final String FILE_FORMAT = ".txt";
     public static final String TEMPORARY_FILE_NAME = "temp" + FILE_FORMAT;
@@ -33,10 +33,9 @@ class Dictionary {
      * Mask to restrict character input
      */
     private final String pattern;
-    Console console = System.console();
     ComWithConsole cwc = new ComWithConsole();
 
-    PrintStream printStream = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+    BufferedReader br;
 
     /** Initialization block that check existence of the folder "resources"
      * If not then it will be created
@@ -58,8 +57,8 @@ class Dictionary {
 
     /**
      *  Initializes a newly created Dictionary object. Creates a file based on the passed parameter
-     * @param fileName
-     * @param pattern
+     * @param fileName fileName
+     * @param pattern pattern
      */
     Dictionary(String fileName, String pattern) throws IOException {
         this.fileName = fileName + FILE_FORMAT;
@@ -74,13 +73,15 @@ class Dictionary {
      * @throws IOException
      */
     public void showAll() throws IOException {
-        BufferedReader brList = new BufferedReader(new FileReader(pathToDictionary + File.separator + fileName, StandardCharsets.UTF_8));
+        BufferedReader br = new BufferedReader(new FileReader(pathToDictionary + File.separator + fileName, StandardCharsets.UTF_8));
         String lineList;
-        while ((lineList = brList.readLine()) != null) {
-            printStream.println(lineList);
+        StringBuilder sf = new StringBuilder();
+        while ((lineList = br.readLine()) != null) {
+            sf.append(lineList).append("\n");
         }
+        System.out.println(sf);
         try {
-            brList.close();
+            br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -92,17 +93,15 @@ class Dictionary {
      */
     public void search() throws IOException {
         String match = null;
-
-        BufferedReader brSearch = new BufferedReader(new FileReader(pathToDictionary + File.separator + fileName, StandardCharsets.UTF_8));
+        br = new BufferedReader(new FileReader(pathToDictionary + File.separator + fileName, StandardCharsets.UTF_8));
 
         CommunicateMessage.inputKey();
         String s = cwc.inputInConsole();
         String line;
-        while ((line = brSearch.readLine()) != null) {
+        while ((line = br.readLine()) != null) {
             if (line.contains(s + ":")) {
                 match = line;
             }
-
         }
         if (match != null) {
             System.out.println("Строка с запрощенным ключём " + s + " найдена - " + match);
@@ -119,7 +118,6 @@ class Dictionary {
 
         FileWriter writer = new FileWriter(pathToDictionary + fileName, StandardCharsets.UTF_8, true);
 
-
         CommunicateMessage.inputKey();
         String key = cwc.inputInConsole();
         CommunicateMessage.inputValue();
@@ -135,7 +133,6 @@ class Dictionary {
         } catch (Exception e) {
             CommunicateMessage.printErrMask();
         }
-
         writer.close();
     }
 
