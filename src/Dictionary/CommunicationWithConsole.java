@@ -1,7 +1,9 @@
+package Dictionary;
+
 import java.io.Console;
 import java.util.Scanner;
 
-public class ComWithConsole {
+public class CommunicationWithConsole {
 
     private final Scanner in = new Scanner(System.in);
     private final Console console = System.console();

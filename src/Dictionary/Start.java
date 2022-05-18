@@ -1,4 +1,4 @@
-import java.io.IOException;
+package Dictionary;
 
 public class Start {
     private static final String PATTERN_SYM = "^[a-z]{4}+$";
@@ -8,16 +8,19 @@ public class Start {
     private static final String COMMAND_ADD = "add";
     private static final String COMMAND_DELETE = "delete";
     private static final String COMMAND_SHOW_ALL = "show";
-    ComWithConsole cwc = new ComWithConsole();
+    CommunicationWithConsole communicationWithConsole;
 
-    public void run() throws IOException {
+    public Start(CommunicationWithConsole communicationWithConsole) {
+        this.communicationWithConsole = new CommunicationWithConsole();
+    }
+
+    public void runApp() {
         Dictionary dictionary;
 
         while (true) {
 
             CommunicateMessage.choseDictionary();
-            String s = cwc.inputInConsole();
-
+            String s = communicationWithConsole.inputInConsole();
             switch (s) {
                 case (CommunicateMessage.FILE_SYM): {
                     dictionary = new Dictionary(CommunicateMessage.FILE_SYM, PATTERN_SYM);
@@ -34,7 +37,7 @@ public class Start {
 
             CommunicateMessage.choseOperation();
 
-            s = cwc.inputInConsole();
+            s = communicationWithConsole.inputInConsole();
 
             switch (s) {
                 case ("1"):

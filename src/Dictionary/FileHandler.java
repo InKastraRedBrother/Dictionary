@@ -1,3 +1,5 @@
+package Dictionary;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
@@ -28,18 +30,6 @@ public class FileHandler {
 
     public File createFile(String fileName) {
         File file = new File(pathToDictionary + fileName);
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return file;
-    }
-
-    public File createTemporaryTextFile(String fileName){
-        File file = new File(fileName);
         if (!file.exists()) {
             try {
                 file.createNewFile();
