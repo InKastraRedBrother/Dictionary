@@ -109,7 +109,7 @@ class Dictionary {
         String value = communicationWithConsole.consoleChooser();
 
         try {
-            if(maskVerification.checkString(key, pattern)){
+            if(key.matches(pattern)){
                 writer.write("\n" + key + ":" + value);
                 System.out.println("Запись: ключ - " + key + " значение - " + value + " добавлена");
             } else {
