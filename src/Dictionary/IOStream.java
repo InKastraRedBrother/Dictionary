@@ -1,15 +1,22 @@
 package Dictionary;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class FileHandler {
+/**
+ * In this class 
+ */
+public class IOStreams {
 
     private final String pathToDictionary = System.getProperty("user.dir") + File.separator + "resources" + File.separator;
     BufferedReader br = null;
     FileWriter fw = null;
 
-    public FileHandler() {
+    public IOStreams() {
         createFolder();
     }
 
