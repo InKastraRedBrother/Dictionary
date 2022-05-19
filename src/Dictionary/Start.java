@@ -9,9 +9,11 @@ public class Start {
     private static final String COMMAND_DELETE = "delete";
     private static final String COMMAND_SHOW_ALL = "show";
     CommunicationWithConsole communicationWithConsole;
+    IOStream ioStream;
 
-    public Start(CommunicationWithConsole communicationWithConsole) {
-        this.communicationWithConsole = new CommunicationWithConsole();
+    public Start(CommunicationWithConsole communicationWithConsole, IOStream ioStream) {
+        this.communicationWithConsole = communicationWithConsole;
+        this.ioStream = ioStream;
     }
 
     public void runApp() {
@@ -19,23 +21,23 @@ public class Start {
 
         while (true) {
 
-            CommunicateMessage.choseDictionary();
+            communicationWithConsole.choseDictionary();
             String s = communicationWithConsole.inputInConsole();
             switch (s) {
-                case (CommunicateMessage.FILE_SYM): {
-                    dictionary = new Dictionary(CommunicateMessage.FILE_SYM, PATTERN_SYM);
+                case (CommunicationWithConsole.FILE_SYM): {
+                    dictionary = new Dictionary(CommunicationWithConsole.FILE_SYM, PATTERN_SYM, ioStream);
                     break;
                 }
-                case (CommunicateMessage.FILE_NUM): {
-                    dictionary = new Dictionary(CommunicateMessage.FILE_NUM, PATTERN_NUM);
+                case (CommunicationWithConsole.FILE_NUM): {
+                    dictionary = new Dictionary(CommunicationWithConsole.FILE_NUM, PATTERN_NUM, ioStream);
                     break;
                 }
                 default:
-                    CommunicateMessage.errMessageUnsupportedOperation();
+                    communicationWithConsole.errMessageUnsupportedOperation();
                     return;
             }
 
-            CommunicateMessage.choseOperation();
+            communicationWithConsole.choseOperation();
 
             s = communicationWithConsole.inputInConsole();
 
@@ -61,8 +63,9 @@ public class Start {
                     break;
                 }
                 default:
-                    CommunicateMessage.errMessageUnsupportedOperation();
+                    communicationWithConsole.errMessageUnsupportedOperation();
             }
         }
     }
+
 }

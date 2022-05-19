@@ -8,15 +8,15 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /**
- * In this class 
+ * This class implements methods for opening and closing I/O streams
  */
-public class IOStreams {
+public class IOStream {
 
     private final String pathToDictionary = System.getProperty("user.dir") + File.separator + "resources" + File.separator;
     BufferedReader br = null;
     FileWriter fw = null;
 
-    public IOStreams() {
+    public IOStream() {
         createFolder();
     }
 

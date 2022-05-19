@@ -10,9 +10,9 @@ import java.io.IOException;
  * Class Dictionary.Dictionary provides 4 methods which are showAll(); search(); add(); deleteEntry().
  */
 class Dictionary {
-    FileHandler fileHandler = new FileHandler();
-    MaskVerification maskVerification = new MaskVerification();
 
+    IOStream ioStream;
+    MaskVerification maskVerification = new MaskVerification();
     public static final String FILE_FORMAT = ".txt";
     public static final String TEMPORARY_FILE_NAME = "temp" + FILE_FORMAT;
 
@@ -32,25 +32,25 @@ class Dictionary {
      * Mask to restrict character input
      */
     private final String pattern;
-    CommunicationWithConsole cwc = new CommunicationWithConsole();
-
+    CommunicationWithConsole communicationWithConsole = new CommunicationWithConsole();
 
     /**
      *  Initializes a newly created Dictionary.Dictionary object. Creates a file based on the passed parameter
      * @param fileName fileName
      * @param pattern pattern
      */
-    Dictionary(String fileName, String pattern)  {
+    Dictionary(String fileName, String pattern, IOStream ioStream)  {
         this.fileName = fileName + FILE_FORMAT;
         this.pattern = pattern;
-        fileHandler.createFile(this.fileName);
+        this.ioStream = ioStream;
+        ioStream.createFile(this.fileName);
     }
 
     /** Show text to console from the file which specified in the constructor
      */
     public void showAll(){
 
-        BufferedReader br = fileHandler.getBufferedReader(fileName);
+        BufferedReader br = ioStream.getBufferedReader(fileName);
         String lineList;
         StringBuilder sf = new StringBuilder();
         while (true) {
@@ -63,7 +63,7 @@ class Dictionary {
         }
         System.out.println(sf);
 
-        fileHandler.closeBufferedReader();
+        ioStream.closeBufferedReader();
     }
 
     /**
@@ -72,10 +72,10 @@ class Dictionary {
     public void search() {
 
         String match = null;
-        BufferedReader br = fileHandler.getBufferedReader(fileName);
+        BufferedReader br = ioStream.getBufferedReader(fileName);
 
-        CommunicateMessage.inputKey();
-        String s = cwc.inputInConsole();
+        communicationWithConsole.inputKey();
+        String s = communicationWithConsole.inputInConsole();
         String line;
 //        while ((line = br.readLine()) != null) {
 //            if (line.contains(s + ":")) {
@@ -99,7 +99,7 @@ class Dictionary {
             System.out.println("Строка с запрощенным ключём " + s + " НЕ найдена");
         }
 
-        fileHandler.closeBufferedReader();
+        ioStream.closeBufferedReader();
 
     }
 
@@ -108,24 +108,24 @@ class Dictionary {
      */
     public void add() {
 
-        FileWriter writer = fileHandler.getFileWriter(fileName);
+        FileWriter writer = ioStream.getFileWriter(fileName);
 
-        CommunicateMessage.inputKey();
-        String key = cwc.inputInConsole();
-        CommunicateMessage.inputValue();
-        String value = cwc.inputInConsole();
+        communicationWithConsole.inputKey();
+        String key = communicationWithConsole.inputInConsole();
+        communicationWithConsole.inputValue();
+        String value = communicationWithConsole.inputInConsole();
 
         try {
             if(maskVerification.checkString(key, pattern)){
                 writer.write("\n" + key + ":" + value);
                 System.out.println("Запись: ключ - " + key + " значение - " + value + " добавлена");
             } else {
-                CommunicateMessage.printErrMask();
+                communicationWithConsole.printErrMask();
             }
         } catch (Exception e) {
-            CommunicateMessage.printErrMask();
+            communicationWithConsole.printErrMask();
         }
-        fileHandler.closeFileWriter();
+        ioStream.closeFileWriter();
     }
 
     /**
@@ -134,15 +134,15 @@ class Dictionary {
      */
 
     public void deleteEntry() {
-        File tempFile = fileHandler.createFile(TEMPORARY_FILE_NAME);
+        File tempFile = ioStream.createFile(TEMPORARY_FILE_NAME);
         File file = new File(pathToDictionary + fileName);
 
-        CommunicateMessage.inputKey();
-        String s = cwc.inputInConsole();
+        communicationWithConsole.inputKey();
+        String s = communicationWithConsole.inputInConsole();
         if (s.matches(pattern)) {
 
-            FileWriter fileWriter =  fileHandler.getFileWriter(TEMPORARY_FILE_NAME);
-            BufferedReader bufferedReader = fileHandler.getBufferedReader(fileName);
+            FileWriter fileWriter =  ioStream.getFileWriter(TEMPORARY_FILE_NAME);
+            BufferedReader bufferedReader = ioStream.getBufferedReader(fileName);
 
             String line;
             int counter = 0;
@@ -171,13 +171,13 @@ class Dictionary {
                 }
             }
             if (isExist){
-                CommunicateMessage.printDeleteEntry(s);
+                communicationWithConsole.printDeleteEntry(s);
             } else {
-                CommunicateMessage.printErrKeyNotFound();
+                communicationWithConsole.printErrKeyNotFound();
             }
 
-            fileHandler.closeBufferedReader();
-            fileHandler.closeFileWriter();
+            ioStream.closeBufferedReader();
+            ioStream.closeFileWriter();
 
             file.delete();
             tempFile.renameTo(new File(pathToDictionary + fileName));

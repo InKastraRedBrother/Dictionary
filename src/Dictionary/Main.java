@@ -7,7 +7,8 @@ class Main {
 
     public static void main(String[] args) {
         CommunicationWithConsole communicationWithConsole = new CommunicationWithConsole();
-        Start start = new Start(communicationWithConsole);
+        IOStream ioStream = new IOStream();
+        Start start = new Start(communicationWithConsole, ioStream);
         start.runApp();
 
     }
