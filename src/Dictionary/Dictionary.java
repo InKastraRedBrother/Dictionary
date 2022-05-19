@@ -10,8 +10,8 @@ import java.io.IOException;
  * Class Dictionary.Dictionary provides 4 methods which are showAll(); search(); add(); deleteEntry().
  */
 class Dictionary {
-    IOStream ioStream;
-    MaskVerification maskVerification = new MaskVerification();
+
+
     public static final String FILE_FORMAT = ".txt";
     public static final String TEMPORARY_FILE_NAME = "temp" + FILE_FORMAT;
 
@@ -27,18 +27,21 @@ class Dictionary {
      * Mask to restrict character input
      */
     private final String pattern;
-    CommunicationWithConsole communicationWithConsole = new CommunicationWithConsole();
 
+    IOStream ioStream;
+    CommunicationWithConsole communicationWithConsole;
+    MaskVerification maskVerification;
     /**
      *  Initializes a newly created Dictionary.Dictionary object. Creates a file based on the passed parameter
      * @param fileName fileName
      * @param pattern pattern
      */
-    Dictionary(String fileName, String pattern, IOStream ioStream)  {
+    Dictionary(String fileName, String pattern, IOStream ioStream, CommunicationWithConsole communicationWithConsole)  {
         this.fileName = fileName + FILE_FORMAT;
         this.pattern = pattern;
         this.ioStream = ioStream;
         ioStream.createFile(this.fileName);
+        this.communicationWithConsole = communicationWithConsole;
     }
 
     /** Show text to console from the file which specified in the constructor
@@ -70,28 +73,23 @@ class Dictionary {
         BufferedReader br = ioStream.getBufferedReader(fileName);
 
         communicationWithConsole.inputKey();
-        String s = communicationWithConsole.inputInConsole();
+        String key = communicationWithConsole.consoleChooser();
         String line;
-//        while ((line = br.readLine()) != null) {
-//            if (line.contains(s + ":")) {
-//                match = line;
-//            }
-//        }
         while (true) {
             try {
                 if ((line = br.readLine()) == null) break;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            if (line.contains(s + ":")) {
+            if (line.contains(key + ":")) {
                 match = line;
             }
         }
 
         if (match != null) {
-            System.out.println("Строка с запрощенным ключём " + s + " найдена - " + match);
+            System.out.println("Строка с запрощенным ключём " + key + " найдена - " + match);
         } else {
-            System.out.println("Строка с запрощенным ключём " + s + " НЕ найдена");
+            System.out.println("Строка с запрощенным ключём " + key + " НЕ найдена");
         }
 
         ioStream.closeBufferedReader();
@@ -106,9 +104,9 @@ class Dictionary {
         FileWriter writer = ioStream.getFileWriter(fileName);
 
         communicationWithConsole.inputKey();
-        String key = communicationWithConsole.inputInConsole();
+        String key = communicationWithConsole.consoleChooser();
         communicationWithConsole.inputValue();
-        String value = communicationWithConsole.inputInConsole();
+        String value = communicationWithConsole.consoleChooser();
 
         try {
             if(maskVerification.checkString(key, pattern)){
@@ -133,7 +131,7 @@ class Dictionary {
         File file = new File(pathToDictionary + fileName);
 
         communicationWithConsole.inputKey();
-        String s = communicationWithConsole.inputInConsole();
+        String s = communicationWithConsole.consoleChooser();
         if (s.matches(pattern)) {
 
             FileWriter fileWriter =  ioStream.getFileWriter(TEMPORARY_FILE_NAME);

@@ -5,35 +5,45 @@ import java.util.Scanner;
 
 public class CommunicationWithConsole {
 
+
+    public CommunicationWithConsole() {
+    }
     private final Scanner in = new Scanner(System.in);
     private final Console console = System.console();
 
-    public String inputInConsole() {
-        if (console != null) {
-            return console.readLine();
-        } else {
-            return in.nextLine();
+    public String inputInConsole(String selectionType, String pattern) {
+        System.out.println(selectionType);
+
+        String s = consoleChooser();
+
+        if (!s.matches(pattern)){
+            inputInConsole(selectionType, pattern);
+        }
+        return s;
+    }
+
+    public String consoleChooser() {
+        {
+            if (console != null) {
+                return console.readLine();
+            } else {
+                return in.nextLine();
+            }
         }
     }
 
     /**
      * Printing messages
      */
-    public static final String FILE_SYM = "sym";
-    public static final String FILE_NUM = "num";
-    private static final String DICTIONARY_SELECTION = "Choose dictionary type: " + FILE_SYM + " - Symbolic; " + FILE_NUM + " - Numeric : ";
-    private static final String OPERATION_SELECTION = "Choose dictionary's destiny: 1 - Search; 2 - Show all; 3 - Add to the end; 4 - Delete : ";
+
+
+
     private static final String ERR_INVALID_OPERATION = "Invalid operation";
     private static final String INPUT_KEY = "Input key";
     private static final String INPUT_VALUE = "Input value";
     private static final String PRINT_ERR_KEY_NOT_FOUND = "Key not found";
     private static final String MASK_ERROR = "The entered key or value do NOT match the constraints";
-    public void choseDictionary(){
-        System.out.println(DICTIONARY_SELECTION);
-    }
-    public void choseOperation() {
-        System.out.println(OPERATION_SELECTION);
-    }
+
     public void errMessageUnsupportedOperation() {
         System.out.println(ERR_INVALID_OPERATION);
     }
