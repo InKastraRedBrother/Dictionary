@@ -14,4 +14,18 @@ public class MaskVerification {
     public boolean checkString(String s, String pattern) {
         return s.matches(pattern);
     }
+
+    public boolean checkDictionary(String s) {
+        return (s.matches("^[1-2]{1}+$"));
+    }
+    public boolean checkOperation(String s) {
+        return (s.matches("^[1-5]{1}+$"));
+    }
+    public boolean checkSymbolKey(String s){
+        return (s.matches("^[a-z]{4}+$"));
+    }
+    public boolean checkNumberKey(String s){
+        return (s.matches("^[0-9]{5}+$"));
+    }
+
 }

@@ -1,44 +1,42 @@
 package Dictionary;
 
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ *
+ */
 public class Start {
-    private static final String PATTERN_SYM = "^[a-z]{4}+$";
-    private static final String PATTERN_NUM = "^[0-9]{5}+$";
+
 
     private static final String COMMAND_SEARCH = "search";
     private static final String COMMAND_ADD = "add";
     private static final String COMMAND_DELETE = "delete";
     private static final String COMMAND_SHOW_ALL = "show";
     CommunicationWithConsole communicationWithConsole;
-    IOStream ioStream;
+    Dictionary dictionary;
+    private final Map<String, Dictionary> hashMap;
 
-    public Start(CommunicationWithConsole communicationWithConsole, IOStream ioStream) {
+    public Start(CommunicationWithConsole communicationWithConsole, Map<String, Dictionary> hashMap) {
         this.communicationWithConsole = communicationWithConsole;
-        this.ioStream = ioStream;
+        this.hashMap = hashMap;
     }
 
+    /**
+     *
+     */
+
     public void runApp() {
-        Dictionary dictionary;
 
         while (true) {
 
-            communicationWithConsole.choseDictionary();
+            System.out.println();
+
+            communicationWithConsole.choseDictionary();  //дописать условие
             String s = communicationWithConsole.inputInConsole();
-            switch (s) {
-                case (CommunicationWithConsole.FILE_SYM): {
-                    dictionary = new Dictionary(CommunicationWithConsole.FILE_SYM, PATTERN_SYM, ioStream);
-                    break;
-                }
-                case (CommunicationWithConsole.FILE_NUM): {
-                    dictionary = new Dictionary(CommunicationWithConsole.FILE_NUM, PATTERN_NUM, ioStream);
-                    break;
-                }
-                default:
-                    communicationWithConsole.errMessageUnsupportedOperation();
-                    return;
-            }
+            dictionary = hashMap.get(s);
 
             communicationWithConsole.choseOperation();
-
             s = communicationWithConsole.inputInConsole();
 
             switch (s) {

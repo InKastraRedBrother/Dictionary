@@ -10,15 +10,10 @@ import java.io.IOException;
  * Class Dictionary.Dictionary provides 4 methods which are showAll(); search(); add(); deleteEntry().
  */
 class Dictionary {
-
     IOStream ioStream;
     MaskVerification maskVerification = new MaskVerification();
     public static final String FILE_FORMAT = ".txt";
     public static final String TEMPORARY_FILE_NAME = "temp" + FILE_FORMAT;
-
-    /** Message for error: the entered value does not meet the specified limits
-     */
-    public static final String ERR_MASK="Введенные ключ или значение не соотвестсвуют ограничениям";
 
     /** Full path to .txt files
      */
@@ -183,7 +178,7 @@ class Dictionary {
             tempFile.renameTo(new File(pathToDictionary + fileName));
 
         } else {
-            System.out.println(ERR_MASK);
+            communicationWithConsole.printErrMask();
         }
 
     }
