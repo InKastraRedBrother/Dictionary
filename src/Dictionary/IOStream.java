@@ -13,8 +13,8 @@ import java.nio.charset.StandardCharsets;
 public class IOStream {
 
     private final String pathToDictionary = System.getProperty("user.dir") + File.separator + "resources" + File.separator;
-    BufferedReader br = null;
-    FileWriter fw = null;
+    BufferedReader br;
+    FileWriter fw;
 
     public IOStream() {
         createFolder();

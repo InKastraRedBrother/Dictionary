@@ -17,9 +17,8 @@ class Main {
 
         IOStream ioStream = new IOStream();
         CommunicationWithConsole communicationWithConsole = new CommunicationWithConsole();
-        MaskVerification maskVerification = new MaskVerification(communicationWithConsole);
         Map<String, Dictionary>  hashMap = createDictionaries(ioStream, communicationWithConsole);
-        Start start = new Start(communicationWithConsole, hashMap, maskVerification);
+        Start start = new Start(communicationWithConsole, hashMap);
         start.runApp();
     }
 

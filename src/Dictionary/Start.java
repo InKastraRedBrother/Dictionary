@@ -1,6 +1,5 @@
 package Dictionary;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,12 +19,10 @@ public class Start {
     CommunicationWithConsole communicationWithConsole;
     Dictionary dictionary;
     private final Map<String, Dictionary> hashMap;
-    MaskVerification maskVerification;
 
-    public Start(CommunicationWithConsole communicationWithConsole, Map<String, Dictionary> hashMap, MaskVerification maskVerification) {
+    public Start(CommunicationWithConsole communicationWithConsole, Map<String, Dictionary> hashMap) {
         this.communicationWithConsole = communicationWithConsole;
         this.hashMap = hashMap;
-        this.maskVerification = maskVerification;
     }
 
     public void runApp() {

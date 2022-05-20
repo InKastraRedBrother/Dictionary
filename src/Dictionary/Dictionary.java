@@ -30,7 +30,6 @@ class Dictionary {
 
     IOStream ioStream;
     CommunicationWithConsole communicationWithConsole;
-    MaskVerification maskVerification;
     /**
      *  Initializes a newly created Dictionary.Dictionary object. Creates a file based on the passed parameter
      * @param fileName fileName

@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 public class CommunicationWithConsole {
 
+    String s;  //if s will be initialized in InputInConsole method , then it will be "" in some circumstances (1st input "" (just Enter) 2nd input matches(1 or 2))
 
     public CommunicationWithConsole() {
     }
@@ -14,7 +15,7 @@ public class CommunicationWithConsole {
     public String inputInConsole(String selectionType, String pattern) {
         System.out.println(selectionType);
 
-        String s = consoleChooser();
+        s = consoleChooser();
 
         if (!s.matches(pattern)){
             inputInConsole(selectionType, pattern);
@@ -35,9 +36,6 @@ public class CommunicationWithConsole {
     /**
      * Printing messages
      */
-
-
-
     private static final String ERR_INVALID_OPERATION = "Invalid operation";
     private static final String INPUT_KEY = "Input key";
     private static final String INPUT_VALUE = "Input value";
