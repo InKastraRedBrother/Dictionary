@@ -10,14 +10,14 @@ import java.io.IOException;
  * Class Dictionary.Dictionary provides 4 methods which are showAll(); search(); add(); deleteEntry().
  */
 class Dictionary {
+    private static final String KEY_VALUE_ADDED = "Запись: ключ:значение добавлена - ";
+    private static final String KEY_VALUE_SEPARATOR = ":";
+    private final static String FIND_ROW = "Строка с запрощенным ключём найдена - ";
+    private final static String NOT_FIND_ROW = "Строка с запрощенным ключём НЕ найдена - ";
 
-
-    public static final String FILE_FORMAT = ".txt";
-    public static final String TEMPORARY_FILE_NAME = "temp" + FILE_FORMAT;
-
-    /** Full path to .txt files
+    /** Name of temporary file
      */
-    private final String pathToDictionary = System.getProperty("user.dir") + File.separator + "resources" + File.separator;
+    public static final String TEMPORARY_FILE_NAME = "temp";
 
     /** Contains file name
      */
@@ -36,7 +36,7 @@ class Dictionary {
      * @param pattern pattern
      */
     Dictionary(String fileName, String pattern, IOStream ioStream, CommunicationWithConsole communicationWithConsole)  {
-        this.fileName = fileName + FILE_FORMAT;
+        this.fileName = fileName;
         this.pattern = pattern;
         this.ioStream = ioStream;
         ioStream.createFile(this.fileName);
@@ -80,15 +80,15 @@ class Dictionary {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            if (line.contains(key + ":")) {
+            if (line.contains(key + KEY_VALUE_SEPARATOR)) {
                 match = line;
             }
         }
 
         if (match != null) {
-            System.out.println("Строка с запрощенным ключём " + key + " найдена - " + match);
+            System.out.println(FIND_ROW + key + " " + match);
         } else {
-            System.out.println("Строка с запрощенным ключём " + key + " НЕ найдена");
+            System.out.println(NOT_FIND_ROW + key);
         }
 
         ioStream.closeBufferedReader();
@@ -109,8 +109,8 @@ class Dictionary {
 
         try {
             if(key.matches(pattern)){
-                writer.write("\n" + key + ":" + value);
-                System.out.println("Запись: ключ - " + key + " значение - " + value + " добавлена");
+                writer.write("\n" + key + KEY_VALUE_SEPARATOR + value);
+                System.out.println(KEY_VALUE_ADDED + key + KEY_VALUE_SEPARATOR + value);
             } else {
                 communicationWithConsole.printErrMask();
             }
@@ -124,10 +124,9 @@ class Dictionary {
      * Create temporary file. Write to temporary file every line, excluding line that need to be deleted.
      * Deleting main file. Temporary file will be renamed to the name of the main file
      */
-
     public void deleteEntry() {
         File tempFile = ioStream.createFile(TEMPORARY_FILE_NAME);
-        File file = new File(pathToDictionary + fileName);
+        File file = ioStream.createFile(fileName);
 
         communicationWithConsole.inputKey();
         String s = communicationWithConsole.consoleChooser();
@@ -172,7 +171,7 @@ class Dictionary {
             ioStream.closeFileWriter();
 
             file.delete();
-            tempFile.renameTo(new File(pathToDictionary + fileName));
+            tempFile.renameTo(new File(ioStream.pathToDictionary + fileName + ioStream.FILE_FORMAT));
 
         } else {
             communicationWithConsole.printErrMask();

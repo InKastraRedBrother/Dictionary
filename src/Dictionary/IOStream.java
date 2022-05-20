@@ -8,11 +8,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 /**
- * This class implements methods for opening and closing I/O streams
+ * This class implements methods which open/close stream to read and white to file, creating Directory and Files if they're missing
  */
 public class IOStream {
 
-    private final String pathToDictionary = System.getProperty("user.dir") + File.separator + "resources" + File.separator;
+    public final String FILE_FORMAT = ".txt";
+    public final String pathToDictionary = System.getProperty("user.dir") + File.separator + "resources" + File.separator;
     BufferedReader br;
     FileWriter fw;
 
@@ -36,7 +37,7 @@ public class IOStream {
     }
 
     public File createFile(String fileName) {
-        File file = new File(pathToDictionary + fileName);
+        File file = new File(pathToDictionary + fileName + FILE_FORMAT);
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -49,18 +50,18 @@ public class IOStream {
 
     public BufferedReader getBufferedReader(String fileName){
         try{
-            FileReader fr = new FileReader(pathToDictionary + File.separator + fileName, StandardCharsets.UTF_8);
+            FileReader fr = new FileReader(pathToDictionary + File.separator + fileName + FILE_FORMAT, StandardCharsets.UTF_8);
             br = new BufferedReader(fr);
             return br;
         } catch (IOException e) {
-            System.out.println("Cannot read File in path - " + pathToDictionary + "; with name - " + fileName);
+            System.out.println("Cannot read File in path - " + pathToDictionary + "; with name - " + fileName + FILE_FORMAT);
         }
         return br;
     }
 
     public FileWriter getFileWriter(String fileName){
         try {
-            fw = new FileWriter(pathToDictionary + File.separator + fileName, StandardCharsets.UTF_8, true);
+            fw = new FileWriter(pathToDictionary + File.separator + fileName + FILE_FORMAT, StandardCharsets.UTF_8, true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

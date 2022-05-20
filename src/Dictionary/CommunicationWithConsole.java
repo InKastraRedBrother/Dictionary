@@ -4,17 +4,15 @@ import java.io.Console;
 import java.util.Scanner;
 
 public class CommunicationWithConsole {
-
-    String s;  //if s will be initialized in InputInConsole method , then it will be "" in some circumstances (1st input "" (just Enter) 2nd input matches(1 or 2))
+    //String s;  //if s will be initialized in InputInConsole method , then it will be "" in some circumstances (1st input "" (just Enter) 2nd input matches(1 or 2))
 
     public CommunicationWithConsole() {
     }
-    private final Scanner in = new Scanner(System.in);
-    private final Console console = System.console();
+
+    String s;
 
     public String inputInConsole(String selectionType, String pattern) {
         System.out.println(selectionType);
-
         s = consoleChooser();
 
         if (!s.matches(pattern)){
@@ -23,28 +21,25 @@ public class CommunicationWithConsole {
         return s;
     }
 
+    /** Select input option
+     * @return String
+     */
     public String consoleChooser() {
-        {
-            if (console != null) {
-                return console.readLine();
-            } else {
-                return in.nextLine();
-            }
+        final Scanner in = new Scanner(System.in);
+        final Console console = System.console();
+        if (console != null) {
+            return console.readLine();
+        } else {
+            return in.nextLine();
         }
     }
 
-    /**
-     * Printing messages
-     */
-    private static final String ERR_INVALID_OPERATION = "Invalid operation";
+
     private static final String INPUT_KEY = "Input key";
     private static final String INPUT_VALUE = "Input value";
     private static final String PRINT_ERR_KEY_NOT_FOUND = "Key not found";
     private static final String MASK_ERROR = "The entered key or value do NOT match the constraints";
 
-    public void errMessageUnsupportedOperation() {
-        System.out.println(ERR_INVALID_OPERATION);
-    }
     public void inputKey(){
         System.out.println(INPUT_KEY);
     }
