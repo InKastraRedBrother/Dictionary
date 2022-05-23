@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Creating, fill and return map
+ * Declare, initialize and return map
  */
 public class DictionaryInitialization {
     /** Input key mask for Symbolic Dictionary
@@ -19,10 +19,16 @@ public class DictionaryInitialization {
     /** Filename of Numeric Dictionary
      */
     public static final String FILE_NUM = "num";
+
     IOStream ioStream;
     CommunicationWithConsole communicationWithConsole;
     Map<String, Dictionary> hashMap;
 
+    /**
+     * Constructor for DI and creation dictionary's text file
+     * @param communicationWithConsole DI
+     * @param ioStream DI
+     */
     public DictionaryInitialization(CommunicationWithConsole communicationWithConsole, IOStream ioStream) {
         this.ioStream = ioStream;
         this.communicationWithConsole = communicationWithConsole;

@@ -3,9 +3,15 @@ package Dictionary;
 import java.io.Console;
 import java.util.Scanner;
 
+/**
+ * Class provide implementations of methods which comparing input and mask, and selection input option
+ */
 public class CommunicationWithConsole {
     String s;  //if s will be declared in InputInConsole method , then it will be "" in some circumstances (1st input "" (just Enter) 2nd input matches(1 or 2))
 
+    /**
+     * Empty constructor
+     */
     public CommunicationWithConsole() {
     }
 
@@ -39,29 +45,6 @@ public class CommunicationWithConsole {
             return in.nextLine();
         }
     }
-
-
-    private static final String INPUT_KEY = "Input key";
-    private static final String INPUT_VALUE = "Input value";
-    private static final String PRINT_ERR_KEY_NOT_FOUND = "Key not found";
-    private static final String MASK_ERROR = "The entered key or value do NOT match the constraints";
-
-    public void inputKey(){
-        System.out.println(INPUT_KEY);
-    }
-    public void inputValue(){
-        System.out.println(INPUT_VALUE);
-    }
-    public void printErrKeyNotFound(){
-        System.out.println(PRINT_ERR_KEY_NOT_FOUND);
-    }
-    public void printErrMask(){
-        System.out.println(MASK_ERROR);
-    }
-    public void printDeleteEntry(String s){
-        System.out.println("String with key " + s + " has been deleted");
-    }
-
 }
 
 

@@ -1,25 +1,30 @@
 package Dictionary;
 
-import java.io.File;
-
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Class Dictionary.Dictionary provides 4 methods which are showAll(); search(); add(); deleteEntry().
+ * Class Dictionary provides 4 methods which are showAll(); search(); add(); deleteEntry().
  */
 class Dictionary {
-    private static final String KEY_VALUE_ADDED = "Запись: ключ:значение добавлена - ";
     private static final String KEY_VALUE_SEPARATOR = ":";
-    private final static String FIND_ROW = "Строка с запрощенным ключём найдена - ";
-    private final static String NOT_FIND_ROW = "Строка с запрощенным ключём НЕ найдена - ";
-
-    /** Name of temporary file
+    private static final String KEY_VALUE_ADDED = "Запись: ключ" + KEY_VALUE_SEPARATOR + "значение добавлена - ";
+    private final static String FOUND_LINE = "Строка с запрощенным ключём найдена - ";
+    private final static String NOT_FOUND_LINE = "Строка с запрощенным ключём НЕ найдена - ";
+    private static final String INPUT_KEY = "Input key";
+    private static final String INPUT_VALUE = "Input value";
+    private static final String PRINT_ERR_KEY_NOT_FOUND = "Key not found";
+    private static final String MASK_ERROR = "The entered key or value do NOT match the constraints";
+    private static final String LINE_REMOVED = "Row has been removed with the requested key - ";
+    /**
+     * Name of temporary file
      */
     public static final String TEMPORARY_FILE_NAME = "temp";
 
-    /** Contains file name
+    /**
+     * Contains file name
      */
     private final String fileName;
 
@@ -30,12 +35,14 @@ class Dictionary {
 
     IOStream ioStream;
     CommunicationWithConsole communicationWithConsole;
+
     /**
-     *  Initializes a newly created Dictionary.Dictionary object. Creates a file based on the passed parameter
+     * Initializes a newly created Dictionary.Dictionary object. Creates a file based on the passed parameter
+     *
      * @param fileName fileName
-     * @param pattern pattern
+     * @param pattern  pattern
      */
-    Dictionary(String fileName, String pattern, IOStream ioStream, CommunicationWithConsole communicationWithConsole)  {
+    Dictionary(String fileName, String pattern, IOStream ioStream, CommunicationWithConsole communicationWithConsole) {
         this.fileName = fileName;
         this.pattern = pattern;
         this.ioStream = ioStream;
@@ -43,9 +50,10 @@ class Dictionary {
         this.communicationWithConsole = communicationWithConsole;
     }
 
-    /** Show text to console from the file which specified in the constructor
+    /**
+     * Show text to console from the file which specified in the constructor
      */
-    public void showAll(){
+    public void showAll() {
 
         BufferedReader br = ioStream.getBufferedReader(fileName);
         String lineList;
@@ -71,7 +79,7 @@ class Dictionary {
         String match = null;
         BufferedReader br = ioStream.getBufferedReader(fileName);
 
-        communicationWithConsole.inputKey();
+        System.out.println(INPUT_KEY);
         String key = communicationWithConsole.consoleChooser();
         String line;
         while (true) {
@@ -86,9 +94,9 @@ class Dictionary {
         }
 
         if (match != null) {
-            System.out.println(FIND_ROW + key + " " + match);
+            System.out.println(FOUND_LINE + key + " " + match);
         } else {
-            System.out.println(NOT_FIND_ROW + key);
+            System.out.println(NOT_FOUND_LINE + key);
         }
 
         ioStream.closeBufferedReader();
@@ -102,20 +110,20 @@ class Dictionary {
 
         FileWriter writer = ioStream.getFileWriter(fileName);
 
-        communicationWithConsole.inputKey();
+        System.out.println(INPUT_KEY);
         String key = communicationWithConsole.consoleChooser();
-        communicationWithConsole.inputValue();
+        System.out.println(INPUT_VALUE);
         String value = communicationWithConsole.consoleChooser();
 
         try {
-            if(key.matches(pattern)){
+            if (key.matches(pattern)) {
                 writer.write("\n" + key + KEY_VALUE_SEPARATOR + value);
                 System.out.println(KEY_VALUE_ADDED + key + KEY_VALUE_SEPARATOR + value);
             } else {
-                communicationWithConsole.printErrMask();
+                System.out.println(MASK_ERROR);
             }
         } catch (Exception e) {
-            communicationWithConsole.printErrMask();
+            System.out.println(MASK_ERROR);
         }
         ioStream.closeFileWriter();
     }
@@ -128,11 +136,11 @@ class Dictionary {
         File tempFile = ioStream.createFile(TEMPORARY_FILE_NAME);
         File file = ioStream.createFile(fileName);
 
-        communicationWithConsole.inputKey();
+        System.out.println(INPUT_KEY);
         String s = communicationWithConsole.consoleChooser();
         if (s.matches(pattern)) {
 
-            FileWriter fileWriter =  ioStream.getFileWriter(TEMPORARY_FILE_NAME);
+            FileWriter fileWriter = ioStream.getFileWriter(TEMPORARY_FILE_NAME);
             BufferedReader bufferedReader = ioStream.getBufferedReader(fileName);
 
             String line;
@@ -144,27 +152,27 @@ class Dictionary {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                if (line.contains(s)){
+                if (line.contains(s)) {
                     isExist = true;
                 }
                 if (!line.contains(s) && !line.isBlank()) {
                     try {
                         if (counter == 0) {
-                                fileWriter.write(line);
+                            fileWriter.write(line);
                         } else {
                             fileWriter.write(System.lineSeparator());
                             fileWriter.write(line);
                         }
                     } catch (IOException e) {
-                            throw new RuntimeException(e);
+                        throw new RuntimeException(e);
                     }
                     counter++;
                 }
             }
-            if (isExist){
-                communicationWithConsole.printDeleteEntry(s);
+            if (isExist) {
+                System.out.println(LINE_REMOVED + s);
             } else {
-                communicationWithConsole.printErrKeyNotFound();
+                System.out.println(PRINT_ERR_KEY_NOT_FOUND + s);
             }
 
             ioStream.closeBufferedReader();
@@ -174,7 +182,7 @@ class Dictionary {
             tempFile.renameTo(new File(ioStream.pathToDictionary + fileName + ioStream.FILE_FORMAT));
 
         } else {
-            communicationWithConsole.printErrMask();
+            System.out.println(MASK_ERROR);
         }
 
     }
