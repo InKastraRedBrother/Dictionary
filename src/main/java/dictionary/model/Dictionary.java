@@ -22,17 +22,8 @@ public class Dictionary {
      * Name of temporary file
      */
     public static final String TEMPORARY_FILE_NAME = "temp";
-
-    /**
-     * Contains file name
-     */
-    private final String fileName;
-
-    /**
-     * Mask to restrict character input
-     */
-    private final String pattern;
-
+    File file;
+    Language language;
     IOStream ioStream;
     /**
      * Initializes a newly created object. Creates a file based on the passed parameter
@@ -40,17 +31,16 @@ public class Dictionary {
      * @param fileName fileName
      * @param pattern  pattern
      */
-    public Dictionary(String fileName, String pattern, IOStream ioStream) {
-        this.fileName = fileName;
-        this.pattern = pattern;
+    public Dictionary(File file, Language language, IOStream ioStream) {
+        this.file = file;
+        this.language = language;
         this.ioStream = ioStream;
-        ioStream.createFile(this.fileName);
     }
 
     /**
      * Show all file lines to console from the file which specified in the constructor
      */
-    public void showAll() {
+    public void showAll(String fileName) {
 
         BufferedReader br = ioStream.getBufferedReader(fileName);
         String lineList;
@@ -71,7 +61,7 @@ public class Dictionary {
     /**
      * Search line which specified in console input from file
      */
-    public void search() {
+    public void search(String fileName) {
 
         String match = null;
         BufferedReader br = ioStream.getBufferedReader(fileName);
@@ -104,7 +94,7 @@ public class Dictionary {
     /**
      * Add line which is entered into the console and matches pattern to the end of the file
      */
-    public void add() {
+    public void add(String fileName, Row row) {
 
         FileWriter writer = ioStream.getFileWriter(fileName);
 
@@ -114,7 +104,7 @@ public class Dictionary {
         String value = consoleChooser();
 
         try {
-            if (key.matches(pattern)) {
+            if (key.matches(language.getLanguage())) {
                 writer.write("\n" + key + KEY_VALUE_SEPARATOR + value);
                 System.out.println(KEY_VALUE_ADDED + key + KEY_VALUE_SEPARATOR + value);
             } else {
@@ -130,13 +120,13 @@ public class Dictionary {
      * Create temporary file. Write to temporary file every line, excluding line that need to be deleted.
      * Deleting main file. Temporary file will be renamed to the name of the main file
      */
-    public void deleteEntry() {
-        File tempFile = ioStream.createFile(TEMPORARY_FILE_NAME);
-        File file = ioStream.createFile(fileName);
+    public void deleteEntry(String fileName) {
+        java.io.File tempFile = ioStream.createFile(TEMPORARY_FILE_NAME);
+        java.io.File file = ioStream.createFile(fileName);
 
         System.out.println(INPUT_KEY);
         String s = consoleChooser();
-        if (s.matches(pattern)) {
+        if (s.matches(language.getLanguage())) {
 
             FileWriter fileWriter = ioStream.getFileWriter(TEMPORARY_FILE_NAME);
             BufferedReader bufferedReader = ioStream.getBufferedReader(fileName);
