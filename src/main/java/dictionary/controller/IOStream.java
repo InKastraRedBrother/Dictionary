@@ -1,4 +1,4 @@
-package Dictionary;
+package dictionary.controller;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -39,7 +39,7 @@ public class IOStream {
     }
 
     /**
-     * Create file for chosen Dictionary if it doesn't exist
+     * Create file for chosen java.dictionary.model.Dictionary if it doesn't exist
      * @param fileName get name of the file which need to be created
      * @return created file
      */

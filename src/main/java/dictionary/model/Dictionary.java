@@ -1,14 +1,14 @@
-package Dictionary;
+package dictionary.model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import dictionary.controller.IOStream;
+
+import java.io.*;
+import java.util.Scanner;
 
 /**
- * Class Dictionary provides 4 methods which are showAll(); search(); add(); deleteEntry().
+ * Class provides Dictionary API.
  */
-class Dictionary {
+public class Dictionary {
     private static final String KEY_VALUE_SEPARATOR = ":";
     private static final String KEY_VALUE_ADDED = "Запись: ключ" + KEY_VALUE_SEPARATOR + "значение добавлена - ";
     private final static String FOUND_LINE = "Строка с запрощенным ключём найдена - ";
@@ -34,24 +34,21 @@ class Dictionary {
     private final String pattern;
 
     IOStream ioStream;
-    CommunicationWithConsole communicationWithConsole;
-
     /**
-     * Initializes a newly created Dictionary.Dictionary object. Creates a file based on the passed parameter
+     * Initializes a newly created object. Creates a file based on the passed parameter
      *
      * @param fileName fileName
      * @param pattern  pattern
      */
-    Dictionary(String fileName, String pattern, IOStream ioStream, CommunicationWithConsole communicationWithConsole) {
+    public Dictionary(String fileName, String pattern, IOStream ioStream) {
         this.fileName = fileName;
         this.pattern = pattern;
         this.ioStream = ioStream;
         ioStream.createFile(this.fileName);
-        this.communicationWithConsole = communicationWithConsole;
     }
 
     /**
-     * Show text to console from the file which specified in the constructor
+     * Show all file lines to console from the file which specified in the constructor
      */
     public void showAll() {
 
@@ -79,8 +76,9 @@ class Dictionary {
         String match = null;
         BufferedReader br = ioStream.getBufferedReader(fileName);
 
+
         System.out.println(INPUT_KEY);
-        String key = communicationWithConsole.consoleChooser();
+        String key = consoleChooser();
         String line;
         while (true) {
             try {
@@ -111,9 +109,9 @@ class Dictionary {
         FileWriter writer = ioStream.getFileWriter(fileName);
 
         System.out.println(INPUT_KEY);
-        String key = communicationWithConsole.consoleChooser();
+        String key = consoleChooser();
         System.out.println(INPUT_VALUE);
-        String value = communicationWithConsole.consoleChooser();
+        String value = consoleChooser();
 
         try {
             if (key.matches(pattern)) {
@@ -137,7 +135,7 @@ class Dictionary {
         File file = ioStream.createFile(fileName);
 
         System.out.println(INPUT_KEY);
-        String s = communicationWithConsole.consoleChooser();
+        String s = consoleChooser();
         if (s.matches(pattern)) {
 
             FileWriter fileWriter = ioStream.getFileWriter(TEMPORARY_FILE_NAME);
@@ -185,6 +183,15 @@ class Dictionary {
             System.out.println(MASK_ERROR);
         }
 
+    }
+    public String consoleChooser() {
+        final Scanner in = new Scanner(System.in);
+        final Console console = System.console();
+        if (console != null) {
+            return console.readLine();
+        } else {
+            return in.nextLine();
+        }
     }
 }
 
