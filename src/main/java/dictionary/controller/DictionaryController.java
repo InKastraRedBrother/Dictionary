@@ -13,7 +13,7 @@ public class DictionaryController {
     public DictionaryController(Dictionary dictionary, File file, Row row) {
         this.dictionary = dictionary;
         this.file = file;
-        this.row = row;;
+        this.row = row;
 
     }
 
@@ -27,8 +27,7 @@ public class DictionaryController {
             file.setFileName("Numeric.txt");
 
         }
-        return "Language setted - " + row.language.getLanguage();
-
+        return "Language has been set - " + row.language.getLanguage();
     }
 
     public String setPairWord(String s) throws IOException {

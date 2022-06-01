@@ -27,9 +27,6 @@ public class Dictionary {
     IOStream ioStream;
     /**
      * Initializes a newly created object. Creates a file based on the passed parameter
-     *
-     * @param fileName fileName
-     * @param pattern  pattern
      */
     public Dictionary(File file, Language language, IOStream ioStream) {
         this.file = file;
@@ -162,12 +159,11 @@ public class Dictionary {
             } else {
                 System.out.println(PRINT_ERR_KEY_NOT_FOUND + s);
             }
-
             ioStream.closeBufferedReader();
             ioStream.closeFileWriter();
 
             file.delete();
-            tempFile.renameTo(new File(ioStream.pathToDictionary + fileName + ioStream.FILE_FORMAT));
+            tempFile.renameTo(new java.io.File(ioStream.pathToDictionary + fileName + ioStream.FILE_FORMAT));
 
         } else {
             System.out.println(MASK_ERROR);

@@ -1,7 +1,6 @@
 package dictionary;
 
 import dictionary.controller.DictionaryController;
-import dictionary.controller.DictionaryInitialization;
 import dictionary.controller.IOStream;
 import dictionary.model.Dictionary;
 import dictionary.model.File;
@@ -21,7 +20,6 @@ class Main {
      */
     public static void main(String[] args) throws IOException {
         IOStream ioStream = new IOStream();
-        DictionaryInitialization dictionaryInitialization = new DictionaryInitialization(ioStream);
         Language language = new Language();
         File file = new File();
         Row row = new Row(language);
