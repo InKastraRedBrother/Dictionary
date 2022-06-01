@@ -46,10 +46,17 @@ public class ViewDictionary {
 //            }
             s = inputInviter(MESSAGE_CHOSE_OPERATION);
             if (s.equals(OPERATION_ADD)) {
+                String key = inputInviter(INPUT_KEY_MESSAGE);
+                String value = inputInviter(INPUT_VALUE_MESSAGE);
+                System.out.println(service.addRow(key, value));
             } else if (s.equals(OPERATION_SHOW_ALL)) {
-                service.showAllRows();
+                System.out.println(service.showAllRows());
             } else if (s.equals(OPERATION_SEARCH)) {
+                String key = inputInviter(INPUT_KEY_MESSAGE);
+                System.out.println(service.searchRow(key));
             } else if (s.equals(OPERATION_DELETE)) {
+                String key = inputInviter(INPUT_KEY_MESSAGE);
+                System.out.println(service.deleteRow(key));
             } else {
                 System.out.println(MESSAGE_INVALID_INPUT);
             }
