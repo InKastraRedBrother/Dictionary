@@ -30,9 +30,9 @@ public class DictionaryController {
         return "Language has been set - " + row.language.getLanguage();
     }
 
-    public String setPairWord(String s) throws IOException {
-        row.setKey(s);
-        row.setValue(s);
-        return dictionary.add(s);
-    }
+//    public String setPairWord(String s) throws IOException {
+//        row.setKey(s);
+//        row.setValue(s);
+//        return dictionary.add(s);
+//    }
 }
