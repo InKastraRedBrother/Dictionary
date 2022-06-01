@@ -1,12 +1,7 @@
 package dictionary;
 
-import dictionary.controller.DictionaryController;
-import dictionary.controller.DictionaryInitialization;
-import dictionary.controller.IOStream;
-import dictionary.model.Dictionary;
-import dictionary.model.File;
-import dictionary.model.Language;
-import dictionary.model.Row;
+import dictionary.dao.Dao;
+import dictionary.service.Service;
 import dictionary.view.ViewDictionary;
 
 import java.io.IOException;
@@ -15,19 +10,15 @@ import java.io.IOException;
  * Point of entry
  */
 class Main {
-     /**
+    /**
      * run console application
+     *
      * @param args null
      */
     public static void main(String[] args) throws IOException {
-        IOStream ioStream = new IOStream();
-        DictionaryInitialization dictionaryInitialization = new DictionaryInitialization(ioStream);
-        Language language = new Language();
-        File file = new File();
-        Row row = new Row(language);
-        Dictionary dictionary = new Dictionary(file, language, ioStream);
-        DictionaryController dictionaryController = new DictionaryController(dictionary, file, row);
-        ViewDictionary viewDictionary = new ViewDictionary(dictionaryController);
+        Dao dao = new Dao();
+        Service service = new Service(dao);
+        ViewDictionary viewDictionary = new ViewDictionary(service);
         viewDictionary.runApp();
     }
 }
