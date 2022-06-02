@@ -1,31 +1,22 @@
 package dictionary.view;
 
-import dictionary.controller.DictionaryController;
 import dictionary.service.Service;
 
 import java.io.Console;
-import java.io.IOException;
 import java.util.Scanner;
 
-
+/**
+ * Provides console work
+ */
 public class ViewDictionary {
-    DictionaryController dictionaryController;
 
     private static final String INPUT_KEY_MESSAGE = "Input key";
     private static final String INPUT_VALUE_MESSAGE = "Input value";
-
-    private static final String SYMBOLIC_DICTIONARY_INPUT = "1";
-    private static final String NUMERIC_DICTIONARY_INPUT = "2";
-    private static final String MESSAGE_CHOSE_DICTIONARY = "Chose Dictionary:" + SYMBOLIC_DICTIONARY_INPUT + " - Symbolic; " + NUMERIC_DICTIONARY_INPUT + " - Numeric ";
-
     private static final String OPERATION_ADD = "1";
     private static final String OPERATION_SHOW_ALL = "2";
     private static final String OPERATION_SEARCH = "3";
     private static final String OPERATION_DELETE = "4";
     private static final String MESSAGE_CHOSE_OPERATION = "Chose operation: " + OPERATION_ADD + " - add;  " + OPERATION_SHOW_ALL + " - showAll; " + OPERATION_SEARCH + " - search; " + OPERATION_DELETE + " - delete; ";
-
-    private static final String VALID_OPTION_DICTIONARY_PATTERN = "^[1-2]{1}";
-
     private static final String MESSAGE_INVALID_INPUT = "Invalid input. Try again";
     private static final String MESSAGE_ROW_NOT_EXIST = "Didn't find row";
     private static final String MESSAGE_ROW_DELETED = "Row with key WAS deleted";
@@ -34,20 +25,22 @@ public class ViewDictionary {
 
     Service service;
 
+    /**
+     * Constructor
+     *
+     * @param service DI
+     */
     public ViewDictionary(Service service) {
         this.service = service;
     }
 
-    public void runApp() throws IOException {
+    /**
+     * Entry point of the program
+     * Input and output info in console
+     */
+    public void runApp() {
         while (true) {
             String s;
-//            s = inputInviter(MESSAGE_CHOSE_DICTIONARY);
-//            if (s.matches(VALID_OPTION_DICTIONARY_PATTERN)) {
-//                System.out.println(dictionaryController.setDictionaryLanguage(s));
-//            } else {
-//                System.out.println(MESSAGE_INVALID_INPUT);
-//                continue;
-//            }
             s = inputInviter(MESSAGE_CHOSE_OPERATION);
             if (s.equals(OPERATION_ADD)) {
                 String key = inputInviter(INPUT_KEY_MESSAGE);
@@ -81,6 +74,12 @@ public class ViewDictionary {
         }
     }
 
+    /**
+     * Chooses input type
+     *
+     * @param message show message in console
+     * @return inputed String
+     */
     public String inputInviter(String message) {
         System.out.println(message);
         Console console = System.console();

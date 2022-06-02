@@ -3,13 +3,21 @@ package dictionary.dao;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Contains business logic
+ */
 public class Dao {
     private static final String PATH_AND_FILENAME = System.getProperty("user.dir") + File.separator + "resources" + File.separator + "Sym.txt";
     private static final String TEMPORARY_FILENAME = System.getProperty("user.dir") + File.separator + "resources" + File.separator + "temp.txt";
     private static final String KEY_VALUE_SEPARATOR = ":";
-//    private static final String FILE_IS_EMPTY = "File is empty";
 
 
+    /**
+     * Create file if file not exists
+     *
+     * @param fileName String that contains Path to file and its name
+     * @return created file
+     */
     private File createFile(String fileName) {
         File file = new File(fileName);
         if (!file.exists()) {
@@ -22,10 +30,14 @@ public class Dao {
         return file;
     }
 
+    /**
+     * Get all rows from file
+     *
+     * @return String that have all rows
+     */
     public String showAll() {
         createFile(PATH_AND_FILENAME);
         StringBuilder sf = null;
-//        if (!isFileEmpty()){
         try (FileReader fileReader = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             String lineList;
@@ -37,29 +49,33 @@ public class Dao {
             System.out.println(e);
         }
         return String.valueOf(sf);
-//        } else {
-//            return FILE_IS_EMPTY;
-//        }
     }
 
+    /**
+     * @param key   key of the added row
+     * @param value value of the added row
+     * @return boolean. if row added - true, else - false
+     */
     public boolean add(String key, String value) {
         createFile(PATH_AND_FILENAME);
         boolean isAdded = false;
-        try (FileWriter fileWriter = new FileWriter(PATH_AND_FILENAME, StandardCharsets.UTF_8, true);
-             FileReader fileReader = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
-             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+        try (FileWriter fileWriter = new FileWriter(PATH_AND_FILENAME, StandardCharsets.UTF_8, true)) {
             fileWriter.write("\n" + key + KEY_VALUE_SEPARATOR + value);
             isAdded = true;
-//            System.out.println(KEY_VALUE_ADDED + key + KEY_VALUE_SEPARATOR + value);
         } catch (IOException e) {
             System.out.println(e);
         }
         return isAdded;
     }
 
+    /**
+     * compare input row with rows in file
+     *
+     * @param key by what parameter to search for a string
+     * @return String message that contains null or searched row.
+     */
     public String search(String key) {
         createFile(PATH_AND_FILENAME);
-//        if(!isFileEmpty()){
         String message = null;
         try (FileReader fileReader = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
@@ -72,14 +88,16 @@ public class Dao {
             }
         } catch (IOException e) {
             System.out.println(e);
-//                return FNF_MESSAGE;
         }
         return message;
-//        } else{
-//            return FILE_IS_EMPTY;
-//        }
     }
 
+    /**
+     * Delete row by key
+     *
+     * @param key by what parameter to search for a row that should be deleted
+     * @return boolean. true - if row was found. false - if not
+     */
     public boolean delete(String key) {
         createFile(PATH_AND_FILENAME);
         createFile(TEMPORARY_FILENAME);
@@ -110,10 +128,4 @@ public class Dao {
 
         return isExist;
     }
-
-//    public boolean isFileEmpty() {
-//        createFile(PATH_AND_FILENAME);
-//        File file = new File(PATH_AND_FILENAME);
-//        return file.length() == 0;
-//    }
 }
