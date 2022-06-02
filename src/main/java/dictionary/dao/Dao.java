@@ -5,20 +5,26 @@ import java.nio.charset.StandardCharsets;
 
 public class Dao {
     private static final String PATH_AND_FILENAME = System.getProperty("user.dir") + File.separator + "resources" + File.separator + "Sym.txt";
-    private static final String FNF_MESSAGE = "Cannot read File in path - ";
-    private static final String KEY_VALUE_SEPARATOR = ":";
-    private static final String KEY_VALUE_ADDED = "Строка добавлена - ";
-    private static final String NOT_FOUND_LINE = "Строка не найдена ";
-    private static final String FOUND_LINE = "Строка найдена - ";
-    private static final String FILE_IS_EMPTY = "File is empty";
     private static final String TEMPORARY_FILENAME = System.getProperty("user.dir") + File.separator + "resources" + File.separator + "temp.txt";
+    private static final String KEY_VALUE_SEPARATOR = ":";
+//    private static final String FILE_IS_EMPTY = "File is empty";
 
 
-
-
+    private File createFile(String fileName) {
+        File file = new File(fileName);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return file;
+    }
     public String showAll() {
+        createFile(PATH_AND_FILENAME);
         StringBuilder sf = null;
-        if (!isFileEmpty()){
+//        if (!isFileEmpty()){
             try (FileReader fr = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
                  BufferedReader br = new BufferedReader(fr)) {
                 String lineList;
@@ -27,72 +33,61 @@ public class Dao {
                     sf.append(lineList).append("\n");
                 }
             } catch (IOException e) {
-                System.out.println(FNF_MESSAGE + PATH_AND_FILENAME);
+                System.out.println(e);
             }
             return String.valueOf(sf);
-        } else {
-            return FILE_IS_EMPTY;
-        }
+//        } else {
+//            return FILE_IS_EMPTY;
+//        }
     }
 
-    public String add(String key, String value) {
-        String message ="";
-        String line;
+    public boolean add(String key, String value) {
+        createFile(PATH_AND_FILENAME);
+        boolean isAdded = false;
         try (FileWriter fw = new FileWriter(PATH_AND_FILENAME, StandardCharsets.UTF_8, true);
              FileReader fr = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
              BufferedReader br = new BufferedReader(fr)) {
-            while ((line = br.readLine()) != null) {
-                if (line.contains(key + KEY_VALUE_SEPARATOR)) {
-                    message = FOUND_LINE + line;
-                    break;
-                } else {
-                    message = NOT_FOUND_LINE ;
-                }
-            }
-            if(message.equals(NOT_FOUND_LINE)) {
-                fw.write(key + KEY_VALUE_SEPARATOR + value + "\n");
-                message = KEY_VALUE_ADDED + key + KEY_VALUE_SEPARATOR + value;
-            } else{
-                message = "Row already exists";
-            }
-
+            fw.write("\n" + key + KEY_VALUE_SEPARATOR + value);
+            isAdded = true;
+//            System.out.println(KEY_VALUE_ADDED + key + KEY_VALUE_SEPARATOR + value);
         } catch (IOException e) {
-            message = FNF_MESSAGE;
+            System.out.println(e);
         }
-        return message;
+        return isAdded;
     }
 
     public String search(String key) {
-        if(!isFileEmpty()){
+        createFile(PATH_AND_FILENAME);
+//        if(!isFileEmpty()){
             String message = null;
             try (FileReader fr = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
                  BufferedReader br = new BufferedReader(fr)) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     if (line.contains(key + KEY_VALUE_SEPARATOR)) {
-                        message = FOUND_LINE + line;
+                        message = line;
                         break;
-                    } else {
-                        message = NOT_FOUND_LINE ;
                     }
                 }
             } catch (IOException e) {
-                return FNF_MESSAGE;
+                System.out.println(e);
+//                return FNF_MESSAGE;
             }
             return message;
-        } else{
-            return FILE_IS_EMPTY;
-        }
+//        } else{
+//            return FILE_IS_EMPTY;
+//        }
     }
 
-    public String delete(String key) {
-        String message;
-
+    public boolean delete(String key) {
+        createFile(PATH_AND_FILENAME);
+        createFile(TEMPORARY_FILENAME);
+        boolean isExist = false;
         try(FileWriter fw = new FileWriter(TEMPORARY_FILENAME, StandardCharsets.UTF_8, true);
             FileReader fr = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
             BufferedReader br = new BufferedReader(fr)) {
             String line;
-            boolean isExist = false;
+
             while ((line = br.readLine()) != null) {
 
                 if (line.contains(key)) {
@@ -103,26 +98,21 @@ public class Dao {
                     fw.write(System.lineSeparator());
                 }
             }
-            if (isExist) {
-                message = "LINE_REMOVED" + line;
-            } else {
-                message = "PRINT_ERR_KEY_NOT_FOUND" + key;
-            }
-
             } catch (IOException e) {
-            message = "smth goes wrong";
-        }
+                System.out.println(e);
+            }
 
         File file = new File(PATH_AND_FILENAME);
         file.delete();
         File tempFile = new File(TEMPORARY_FILENAME);
         tempFile.renameTo(new File(PATH_AND_FILENAME));
 
-        return message;
-}
-
-    public boolean isFileEmpty() {
-        File file = new File(PATH_AND_FILENAME);
-        return file.length() == 0;
+        return isExist;
     }
+
+//    public boolean isFileEmpty() {
+//        createFile(PATH_AND_FILENAME);
+//        File file = new File(PATH_AND_FILENAME);
+//        return file.length() == 0;
+//    }
 }

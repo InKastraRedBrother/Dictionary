@@ -12,10 +12,10 @@ public class Service {
     public String showAllRows() {
         return dao.showAll();
     }
-    public String addRow(String key, String value) {
+    public boolean addRow(String key, String value) {
         return dao.add(key, value);
     }
-    public String deleteRow(String key){
+    public boolean deleteRow(String key){
         return dao.delete(key);
     }
     public String searchRow(String key){

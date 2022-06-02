@@ -27,6 +27,12 @@ public class ViewDictionary {
     private static final String VALID_OPTION_DICTIONARY_PATTERN = "^[1-2]{1}";
 
     private static final String MESSAGE_INVALID_INPUT = "Invalid input. Try again";
+    private static final String MESSAGE_ROW_NOT_EXIST = "Didn't find row";
+    private static final String MESSAGE_ROW_DELETED = "Row with key WAS deleted";
+    private static final String MESSAGE_ROW_NOT_DELETED = "Row with key WAS NOT deleted";
+
+
+
 
     Service service;
 
@@ -48,15 +54,29 @@ public class ViewDictionary {
             if (s.equals(OPERATION_ADD)) {
                 String key = inputInviter(INPUT_KEY_MESSAGE);
                 String value = inputInviter(INPUT_VALUE_MESSAGE);
-                System.out.println(service.addRow(key, value));
+                if(service.addRow(key, value)){
+                    System.out.println(key + ":" + value + "added");
+                } else{
+                    System.out.println(MESSAGE_INVALID_INPUT);
+                }
+                System.out.println();
             } else if (s.equals(OPERATION_SHOW_ALL)) {
                 System.out.println(service.showAllRows());
             } else if (s.equals(OPERATION_SEARCH)) {
                 String key = inputInviter(INPUT_KEY_MESSAGE);
-                System.out.println(service.searchRow(key));
+                if(service.searchRow(key) != null) {
+                    System.out.println(service.searchRow(key));
+                } else {
+                    System.out.println(MESSAGE_ROW_NOT_EXIST);
+                }
+
             } else if (s.equals(OPERATION_DELETE)) {
                 String key = inputInviter(INPUT_KEY_MESSAGE);
-                System.out.println(service.deleteRow(key));
+                if (service.deleteRow(key)){
+                    System.out.println(MESSAGE_ROW_DELETED);
+                }else{
+                    System.out.println(MESSAGE_ROW_NOT_DELETED);
+                }
             } else {
                 System.out.println(MESSAGE_INVALID_INPUT);
             }
