@@ -32,8 +32,6 @@ public class ViewDictionary {
     private static final String MESSAGE_ROW_NOT_DELETED = "Row with key WAS NOT deleted";
 
 
-
-
     Service service;
 
     public ViewDictionary(Service service) {
@@ -54,9 +52,9 @@ public class ViewDictionary {
             if (s.equals(OPERATION_ADD)) {
                 String key = inputInviter(INPUT_KEY_MESSAGE);
                 String value = inputInviter(INPUT_VALUE_MESSAGE);
-                if(service.addRow(key, value)){
+                if (service.addRow(key, value)) {
                     System.out.println(key + ":" + value + "added");
-                } else{
+                } else {
                     System.out.println(MESSAGE_INVALID_INPUT);
                 }
                 System.out.println();
@@ -64,7 +62,7 @@ public class ViewDictionary {
                 System.out.println(service.showAllRows());
             } else if (s.equals(OPERATION_SEARCH)) {
                 String key = inputInviter(INPUT_KEY_MESSAGE);
-                if(service.searchRow(key) != null) {
+                if (service.searchRow(key) != null) {
                     System.out.println(service.searchRow(key));
                 } else {
                     System.out.println(MESSAGE_ROW_NOT_EXIST);
@@ -72,9 +70,9 @@ public class ViewDictionary {
 
             } else if (s.equals(OPERATION_DELETE)) {
                 String key = inputInviter(INPUT_KEY_MESSAGE);
-                if (service.deleteRow(key)){
+                if (service.deleteRow(key)) {
                     System.out.println(MESSAGE_ROW_DELETED);
-                }else{
+                } else {
                     System.out.println(MESSAGE_ROW_NOT_DELETED);
                 }
             } else {

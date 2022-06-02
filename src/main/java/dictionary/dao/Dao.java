@@ -21,21 +21,22 @@ public class Dao {
         }
         return file;
     }
+
     public String showAll() {
         createFile(PATH_AND_FILENAME);
         StringBuilder sf = null;
 //        if (!isFileEmpty()){
-            try (FileReader fr = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
-                 BufferedReader br = new BufferedReader(fr)) {
-                String lineList;
-                sf = new StringBuilder();
-                while((lineList = br.readLine()) != null) {
-                    sf.append(lineList).append("\n");
-                }
-            } catch (IOException e) {
-                System.out.println(e);
+        try (FileReader fileReader = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
+             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+            String lineList;
+            sf = new StringBuilder();
+            while ((lineList = bufferedReader.readLine()) != null) {
+                sf.append(lineList).append("\n");
             }
-            return String.valueOf(sf);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+        return String.valueOf(sf);
 //        } else {
 //            return FILE_IS_EMPTY;
 //        }
@@ -44,10 +45,10 @@ public class Dao {
     public boolean add(String key, String value) {
         createFile(PATH_AND_FILENAME);
         boolean isAdded = false;
-        try (FileWriter fw = new FileWriter(PATH_AND_FILENAME, StandardCharsets.UTF_8, true);
-             FileReader fr = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
-             BufferedReader br = new BufferedReader(fr)) {
-            fw.write("\n" + key + KEY_VALUE_SEPARATOR + value);
+        try (FileWriter fileWriter = new FileWriter(PATH_AND_FILENAME, StandardCharsets.UTF_8, true);
+             FileReader fileReader = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
+             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+            fileWriter.write("\n" + key + KEY_VALUE_SEPARATOR + value);
             isAdded = true;
 //            System.out.println(KEY_VALUE_ADDED + key + KEY_VALUE_SEPARATOR + value);
         } catch (IOException e) {
@@ -59,21 +60,21 @@ public class Dao {
     public String search(String key) {
         createFile(PATH_AND_FILENAME);
 //        if(!isFileEmpty()){
-            String message = null;
-            try (FileReader fr = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
-                 BufferedReader br = new BufferedReader(fr)) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    if (line.contains(key + KEY_VALUE_SEPARATOR)) {
-                        message = line;
-                        break;
-                    }
+        String message = null;
+        try (FileReader fileReader = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
+             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.contains(key + KEY_VALUE_SEPARATOR)) {
+                    message = line;
+                    break;
                 }
-            } catch (IOException e) {
-                System.out.println(e);
-//                return FNF_MESSAGE;
             }
-            return message;
+        } catch (IOException e) {
+            System.out.println(e);
+//                return FNF_MESSAGE;
+        }
+        return message;
 //        } else{
 //            return FILE_IS_EMPTY;
 //        }
@@ -83,24 +84,24 @@ public class Dao {
         createFile(PATH_AND_FILENAME);
         createFile(TEMPORARY_FILENAME);
         boolean isExist = false;
-        try(FileWriter fw = new FileWriter(TEMPORARY_FILENAME, StandardCharsets.UTF_8, true);
-            FileReader fr = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
-            BufferedReader br = new BufferedReader(fr)) {
+        try (FileWriter fileWriter = new FileWriter(TEMPORARY_FILENAME, StandardCharsets.UTF_8, true);
+             FileReader fileReader = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
+             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             String line;
 
-            while ((line = br.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null) {
 
                 if (line.contains(key)) {
                     isExist = true;
                 }
                 if (!line.contains(key) && !line.isBlank()) {
-                    fw.write(line);
-                    fw.write(System.lineSeparator());
+                    fileWriter.write(line);
+                    fileWriter.write(System.lineSeparator());
                 }
             }
-            } catch (IOException e) {
-                System.out.println(e);
-            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
 
         File file = new File(PATH_AND_FILENAME);
         file.delete();
