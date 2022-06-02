@@ -98,7 +98,7 @@ public class Dao {
      * @param key by what parameter to search for a row that should be deleted
      * @return boolean. true - if row was found. false - if not
      */
-    public boolean delete(String key) {
+    public boolean delete(String key) throws Exception {
         createFile(PATH_AND_FILENAME);
         createFile(TEMPORARY_FILENAME);
         boolean isExist = false;
@@ -118,7 +118,8 @@ public class Dao {
                 }
             }
         } catch (IOException e) {
-            System.out.println(e);
+            Exception IOException = null;
+            throw IOException;
         }
 
         File file = new File(PATH_AND_FILENAME);

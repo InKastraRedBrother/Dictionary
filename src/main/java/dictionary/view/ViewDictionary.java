@@ -63,10 +63,14 @@ public class ViewDictionary {
 
             } else if (s.equals(OPERATION_DELETE)) {
                 String key = inputInviter(INPUT_KEY_MESSAGE);
-                if (service.deleteRow(key)) {
-                    System.out.println(MESSAGE_ROW_DELETED);
-                } else {
-                    System.out.println(MESSAGE_ROW_NOT_DELETED);
+                try {
+                    if (service.deleteRow(key)) {
+                        System.out.println(MESSAGE_ROW_DELETED);
+                    } else {
+                        System.out.println(MESSAGE_ROW_NOT_DELETED);
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             } else {
                 System.out.println(MESSAGE_INVALID_INPUT);
