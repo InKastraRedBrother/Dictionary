@@ -93,12 +93,12 @@ public class ViewDictionary {
     }
 
     /**
-     * Chooses input type
+     * Requesting user input via valid input type
      *
      * @param message show message in console
-     * @return inputted String
+     * @return inputted in console String
      */
-    public String inputInviter(String message) {
+    private String inputInviter(String message) {
         System.out.println(message);
         Console console = System.console();
         Scanner sc = new Scanner(System.in);
