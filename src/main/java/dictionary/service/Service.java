@@ -2,7 +2,6 @@ package dictionary.service;
 
 import dictionary.dao.Dao;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**

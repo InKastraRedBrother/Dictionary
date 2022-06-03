@@ -25,8 +25,6 @@ public class ViewDictionary {
     private static final String MESSAGE_ROW_NOT_DELETED = "Row with key WAS NOT deleted";
     private static final String MESSAGE_ERROR = "Something bad happened";
 
-
-
     Service service;
 
     /**

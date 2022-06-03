@@ -1,6 +1,8 @@
 package dictionary.dao;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
@@ -36,10 +38,10 @@ public class Dao {
         createFile(PATH_AND_FILENAME);
         StringBuilder sf = null;
         File file = createFile(PATH_AND_FILENAME);
-        try (Scanner sc = new Scanner(file)){
+        try (Scanner sc = new Scanner(file)) {
             String lineList;
             sf = new StringBuilder();
-            while(sc.hasNextLine()) {
+            while (sc.hasNextLine()) {
                 lineList = sc.nextLine();
                 sf.append(lineList).append("\n");
             }
@@ -68,12 +70,12 @@ public class Dao {
      * @param key by what parameter to search for a string
      * @return String message that contains null or searched row.
      */
-    public String search (String key) throws IOException {
+    public String search(String key) throws IOException {
         String message = null;
         File file = createFile(PATH_AND_FILENAME);
-        try (Scanner sc = new Scanner(file)){
+        try (Scanner sc = new Scanner(file)) {
             String line;
-            while(sc.hasNextLine()) {
+            while (sc.hasNextLine()) {
                 line = sc.nextLine();
                 if (line.contains(key + KEY_VALUE_SEPARATOR)) {
                     message = line;
@@ -95,10 +97,10 @@ public class Dao {
         File tempFile = createFile(TEMPORARY_FILENAME);
         boolean isExist = false;
         try (FileWriter fileWriter = new FileWriter(TEMPORARY_FILENAME, StandardCharsets.UTF_8, true);
-             Scanner sc = new Scanner(mainFile)){
+             Scanner sc = new Scanner(mainFile)) {
             String line;
 
-            while(sc.hasNextLine()) {
+            while (sc.hasNextLine()) {
                 line = sc.nextLine();
                 if (line.contains(key)) {
                     isExist = true;
