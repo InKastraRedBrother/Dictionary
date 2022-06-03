@@ -2,6 +2,9 @@ package dictionary.service;
 
 import dictionary.dao.Dao;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 /**
  * Establishes a set of available operations and coordinates the application's response in each operation.
  */
@@ -17,11 +20,11 @@ public class Service {
         this.dao = dao;
     }
 
-    public String showAllRows() {
+    public String showAllRows() throws IOException {
         return dao.showAll();
     }
 
-    public boolean addRow(String key, String value) {
+    public boolean addRow(String key, String value) throws IOException {
         return dao.add(key, value);
     }
 
@@ -29,7 +32,7 @@ public class Service {
         return dao.delete(key);
     }
 
-    public String searchRow(String key) {
+    public String searchRow(String key) throws IOException {
         return dao.search(key);
     }
 }

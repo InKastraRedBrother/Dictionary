@@ -19,14 +19,10 @@ public class Dao {
      * @param fileName String that contains Path to file and its name
      * @return created file
      */
-    private File createFile(String fileName) {
+    private File createFile(String fileName) throws IOException {
         File file = new File(fileName);
         if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            file.createNewFile();
         }
         return file;
     }
@@ -36,7 +32,7 @@ public class Dao {
      *
      * @return String that have all rows
      */
-    public String showAll() {
+    public String showAll() throws IOException {
         createFile(PATH_AND_FILENAME);
         StringBuilder sf = null;
         File file = createFile(PATH_AND_FILENAME);
@@ -47,8 +43,6 @@ public class Dao {
                 lineList = sc.nextLine();
                 sf.append(lineList).append("\n");
             }
-        } catch (IOException e) {
-            System.out.println(e);
         }
         return String.valueOf(sf);
     }
@@ -58,14 +52,12 @@ public class Dao {
      * @param value value of the added row
      * @return boolean. if row added - true, else - false
      */
-    public boolean add(String key, String value) {
+    public boolean add(String key, String value) throws IOException {
         createFile(PATH_AND_FILENAME);
         boolean isAdded = false;
         try (FileWriter fileWriter = new FileWriter(PATH_AND_FILENAME, StandardCharsets.UTF_8, true)) {
             fileWriter.write("\n" + key + KEY_VALUE_SEPARATOR + value);
             isAdded = true;
-        } catch (IOException e) {
-            System.out.println(e);
         }
         return isAdded;
     }
@@ -76,7 +68,7 @@ public class Dao {
      * @param key by what parameter to search for a string
      * @return String message that contains null or searched row.
      */
-    public String search (String key){
+    public String search (String key) throws IOException {
         String message = null;
         File file = createFile(PATH_AND_FILENAME);
         try (Scanner sc = new Scanner(file)){
@@ -88,8 +80,6 @@ public class Dao {
                     break;
                 }
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         }
         return message;
     }
@@ -100,7 +90,7 @@ public class Dao {
      * @param key by what parameter to search for a row that should be deleted
      * @return boolean. true - if row was found. false - if not
      */
-    public boolean delete(String key) throws Exception {
+    public boolean delete(String key) throws IOException {
         File mainFile = createFile(PATH_AND_FILENAME);
         File tempFile = createFile(TEMPORARY_FILENAME);
         boolean isExist = false;
@@ -117,9 +107,6 @@ public class Dao {
                     fileWriter.write(line + System.lineSeparator());
                 }
             }
-        } catch (IOException e) {
-            Exception IOException = null;
-            throw IOException;
         }
 
         File file = new File(PATH_AND_FILENAME);
