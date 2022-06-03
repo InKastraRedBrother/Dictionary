@@ -36,7 +36,7 @@ public class Dao {
      */
     public String showAll() throws IOException {
         createFile(PATH_AND_FILENAME);
-        StringBuilder sf = null;
+        StringBuilder sf;
         File file = createFile(PATH_AND_FILENAME);
         try (Scanner sc = new Scanner(file)) {
             String lineList;
@@ -56,7 +56,7 @@ public class Dao {
      */
     public boolean add(String key, String value) throws IOException {
         createFile(PATH_AND_FILENAME);
-        boolean isAdded = false;
+        boolean isAdded;
         try (FileWriter fileWriter = new FileWriter(PATH_AND_FILENAME, StandardCharsets.UTF_8, true)) {
             fileWriter.write("\n" + key + KEY_VALUE_SEPARATOR + value);
             isAdded = true;

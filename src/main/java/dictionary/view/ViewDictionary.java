@@ -3,7 +3,6 @@ package dictionary.view;
 import dictionary.service.Service;
 
 import java.io.Console;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -25,6 +24,8 @@ public class ViewDictionary {
     private static final String MESSAGE_ROW_NOT_DELETED = "Row with key WAS NOT deleted";
     private static final String MESSAGE_ERROR = "Something bad happened";
     private static final String MESSAGE_ADD = "Add ";
+    private static final String SEPARATOR = " ";
+
 
 
     Service service;
@@ -51,7 +52,7 @@ public class ViewDictionary {
                 String value = inputInviter(INPUT_VALUE_MESSAGE);
                 try {
                     if (service.addRow(key, value)) {
-                        System.out.println(MESSAGE_ADD + key + ":" + value );
+                        System.out.println(MESSAGE_ADD + key + SEPARATOR + value );
                     } else {
                         System.out.println(MESSAGE_INVALID_INPUT);
                     }
