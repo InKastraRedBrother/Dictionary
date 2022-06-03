@@ -2,6 +2,7 @@ package dictionary.dao;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 /**
  * Contains business logic
@@ -38,11 +39,12 @@ public class Dao {
     public String showAll() {
         createFile(PATH_AND_FILENAME);
         StringBuilder sf = null;
-        try (FileReader fileReader = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
-             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+        File file = createFile(PATH_AND_FILENAME);
+        try (Scanner sc = new Scanner(file)){
             String lineList;
             sf = new StringBuilder();
-            while ((lineList = bufferedReader.readLine()) != null) {
+            while(sc.hasNextLine()) {
+                lineList = sc.nextLine();
                 sf.append(lineList).append("\n");
             }
         } catch (IOException e) {
@@ -74,20 +76,20 @@ public class Dao {
      * @param key by what parameter to search for a string
      * @return String message that contains null or searched row.
      */
-    public String search(String key) {
-        createFile(PATH_AND_FILENAME);
+    public String search (String key){
         String message = null;
-        try (FileReader fileReader = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
-             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+        File file = createFile(PATH_AND_FILENAME);
+        try (Scanner sc = new Scanner(file)){
             String line;
-            while ((line = bufferedReader.readLine()) != null) {
+            while(sc.hasNextLine()) {
+                line = sc.nextLine();
                 if (line.contains(key + KEY_VALUE_SEPARATOR)) {
                     message = line;
                     break;
                 }
             }
-        } catch (IOException e) {
-            System.out.println(e);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         }
         return message;
     }
@@ -99,22 +101,20 @@ public class Dao {
      * @return boolean. true - if row was found. false - if not
      */
     public boolean delete(String key) throws Exception {
-        createFile(PATH_AND_FILENAME);
-        createFile(TEMPORARY_FILENAME);
+        File mainFile = createFile(PATH_AND_FILENAME);
+        File tempFile = createFile(TEMPORARY_FILENAME);
         boolean isExist = false;
         try (FileWriter fileWriter = new FileWriter(TEMPORARY_FILENAME, StandardCharsets.UTF_8, true);
-             FileReader fileReader = new FileReader(PATH_AND_FILENAME, StandardCharsets.UTF_8);
-             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+             Scanner sc = new Scanner(mainFile)){
             String line;
 
-            while ((line = bufferedReader.readLine()) != null) {
-
+            while(sc.hasNextLine()) {
+                line = sc.nextLine();
                 if (line.contains(key)) {
                     isExist = true;
                 }
                 if (!line.contains(key) && !line.isBlank()) {
-                    fileWriter.write(line);
-                    fileWriter.write(System.lineSeparator());
+                    fileWriter.write(line + System.lineSeparator());
                 }
             }
         } catch (IOException e) {
@@ -124,7 +124,6 @@ public class Dao {
 
         File file = new File(PATH_AND_FILENAME);
         file.delete();
-        File tempFile = new File(TEMPORARY_FILENAME);
         tempFile.renameTo(new File(PATH_AND_FILENAME));
 
         return isExist;
