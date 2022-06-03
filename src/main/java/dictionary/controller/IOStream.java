@@ -23,9 +23,9 @@ public class IOStream {
     /**
      * Creating folder if it doesn't exist
      */
-    public void createFolder(){
+    public void createFolder() {
         File folder = new File(pathToDictionary);
-        if(!folder.exists()) {
+        if (!folder.exists()) {
             try {
                 if (folder.mkdir()) {
                     System.out.println("Directory created");
@@ -40,6 +40,7 @@ public class IOStream {
 
     /**
      * Create file for chosen java.dictionary.model.Dictionary if it doesn't exist
+     *
      * @param fileName get name of the file which need to be created
      * @return created file
      */
@@ -57,11 +58,12 @@ public class IOStream {
 
     /**
      * Open FileReader and BufferedReader streams
+     *
      * @param fileName get name of the file which need to be read
      * @return BufferedReader output stream
      */
-    public BufferedReader getBufferedReader(String fileName){
-        try{
+    public BufferedReader getBufferedReader(String fileName) {
+        try {
             FileReader fr = new FileReader(pathToDictionary + File.separator + fileName + FILE_FORMAT, StandardCharsets.UTF_8);
             br = new BufferedReader(fr);
             return br;
@@ -73,10 +75,11 @@ public class IOStream {
 
     /**
      * Open FileWriter stream for writing to file
+     *
      * @param fileName gets the name of the file to be written to
      * @return FileWriter input stream
      */
-    public FileWriter getFileWriter(String fileName){
+    public FileWriter getFileWriter(String fileName) {
         try {
             fw = new FileWriter(pathToDictionary + File.separator + fileName + FILE_FORMAT, StandardCharsets.UTF_8, true);
         } catch (IOException e) {
@@ -88,7 +91,7 @@ public class IOStream {
     /**
      * Close BufferedReader stream
      */
-    public void closeBufferedReader(){
+    public void closeBufferedReader() {
         try {
             br.close();
         } catch (IOException e) {
@@ -99,7 +102,7 @@ public class IOStream {
     /**
      * Close FileWriter stream
      */
-    public void closeFileWriter(){
+    public void closeFileWriter() {
         try {
             fw.close();
         } catch (IOException e) {

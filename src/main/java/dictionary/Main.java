@@ -1,22 +1,25 @@
 package dictionary;
 
-import dictionary.controller.DictionaryInitialization;
-import dictionary.controller.IOStream;
-import dictionary.view.Start;
+import dictionary.dao.Dao;
+import dictionary.service.Service;
+import dictionary.view.ViewDictionary;
+
+import java.io.IOException;
 
 /**
  * Point of entry
  */
 class Main {
-     /**
+    /**
      * run console application
+     *
      * @param args null
      */
-    public static void main(String[] args) {
-        IOStream ioStream = new IOStream();
-        DictionaryInitialization dictionaryInitialization = new DictionaryInitialization(ioStream);
-        Start start = new Start(dictionaryInitialization);
-        start.runApp();
+    public static void main(String[] args) throws IOException {
+        Dao dao = new Dao();
+        Service service = new Service(dao);
+        ViewDictionary viewDictionary = new ViewDictionary(service);
+        viewDictionary.runApp();
     }
 }
 
