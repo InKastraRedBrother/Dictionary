@@ -24,6 +24,8 @@ public class ViewDictionary {
     private static final String MESSAGE_ROW_DELETED = "Row with key WAS deleted";
     private static final String MESSAGE_ROW_NOT_DELETED = "Row with key WAS NOT deleted";
     private static final String MESSAGE_ERROR = "Something bad happened";
+    private static final String MESSAGE_ADD = "Add ";
+
 
     Service service;
 
@@ -49,7 +51,7 @@ public class ViewDictionary {
                 String value = inputInviter(INPUT_VALUE_MESSAGE);
                 try {
                     if (service.addRow(key, value)) {
-                        System.out.println(key + ":" + value + " added");
+                        System.out.println(MESSAGE_ADD + key + ":" + value );
                     } else {
                         System.out.println(MESSAGE_INVALID_INPUT);
                     }
