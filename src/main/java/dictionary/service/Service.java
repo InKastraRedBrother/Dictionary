@@ -1,6 +1,7 @@
 package dictionary.service;
 
 import dictionary.dao.Dao;
+import dictionary.exception.SomeKindOfError;
 
 import java.io.IOException;
 
@@ -19,19 +20,19 @@ public class Service {
         this.dao = dao;
     }
 
-    public String showAllRows() throws IOException {
+    public String showAllRows() throws SomeKindOfError {
         return dao.showAll();
     }
 
-    public boolean addRow(String key, String value) throws IOException {
+    public boolean addRow(String key, String value) throws SomeKindOfError {
         return dao.add(key, value);
     }
 
-    public boolean deleteRow(String key) throws IOException {
+    public boolean deleteRow(String key) throws SomeKindOfError {
         return dao.delete(key);
     }
 
-    public String searchRow(String key) throws IOException {
+    public String searchRow(String key) throws SomeKindOfError {
         return dao.search(key);
     }
 }

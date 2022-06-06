@@ -1,5 +1,6 @@
 package dictionary.view;
 
+import dictionary.exception.SomeKindOfError;
 import dictionary.service.Service;
 
 import java.io.Console;
@@ -56,14 +57,14 @@ public class ViewDictionary {
                     } else {
                         System.out.println(MESSAGE_INVALID_INPUT);
                     }
-                } catch (IOException e) {
+                } catch (SomeKindOfError e) {
                     System.out.println(MESSAGE_ERROR + e.getMessage());
                 }
                 System.out.println();
             } else if (s.equals(OPERATION_SHOW_ALL)) {
                 try {
                     System.out.println(service.showAllRows());
-                } catch (IOException e) {
+                } catch (SomeKindOfError e) {
                     System.out.println(MESSAGE_ERROR + e.getMessage());
                 }
             } else if (s.equals(OPERATION_SEARCH)) {
@@ -74,7 +75,7 @@ public class ViewDictionary {
                     } else {
                         System.out.println(MESSAGE_ROW_NOT_EXIST);
                     }
-                } catch(IOException e) {
+                } catch(SomeKindOfError e) {
                     System.out.println(MESSAGE_ERROR + e.getMessage());
                 }
 
