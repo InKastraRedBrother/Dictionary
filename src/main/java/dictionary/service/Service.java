@@ -25,7 +25,7 @@ public class Service {
         return dao.add(key, value);
     }
 
-    public boolean deleteRow(String key) throws Exception {
+    public boolean deleteRow(String key) {
         return dao.delete(key);
     }
 

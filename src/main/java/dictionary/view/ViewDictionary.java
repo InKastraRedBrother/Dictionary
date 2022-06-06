@@ -1,5 +1,6 @@
 package dictionary.view;
 
+import dictionary.exception.DictionaryNotFoundException;
 import dictionary.service.Service;
 
 import java.io.Console;
@@ -21,7 +22,8 @@ public class ViewDictionary {
     private static final String MESSAGE_ROW_NOT_EXIST = "Didn't find row";
     private static final String MESSAGE_ROW_DELETED = "Row with key WAS deleted";
     private static final String MESSAGE_ROW_NOT_DELETED = "Row with key WAS NOT deleted";
-
+    private static final String MESSAGE_ERROR = "Something bad happened";
+    private static final String MESSAGE_ADD = "Add key - %s value - %s";
 
     Service service;
 
@@ -41,50 +43,50 @@ public class ViewDictionary {
     public void runApp() {
         while (true) {
             String s;
-            s = inputInviter(MESSAGE_CHOSE_OPERATION);
-            if (s.equals(OPERATION_ADD)) {
-                String key = inputInviter(INPUT_KEY_MESSAGE);
-                String value = inputInviter(INPUT_VALUE_MESSAGE);
-                if (service.addRow(key, value)) {
-                    System.out.println(key + ":" + value + "added");
-                } else {
-                    System.out.println(MESSAGE_INVALID_INPUT);
-                }
-                System.out.println();
-            } else if (s.equals(OPERATION_SHOW_ALL)) {
-                System.out.println(service.showAllRows());
-            } else if (s.equals(OPERATION_SEARCH)) {
-                String key = inputInviter(INPUT_KEY_MESSAGE);
-                if (service.searchRow(key) != null) {
-                    System.out.println(service.searchRow(key));
-                } else {
-                    System.out.println(MESSAGE_ROW_NOT_EXIST);
-                }
+            try {
+                s = inputInviter(MESSAGE_CHOSE_OPERATION);
+                if (s.equals(OPERATION_ADD)) {
+                    String key = inputInviter(INPUT_KEY_MESSAGE);
+                    String value = inputInviter(INPUT_VALUE_MESSAGE);
+                    if (service.addRow(key, value)) {
+                        System.out.printf(MESSAGE_ADD, key, value);
+                    } else {
+                        System.out.println(MESSAGE_INVALID_INPUT);
+                    }
+                    System.out.println();
+                } else if (s.equals(OPERATION_SHOW_ALL)) {
+                    System.out.println(service.showAllRows());
+                } else if (s.equals(OPERATION_SEARCH)) {
+                    String key = inputInviter(INPUT_KEY_MESSAGE);
+                    if (service.searchRow(key) != null) {
+                        System.out.println(service.searchRow(key));
+                    } else {
+                        System.out.println(MESSAGE_ROW_NOT_EXIST);
+                    }
 
-            } else if (s.equals(OPERATION_DELETE)) {
-                String key = inputInviter(INPUT_KEY_MESSAGE);
-                try {
+                } else if (s.equals(OPERATION_DELETE)) {
+                    String key = inputInviter(INPUT_KEY_MESSAGE);
                     if (service.deleteRow(key)) {
                         System.out.println(MESSAGE_ROW_DELETED);
                     } else {
                         System.out.println(MESSAGE_ROW_NOT_DELETED);
                     }
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                } else {
+                    System.out.println(MESSAGE_INVALID_INPUT);
                 }
-            } else {
-                System.out.println(MESSAGE_INVALID_INPUT);
+            } catch (DictionaryNotFoundException e) {
+                System.out.println(MESSAGE_ERROR + e.getMessage());
             }
         }
     }
 
     /**
-     * Chooses input type
+     * Requesting user input via valid input type
      *
      * @param message show message in console
-     * @return inputed String
+     * @return inputted in console String
      */
-    public String inputInviter(String message) {
+    private String inputInviter(String message) {
         System.out.println(message);
         Console console = System.console();
         Scanner sc = new Scanner(System.in);

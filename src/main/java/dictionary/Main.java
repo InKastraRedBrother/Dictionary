@@ -4,8 +4,6 @@ import dictionary.dao.Dao;
 import dictionary.service.Service;
 import dictionary.view.ViewDictionary;
 
-import java.io.IOException;
-
 /**
  * Point of entry
  */
@@ -15,7 +13,7 @@ class Main {
      *
      * @param args null
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Dao dao = new Dao();
         Service service = new Service(dao);
         ViewDictionary viewDictionary = new ViewDictionary(service);
