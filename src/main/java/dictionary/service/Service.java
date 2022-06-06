@@ -1,9 +1,6 @@
 package dictionary.service;
 
 import dictionary.dao.Dao;
-import dictionary.exception.SomeKindOfError;
-
-import java.io.IOException;
 
 /**
  * Establishes a set of available operations and coordinates the application's response in each operation.
@@ -20,19 +17,19 @@ public class Service {
         this.dao = dao;
     }
 
-    public String showAllRows() throws SomeKindOfError {
+    public String showAllRows() {
         return dao.showAll();
     }
 
-    public boolean addRow(String key, String value) throws SomeKindOfError {
+    public boolean addRow(String key, String value) {
         return dao.add(key, value);
     }
 
-    public boolean deleteRow(String key) throws SomeKindOfError {
+    public boolean deleteRow(String key) {
         return dao.delete(key);
     }
 
-    public String searchRow(String key) throws SomeKindOfError {
+    public String searchRow(String key) {
         return dao.search(key);
     }
 }

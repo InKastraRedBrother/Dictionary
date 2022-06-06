@@ -1,6 +1,6 @@
 package dictionary.view;
 
-import dictionary.exception.SomeKindOfError;
+import dictionary.exception.DictionaryNotFoundException;
 import dictionary.service.Service;
 
 import java.io.Console;
@@ -74,7 +74,7 @@ public class ViewDictionary {
                 } else {
                     System.out.println(MESSAGE_INVALID_INPUT);
                 }
-            } catch (SomeKindOfError e) {
+            } catch (DictionaryNotFoundException e) {
                 System.out.println(MESSAGE_ERROR + e.getMessage());
             }
         }
