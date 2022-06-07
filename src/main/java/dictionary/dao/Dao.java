@@ -6,16 +6,29 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 /**
  * Contains business logic
  */
 public class Dao {
-    private static final String PATH_AND_FILENAME = System.getProperty("user.dir") + File.separator + "resources" + File.separator + "Sym.txt";
-    private static final String TEMPORARY_FILENAME = System.getProperty("user.dir") + File.separator + "resources" + File.separator + "temp.txt";
+    private static final String NAME_OF_DIRECTORY = "resources";
+    private static final String PATH_AND_FILENAME = System.getProperty("user.dir") + File.separator + NAME_OF_DIRECTORY + File.separator + "Sym.txt";
+    private static final String TEMPORARY_FILENAME = System.getProperty("user.dir") + File.separator + NAME_OF_DIRECTORY + File.separator + "temp.txt";
+    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator + NAME_OF_DIRECTORY;
+
 
     Codec codec = new Codec();
+
+    public Dao(){
+        File directory = new File(PATH_TO_DIRECTORY);
+        if (!directory.exists()){
+            directory.mkdir();
+        }
+    }
 
     /**
      * Create file if file not exists
