@@ -192,9 +192,14 @@ public class Dao {
          * @param s line from file.
          */
         public void decodeKVFromString(String s) {
-            String[] encode = s.split(KEY_VALUE_SEPARATOR_FOR_STORAGE, 2);
-            setKey(encode[0]);
-            setValue(encode[1]);
+            try {
+                String[] encode = s.split(KEY_VALUE_SEPARATOR_FOR_STORAGE, 2);
+                setKey(encode[0]);
+                setValue(encode[1]);
+            }
+            catch(ArrayIndexOutOfBoundsException e){
+                throw new DictionaryNotFoundException();
+            }
         }
     }
 }
