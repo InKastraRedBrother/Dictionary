@@ -13,9 +13,9 @@ import java.util.Scanner;
  */
 public class Dao {
     private static final String NAME_OF_DIRECTORY = "resources";
-    private static final String PATH_AND_FILENAME = System.getProperty("user.dir") + File.separator + NAME_OF_DIRECTORY + File.separator + "Sym.txt";
-    private static final String TEMPORARY_FILENAME = System.getProperty("user.dir") + File.separator + NAME_OF_DIRECTORY + File.separator + "temp.txt";
-    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator + NAME_OF_DIRECTORY;
+    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator + "out" + File.separator + NAME_OF_DIRECTORY +  File.separator;
+    private static final String PATH_AND_FILENAME = PATH_TO_DIRECTORY + "Sym.txt";
+    private static final String TEMPORARY_FILENAME = PATH_TO_DIRECTORY + "temp.txt";
 
     public Dao() {
         File directory = new File(PATH_TO_DIRECTORY);
@@ -166,7 +166,9 @@ public class Dao {
         private String key;
         private String value;
 
-        public Codec(){}
+        public Codec() {
+        }
+
         public Codec(String key, String value) {
             this.key = key;
             this.value = value;
@@ -177,7 +179,7 @@ public class Dao {
         }
 
         /**
-         * Encodes into a String
+         * Encodes key and value into a String to storage format
          *
          * @return String consisting of a key and value with a given separator
          */
