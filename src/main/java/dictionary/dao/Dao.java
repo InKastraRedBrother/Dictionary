@@ -12,10 +12,17 @@ import java.util.Scanner;
  * Contains business logic
  */
 public class Dao {
-    private static final String PATH_AND_FILENAME = System.getProperty("user.dir") + File.separator + "resources" + File.separator + "Sym.txt";
-    private static final String TEMPORARY_FILENAME = System.getProperty("user.dir") + File.separator + "resources" + File.separator + "temp.txt";
-    private static final String KEY_VALUE_SEPARATOR = ":";
+    private static final String NAME_OF_DIRECTORY = "resources";
+    private static final String PATH_AND_FILENAME = System.getProperty("user.dir") + File.separator + NAME_OF_DIRECTORY + File.separator + "Sym.txt";
+    private static final String TEMPORARY_FILENAME = System.getProperty("user.dir") + File.separator + NAME_OF_DIRECTORY + File.separator + "temp.txt";
+    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator + NAME_OF_DIRECTORY;
 
+    public Dao() {
+        File directory = new File(PATH_TO_DIRECTORY);
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+    }
 
     /**
      * Create file if file not exists
@@ -64,10 +71,15 @@ public class Dao {
      * @return boolean. if row added - true, else - false
      */
     public boolean add(String key, String value) {
-        createFile(PATH_AND_FILENAME);
+        Codec codec = new Codec(key, value);
+        File file = createFile(PATH_AND_FILENAME);
         boolean isAdded;
-        try (FileWriter fileWriter = new FileWriter(PATH_AND_FILENAME, StandardCharsets.UTF_8, true)) {
-            fileWriter.write("\n" + key + KEY_VALUE_SEPARATOR + value);
+        try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8, true)) {
+            if (file.length() == 0) {
+                fileWriter.write(codec.encodeKVToString());
+            } else {
+                fileWriter.write(System.lineSeparator() + codec.encodeKVToString());
+            }
             isAdded = true;
         } catch (IOException e) {
             throw new DictionaryNotFoundException();
@@ -82,13 +94,15 @@ public class Dao {
      * @return String message that contains null or searched row.
      */
     public String search(String key) {
+        Codec codec = new Codec();
         String message = null;
         File file = createFile(PATH_AND_FILENAME);
         try (Scanner sc = new Scanner(file)) {
             String line;
             while (sc.hasNextLine()) {
                 line = sc.nextLine();
-                if (line.contains(key + KEY_VALUE_SEPARATOR)) {
+                codec.decodeKVFromString(line);
+                if (codec.getKey().equals(key)) {
                     message = line;
                     break;
                 }
@@ -102,34 +116,88 @@ public class Dao {
     /**
      * Delete row by key
      *
-     * @param key by what parameter to search for a row that should be deleted
-     * @return boolean. true - if row was found. false - if not
+     * @param inputtedKey by what parameter to search for a row that should be deleted
+     * @return boolean. true - if row was found and deleted. false - if not
      */
-    public boolean delete(String key) {
-        File mainFile = createFile(PATH_AND_FILENAME);
-        File tempFile = createFile(TEMPORARY_FILENAME);
+    public boolean delete(String inputtedKey) {
+        Codec codec = new Codec();
         boolean isExist = false;
-        try (FileWriter fileWriter = new FileWriter(TEMPORARY_FILENAME, StandardCharsets.UTF_8, true);
-             Scanner sc = new Scanner(mainFile)) {
-            String line;
+        if (search(inputtedKey) != null) {
+            boolean isFirstRow = true;
+            File mainFile = createFile(PATH_AND_FILENAME);
+            File tempFile = createFile(TEMPORARY_FILENAME);
+            try (FileWriter fileWriter = new FileWriter(tempFile, StandardCharsets.UTF_8, true);
+                 Scanner sc = new Scanner(mainFile)) {
+                String line;
 
-            while (sc.hasNextLine()) {
-                line = sc.nextLine();
-                if (line.contains(key)) {
-                    isExist = true;
+                while (sc.hasNextLine()) {
+                    line = sc.nextLine();
+                    codec.decodeKVFromString(line);
+                    if (codec.getKey().equals(inputtedKey)) {
+                        isExist = true;
+                    } else {
+                        if (isFirstRow) {
+                            fileWriter.write(codec.encodeKVToString());
+                            isFirstRow = false;
+                        } else {
+                            fileWriter.write(System.lineSeparator() + codec.encodeKVToString());
+                        }
+                    }
                 }
-                if (!line.contains(key) && !line.isBlank()) {
-                    fileWriter.write(line + System.lineSeparator());
-                }
+            } catch (IOException e) {
+                throw new DictionaryNotFoundException();
             }
-        } catch (IOException e) {
-            throw new DictionaryNotFoundException();
+
+            mainFile.delete();
+            tempFile.renameTo(mainFile);
         }
 
-        File file = new File(PATH_AND_FILENAME);
-        file.delete();
-        tempFile.renameTo(new File(PATH_AND_FILENAME));
-
         return isExist;
+    }
+
+    /**
+     * Encapsulates the view in which the line in the file is stored
+     */
+    private static class Codec {
+        /**
+         * Separate key and value in file row
+         */
+        private static final String KEY_VALUE_SEPARATOR_FOR_STORAGE = ":";
+        private String key;
+        private String value;
+
+        public Codec(){}
+        public Codec(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        /**
+         * Encodes into a String
+         *
+         * @return String consisting of a key and value with a given separator
+         */
+        public String encodeKVToString() {
+            return this.key + KEY_VALUE_SEPARATOR_FOR_STORAGE + this.value;
+        }
+
+        /**
+         * Decode String from file to separate variables
+         *
+         * @param s line from file.
+         */
+        public void decodeKVFromString(String s) {
+            try {
+                String[] encode = s.split(KEY_VALUE_SEPARATOR_FOR_STORAGE, 2);
+                this.key = encode[0];
+                this.value = encode[1];
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new DictionaryNotFoundException();
+            }
+        }
     }
 }
