@@ -6,9 +6,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 /**
@@ -20,12 +17,9 @@ public class Dao {
     private static final String TEMPORARY_FILENAME = System.getProperty("user.dir") + File.separator + NAME_OF_DIRECTORY + File.separator + "temp.txt";
     private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator + NAME_OF_DIRECTORY;
 
-
-    Codec codec = new Codec();
-
-    public Dao(){
+    public Dao() {
         File directory = new File(PATH_TO_DIRECTORY);
-        if (!directory.exists()){
+        if (!directory.exists()) {
             directory.mkdir();
         }
     }
@@ -77,13 +71,14 @@ public class Dao {
      * @return boolean. if row added - true, else - false
      */
     public boolean add(String key, String value) {
+        Codec codec = new Codec(key, value);
         File file = createFile(PATH_AND_FILENAME);
         boolean isAdded;
         try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8, true)) {
             if (file.length() == 0) {
-                fileWriter.write(codec.encodeKVToString(key, value));
+                fileWriter.write(codec.encodeKVToString());
             } else {
-                fileWriter.write(System.lineSeparator() + codec.encodeKVToString(key, value));
+                fileWriter.write(System.lineSeparator() + codec.encodeKVToString());
             }
             isAdded = true;
         } catch (IOException e) {
@@ -99,6 +94,7 @@ public class Dao {
      * @return String message that contains null or searched row.
      */
     public String search(String key) {
+        Codec codec = new Codec();
         String message = null;
         File file = createFile(PATH_AND_FILENAME);
         try (Scanner sc = new Scanner(file)) {
@@ -124,6 +120,7 @@ public class Dao {
      * @return boolean. true - if row was found and deleted. false - if not
      */
     public boolean delete(String inputtedKey) {
+        Codec codec = new Codec();
         boolean isExist = false;
         if (search(inputtedKey) != null) {
             boolean isFirstRow = true;
@@ -136,17 +133,14 @@ public class Dao {
                 while (sc.hasNextLine()) {
                     line = sc.nextLine();
                     codec.decodeKVFromString(line);
-                    String rowKey = codec.getKey();
-                    String rowValue = codec.getValue();
-                    if (rowKey.equals(inputtedKey)) {
+                    if (codec.getKey().equals(inputtedKey)) {
                         isExist = true;
-                    }
-                    if (!rowKey.equals(inputtedKey)) {
+                    } else {
                         if (isFirstRow) {
-                            fileWriter.write(codec.encodeKVToString(rowKey, rowValue));
+                            fileWriter.write(codec.encodeKVToString());
                             isFirstRow = false;
                         } else {
-                            fileWriter.write(System.lineSeparator() + codec.encodeKVToString(rowKey, rowValue));
+                            fileWriter.write(System.lineSeparator() + codec.encodeKVToString());
                         }
                     }
                 }
@@ -172,31 +166,23 @@ public class Dao {
         private String key;
         private String value;
 
+        public Codec(){}
+        public Codec(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
         public String getKey() {
             return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
         }
 
         /**
          * Encodes into a String
          *
-         * @param key   key of the row
-         * @param value value of the row
          * @return String consisting of a key and value with a given separator
          */
-        public String encodeKVToString(String key, String value) {
-            return key + KEY_VALUE_SEPARATOR_FOR_STORAGE + value;
+        public String encodeKVToString() {
+            return this.key + KEY_VALUE_SEPARATOR_FOR_STORAGE + this.value;
         }
 
         /**
@@ -207,10 +193,9 @@ public class Dao {
         public void decodeKVFromString(String s) {
             try {
                 String[] encode = s.split(KEY_VALUE_SEPARATOR_FOR_STORAGE, 2);
-                setKey(encode[0]);
-                setValue(encode[1]);
-            }
-            catch(ArrayIndexOutOfBoundsException e){
+                this.key = encode[0];
+                this.value = encode[1];
+            } catch (ArrayIndexOutOfBoundsException e) {
                 throw new DictionaryNotFoundException();
             }
         }
