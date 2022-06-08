@@ -2,6 +2,8 @@ package dictionary.service;
 
 import dictionary.dao.Dao;
 
+import java.util.Optional;
+
 /**
  * Establishes a set of available operations and coordinates the application's response in each operation.
  */
@@ -29,7 +31,7 @@ public class Service {
         return dao.delete(key);
     }
 
-    public String searchRow(String key) {
+    public Optional<String> searchRow(String key) {
         return dao.search(key);
     }
 }

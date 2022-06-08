@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -93,24 +94,23 @@ public class Dao {
      * @param key by what parameter to search for a string
      * @return String message that contains null or searched row.
      */
-    public String search(String key) {
+    public Optional<String> search(String key) {
         Codec codec = new Codec();
-        String message = null;
+        String line = null;
         File file = createFile(PATH_AND_FILENAME);
         try (Scanner sc = new Scanner(file)) {
-            String line;
+
             while (sc.hasNextLine()) {
                 line = sc.nextLine();
                 codec.decodeKVFromString(line);
                 if (codec.getKey().equals(key)) {
-                    message = line;
-                    break;
+                    return Optional.of(line);
                 }
             }
         } catch (IOException e) {
             throw new DictionaryNotFoundException();
         }
-        return message;
+        return Optional.empty();
     }
 
     /**
@@ -122,7 +122,7 @@ public class Dao {
     public boolean delete(String inputtedKey) {
         Codec codec = new Codec();
         boolean isExist = false;
-        if (search(inputtedKey) != null) {
+        if (search(inputtedKey).isPresent()) {
             boolean isFirstRow = true;
             File mainFile = createFile(PATH_AND_FILENAME);
             File tempFile = createFile(TEMPORARY_FILENAME);
