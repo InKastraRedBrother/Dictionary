@@ -4,6 +4,7 @@ import dictionary.exception.DictionaryNotFoundException;
 import dictionary.service.Service;
 
 import java.io.Console;
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -19,7 +20,8 @@ public class ViewDictionary {
     private static final String OPERATION_DELETE = "4";
     private static final String MESSAGE_CHOSE_OPERATION = "Chose operation: " + OPERATION_ADD + " - add;  " + OPERATION_SHOW_ALL + " - showAll; " + OPERATION_SEARCH + " - search; " + OPERATION_DELETE + " - delete; ";
     private static final String MESSAGE_INVALID_INPUT = "Invalid input. Try again";
-    private static final String MESSAGE_ROW_NOT_EXIST = "Didn't find row";
+    private static final String MESSAGE_ROW_EXIST = "Row with key - %s was founded - %s";
+    private static final String MESSAGE_ROW_NOT_EXIST = "Didn't find row with key - %s";
     private static final String MESSAGE_ROW_DELETED = "Row with key WAS deleted";
     private static final String MESSAGE_ROW_NOT_DELETED = "Row with key WAS NOT deleted";
     private static final String MESSAGE_ERROR = "Something bad happened";
@@ -58,10 +60,11 @@ public class ViewDictionary {
                     System.out.println(service.showAllRows());
                 } else if (s.equals(OPERATION_SEARCH)) {
                     String key = inputInviter(INPUT_KEY_MESSAGE);
-                    if (service.searchRow(key) != null) {
-                        System.out.println(service.searchRow(key));
+                    Optional<String> output = service.searchRow(key);
+                    if (output.isPresent()) {
+                        System.out.printf(MESSAGE_ROW_EXIST, key, output.get() + System.lineSeparator());
                     } else {
-                        System.out.println(MESSAGE_ROW_NOT_EXIST);
+                        System.out.printf(MESSAGE_ROW_NOT_EXIST, key + System.lineSeparator());
                     }
 
                 } else if (s.equals(OPERATION_DELETE)) {
