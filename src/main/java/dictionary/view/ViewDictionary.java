@@ -8,17 +8,17 @@ import java.util.Optional;
 import java.util.Scanner;
 
 /**
- * Provides console work
+ * Provides input output work.
  */
 public class ViewDictionary {
 
     private static final String INPUT_KEY_MESSAGE = "Input key";
     private static final String INPUT_VALUE_MESSAGE = "Input value";
-    private static final String OPERATION_ADD = "1";
-    private static final String OPERATION_SHOW_ALL = "2";
-    private static final String OPERATION_SEARCH = "3";
-    private static final String OPERATION_DELETE = "4";
-    private static final String MESSAGE_CHOSE_OPERATION = "Chose operation: " + OPERATION_ADD + " - add;  " + OPERATION_SHOW_ALL + " - showAll; " + OPERATION_SEARCH + " - search; " + OPERATION_DELETE + " - delete; ";
+    private static final String OPERATION_SAVE = "1";
+    private static final String OPERATION_FIND_ALL = "2";
+    private static final String OPERATION_FIND_BY_KEY = "3";
+    private static final String OPERATION_DELETE_BY_KEY = "4";
+    private static final String MESSAGE_CHOSE_OPERATION = "Chose operation: " + OPERATION_SAVE + " - save;  " + OPERATION_FIND_ALL + " - findAll; " + OPERATION_FIND_BY_KEY + " - find by key; " + OPERATION_DELETE_BY_KEY + " - delete by key; ";
     private static final String MESSAGE_INVALID_INPUT = "Invalid input. Try again";
     private static final String MESSAGE_ROW_EXIST = "Row with key - %s was founded - %s %n";
     private static final String MESSAGE_ROW_NOT_EXIST = "Didn't find row with key - %s %n";
@@ -30,24 +30,24 @@ public class ViewDictionary {
     Service service;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param service DI
+     * @param service DI.
      */
     public ViewDictionary(Service service) {
         this.service = service;
     }
 
     /**
-     * Entry point of the program
-     * Input and output info in console
+     * Entry point of the program.
+     * Input and output info in console.
      */
     public void runApp() {
         while (true) {
             String s;
             try {
                 s = inputInviter(MESSAGE_CHOSE_OPERATION);
-                if (s.equals(OPERATION_ADD)) {
+                if (s.equals(OPERATION_SAVE)) {
                     String key = inputInviter(INPUT_KEY_MESSAGE);
                     String value = inputInviter(INPUT_VALUE_MESSAGE);
                     if (service.addRow(key, value)) {
@@ -56,20 +56,20 @@ public class ViewDictionary {
                         System.out.println(MESSAGE_INVALID_INPUT);
                     }
                     System.out.println();
-                } else if (s.equals(OPERATION_SHOW_ALL)) {
-                    System.out.println(service.showAllRows());
-                } else if (s.equals(OPERATION_SEARCH)) {
+                } else if (s.equals(OPERATION_FIND_ALL)) {
+                    System.out.println(service.findAllRows());
+                } else if (s.equals(OPERATION_FIND_BY_KEY)) {
                     String key = inputInviter(INPUT_KEY_MESSAGE);
-                    Optional<String> output = service.searchRow(key);
+                    Optional<String> output = service.findRowByKey(key);
                     if (output.isPresent()) {
                         System.out.printf(MESSAGE_ROW_EXIST, key, output.get());
                     } else {
                         System.out.printf(MESSAGE_ROW_NOT_EXIST, key);
                     }
 
-                } else if (s.equals(OPERATION_DELETE)) {
+                } else if (s.equals(OPERATION_DELETE_BY_KEY)) {
                     String key = inputInviter(INPUT_KEY_MESSAGE);
-                    if (service.deleteRow(key)) {
+                    if (service.deleteRowByKey(key)) {
                         System.out.printf(MESSAGE_ROW_DELETED, key);
                     } else {
                         System.out.printf(MESSAGE_ROW_NOT_DELETED, key);
@@ -84,10 +84,10 @@ public class ViewDictionary {
     }
 
     /**
-     * Requesting user input via valid input type
+     * Requesting user input via valid input type.
      *
-     * @param message show message in console
-     * @return inputted in console String
+     * @param message show message in console.
+     * @return inputted in console String.
      */
     private String inputInviter(String message) {
         System.out.println(message);

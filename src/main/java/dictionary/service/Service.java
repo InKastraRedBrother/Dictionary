@@ -11,27 +11,27 @@ public class Service {
     Dao dao;
 
     /**
-     * Constructor for DI
+     * Constructor for DI.
      *
-     * @param dao DI
+     * @param dao DI.
      */
     public Service(Dao dao) {
         this.dao = dao;
     }
 
-    public String showAllRows() {
-        return dao.showAll();
+    public String findAllRows() {
+        return dao.findAll();
     }
 
     public boolean addRow(String key, String value) {
-        return dao.add(key, value);
+        return dao.save(key, value);
     }
 
-    public boolean deleteRow(String key) {
-        return dao.delete(key);
+    public boolean deleteRowByKey(String key) {
+        return dao.deleteByKey(key);
     }
 
-    public Optional<String> searchRow(String key) {
-        return dao.search(key);
+    public Optional<String> findRowByKey(String key) {
+        return dao.findByKey(key);
     }
 }

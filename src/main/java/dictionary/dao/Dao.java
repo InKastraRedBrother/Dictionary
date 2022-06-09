@@ -10,14 +10,17 @@ import java.util.Optional;
 import java.util.Scanner;
 
 /**
- * Contains business logic
+ * Contains business logic.
  */
 public class Dao {
     private static final String NAME_OF_DIRECTORY = "resources";
-    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator + "out" + File.separator + NAME_OF_DIRECTORY +  File.separator;
+    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator + "out" + File.separator + NAME_OF_DIRECTORY + File.separator;
     private static final String PATH_AND_FILENAME = PATH_TO_DIRECTORY + "Sym.txt";
     private static final String TEMPORARY_FILENAME = PATH_TO_DIRECTORY + "temp.txt";
 
+    /**
+     * Empty constructor that create directory for storage files, if they not exist.
+     */
     public Dao() {
         File directory = new File(PATH_TO_DIRECTORY);
         if (!directory.exists()) {
@@ -26,10 +29,10 @@ public class Dao {
     }
 
     /**
-     * Create file if file not exists
+     * Create file if file not exists.
      *
-     * @param fileName String that contains Path to file and its name
-     * @return created file
+     * @param fileName String that contains Path to file and its name.
+     * @return created file.
      */
     private File createFile(String fileName) {
         try {
@@ -45,11 +48,11 @@ public class Dao {
     }
 
     /**
-     * Get all rows from file
+     * Get all rows from file.
      *
-     * @return String that have all rows
+     * @return String that have all rows.
      */
-    public String showAll() {
+    public String findAll() {
         createFile(PATH_AND_FILENAME);
         StringBuilder sf;
         File file = createFile(PATH_AND_FILENAME);
@@ -67,11 +70,13 @@ public class Dao {
     }
 
     /**
-     * @param key   key of the added row
-     * @param value value of the added row
-     * @return boolean. if row added - true, else - false
+     * Save given pair - key value in storage.
+     *
+     * @param key   key of the added row.
+     * @param value value of the added row.
+     * @return boolean. if row added - true, else - false.
      */
-    public boolean add(String key, String value) {
+    public boolean save(String key, String value) {
         Codec codec = new Codec(key, value);
         File file = createFile(PATH_AND_FILENAME);
         boolean isAdded;
@@ -89,14 +94,14 @@ public class Dao {
     }
 
     /**
-     * compare input row with rows in file
+     * compare input row with rows in file.
      *
-     * @param key by what parameter to search for a string
+     * @param key by what parameter to search for a string.
      * @return String message that contains null or searched row.
      */
-    public Optional<String> search(String key) {
+    public Optional<String> findByKey(String key) {
         Codec codec = new Codec();
-        String line = null;
+        String line;
         File file = createFile(PATH_AND_FILENAME);
         try (Scanner sc = new Scanner(file)) {
 
@@ -114,15 +119,15 @@ public class Dao {
     }
 
     /**
-     * Delete row by key
+     * Delete row by key.
      *
-     * @param inputtedKey by what parameter to search for a row that should be deleted
-     * @return boolean. true - if row was found and deleted. false - if not
+     * @param inputtedKey by what parameter to search for a row that should be deleted.
+     * @return boolean. true - if row was found and deleted. false - if not.
      */
-    public boolean delete(String inputtedKey) {
+    public boolean deleteByKey(String inputtedKey) {
         Codec codec = new Codec();
         boolean isExist = false;
-        if (search(inputtedKey).isPresent()) {
+        if (findByKey(inputtedKey).isPresent()) {
             boolean isFirstRow = true;
             File mainFile = createFile(PATH_AND_FILENAME);
             File tempFile = createFile(TEMPORARY_FILENAME);
@@ -156,11 +161,11 @@ public class Dao {
     }
 
     /**
-     * Encapsulates the view in which the line in the file is stored
+     * Encapsulates the view in which the line in the file is stored.
      */
     private static class Codec {
         /**
-         * Separate key and value in file row
+         * Separate key and value in file row.
          */
         private static final String KEY_VALUE_SEPARATOR_FOR_STORAGE = ":";
         private String key;
@@ -179,16 +184,16 @@ public class Dao {
         }
 
         /**
-         * Encodes key and value into a String to storage format
+         * Encodes key and value into a String to storage format.
          *
-         * @return String consisting of a key and value with a given separator
+         * @return String consisting of a key and value with a given separator.
          */
         public String encodeKVToString() {
             return this.key + KEY_VALUE_SEPARATOR_FOR_STORAGE + this.value;
         }
 
         /**
-         * Decode String from file to separate variables
+         * Decode String from file to separate variables.
          *
          * @param s line from file.
          */
