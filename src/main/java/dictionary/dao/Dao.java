@@ -1,6 +1,8 @@
 package dictionary.dao;
 
 import dictionary.exception.DictionaryNotFoundException;
+import dictionary.model.Row;
+import dictionary.model.Word;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -77,14 +79,17 @@ public class Dao {
      * @return boolean. if row added - true, else - false.
      */
     public boolean save(String key, String value) {
-        Codec codec = new Codec(key, value);
+        Word wordKey = new Word(key);
+        Word wordValue = new Word(value);
+        Codec codec = new Codec(wordKey, wordValue);
+        Row row = new Row(wordKey, wordValue);
         File file = createFile(PATH_AND_FILENAME);
         boolean isAdded;
         try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8, true)) {
             if (file.length() == 0) {
-                fileWriter.write(codec.encodeKVToString());
+                fileWriter.write(codec.encodeKVToRow());
             } else {
-                fileWriter.write(System.lineSeparator() + codec.encodeKVToString());
+                fileWriter.write(System.lineSeparator() + codec.encodeKVToRow());
             }
             isAdded = true;
         } catch (IOException e) {
@@ -99,17 +104,21 @@ public class Dao {
      * @param key by what parameter to search for a string.
      * @return String message that contains null or searched row.
      */
-    public Optional<String> findByKey(String key) {
+    public Optional<Row> findByKey(String key) {
         Codec codec = new Codec();
+        Row row = new Row();
         String line;
         File file = createFile(PATH_AND_FILENAME);
         try (Scanner sc = new Scanner(file)) {
 
             while (sc.hasNextLine()) {
                 line = sc.nextLine();
-                codec.decodeKVFromString(line);
-                if (codec.getKey().equals(key)) {
-                    return Optional.of(line);
+                codec.decodeKVFromRow(line);
+                row.setKey(codec.getKey());
+                row.setValue(codec.getValue());
+
+                if (row.getKey().getWord().equals(key)) {
+                    return Optional.of(row);
                 }
             }
         } catch (IOException e) {
@@ -126,8 +135,11 @@ public class Dao {
      */
     public boolean deleteByKey(String inputtedKey) {
         Codec codec = new Codec();
+        Row row = null;
+        Word word = null;
         boolean isExist = false;
-        if (findByKey(inputtedKey).isPresent()) {
+        row.word.setWord(inputtedKey);
+        if (findByKey(row.getKey().getWord()).isPresent()) {
             boolean isFirstRow = true;
             File mainFile = createFile(PATH_AND_FILENAME);
             File tempFile = createFile(TEMPORARY_FILENAME);
@@ -137,15 +149,15 @@ public class Dao {
 
                 while (sc.hasNextLine()) {
                     line = sc.nextLine();
-                    codec.decodeKVFromString(line);
+                    codec.decodeKVFromRow(line);
                     if (codec.getKey().equals(inputtedKey)) {
                         isExist = true;
                     } else {
                         if (isFirstRow) {
-                            fileWriter.write(codec.encodeKVToString());
+                            fileWriter.write(codec.encodeKVToRow());
                             isFirstRow = false;
                         } else {
-                            fileWriter.write(System.lineSeparator() + codec.encodeKVToString());
+                            fileWriter.write(System.lineSeparator() + codec.encodeKVToRow());
                         }
                     }
                 }
@@ -168,19 +180,31 @@ public class Dao {
          * Separate key and value in file row.
          */
         private static final String KEY_VALUE_SEPARATOR_FOR_STORAGE = ":";
-        private String key;
-        private String value;
+        private Word key;
+        private Word value;
 
         public Codec() {
         }
 
-        public Codec(String key, String value) {
+        public Codec(Word key, Word value) {
             this.key = key;
             this.value = value;
         }
 
-        public String getKey() {
+        public Word getKey() {
             return key;
+        }
+
+        public void setKey(Word key) {
+            this.key = key;
+        }
+
+        public Word getValue() {
+            return value;
+        }
+
+        public void setValue(Word value) {
+            this.value = value;
         }
 
         /**
@@ -188,8 +212,8 @@ public class Dao {
          *
          * @return String consisting of a key and value with a given separator.
          */
-        public String encodeKVToString() {
-            return this.key + KEY_VALUE_SEPARATOR_FOR_STORAGE + this.value;
+        public String encodeKVToRow() {
+            return this.key.getWord() + KEY_VALUE_SEPARATOR_FOR_STORAGE + this.value.getWord();
         }
 
         /**
@@ -197,14 +221,16 @@ public class Dao {
          *
          * @param s line from file.
          */
-        public void decodeKVFromString(String s) {
+        public void decodeKVFromRow(String s) {
             try {
                 String[] encode = s.split(KEY_VALUE_SEPARATOR_FOR_STORAGE, 2);
-                this.key = encode[0];
-                this.value = encode[1];
+                this.key = new Word(encode[0]);
+                this.value = new Word(encode[1]);
             } catch (ArrayIndexOutOfBoundsException e) {
                 throw new DictionaryNotFoundException();
             }
         }
+
+
     }
 }

@@ -1,6 +1,8 @@
 package dictionary.service;
 
 import dictionary.dao.Dao;
+import dictionary.model.Row;
+import dictionary.model.Word;
 
 import java.util.Optional;
 
@@ -31,7 +33,7 @@ public class Service {
         return dao.deleteByKey(key);
     }
 
-    public Optional<String> findRowByKey(String key) {
+    public Optional<Row> findRowByKey(String key) {
         return dao.findByKey(key);
     }
 }
