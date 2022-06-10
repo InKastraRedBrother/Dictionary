@@ -2,7 +2,6 @@ package dictionary.service;
 
 import dictionary.dao.Dao;
 import dictionary.model.Row;
-import dictionary.model.Word;
 
 import java.util.Optional;
 

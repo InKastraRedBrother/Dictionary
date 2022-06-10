@@ -105,14 +105,13 @@ public class Dao {
     public Optional<Row> findByKey(String key) {
         Row row = new Row();
         Codec codec = new Codec(row);
-        Word wordKey = new Word(key);
+
         File file = createFile(PATH_AND_FILENAME);
         try (Scanner sc = new Scanner(file)) {
-
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 row = codec.convertStorageEntryToKV(line);
-                if (wordKey.getWord().equals(key)) {
+                if (row.getKey().getWord().equals(key)) {
                     return Optional.of(row);
                 }
             }
@@ -139,10 +138,9 @@ public class Dao {
             File tempFile = createFile(TEMPORARY_FILENAME);
             try (FileWriter fileWriter = new FileWriter(tempFile, StandardCharsets.UTF_8, true);
                  Scanner sc = new Scanner(mainFile)) {
-                String line;
 
                 while (sc.hasNextLine()) {
-                    line = sc.nextLine();
+                    String line = sc.nextLine();
                     row = codec.convertStorageEntryToKV(line);
                     if (row.getKey().getWord().equals(inputtedKey)) {
                         isExist = true;
@@ -170,17 +168,15 @@ public class Dao {
      * Encapsulates the view in which the line in the file is stored.
      */
     private static class Codec {
-        Row row;
         /**
          * Separate key and value in file row.
          */
         private static final String KEY_VALUE_SEPARATOR_FOR_STORAGE = ":";
 
+        Row row;
+
         public Codec(Row row) {
             this.row = row;
-        }
-
-        public Codec() {
         }
 
         /**
@@ -209,7 +205,5 @@ public class Dao {
             }
             return row;
         }
-
-
     }
 }

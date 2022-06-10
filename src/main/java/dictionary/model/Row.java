@@ -1,7 +1,6 @@
 package dictionary.model;
 
 public class Row {
-    public Word word;
     Word key;
     Word value;
 

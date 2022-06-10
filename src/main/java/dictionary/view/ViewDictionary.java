@@ -64,7 +64,7 @@ public class ViewDictionary {
                     Optional<Row> output = service.findRowByKey(key);
 
                     if (output.isPresent()) {
-                        System.out.printf(MESSAGE_ROW_EXIST, key,  output.get());
+                        System.out.printf(MESSAGE_ROW_EXIST, key, output.get());
                     } else {
                         System.out.printf(MESSAGE_ROW_NOT_EXIST, key);
                     }
