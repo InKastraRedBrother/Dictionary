@@ -3,6 +3,7 @@ package dictionary.service;
 import dictionary.dao.Dao;
 import dictionary.model.Row;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,7 +21,7 @@ public class Service {
         this.dao = dao;
     }
 
-    public String findAllRows() {
+    public List<Row> findAllRows() {
         return dao.findAll();
     }
 
