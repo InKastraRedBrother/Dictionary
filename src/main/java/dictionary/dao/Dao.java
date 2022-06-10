@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -54,21 +56,20 @@ public class Dao {
      *
      * @return String that have all rows.
      */
-    public String findAll() {
+    public List<Row> findAll() {
         createFile(PATH_AND_FILENAME);
-        StringBuilder sf;
+        Row row = new Row();
+        Codec codec = new Codec(row);
+        List<Row> listRow = new ArrayList<>();
         File file = createFile(PATH_AND_FILENAME);
         try (Scanner sc = new Scanner(file)) {
-            String lineList;
-            sf = new StringBuilder();
             while (sc.hasNextLine()) {
-                lineList = sc.nextLine();
-                sf.append(lineList).append("\n");
+                listRow.add(codec.convertStorageEntryToKV(sc.nextLine()));
             }
         } catch (IOException e) {
             throw new DictionaryNotFoundException();
         }
-        return String.valueOf(sf);
+        return listRow;
     }
 
     /**
@@ -196,14 +197,12 @@ public class Dao {
         public Row convertStorageEntryToKV(String s) {
             try {
                 String[] encode = s.split(KEY_VALUE_SEPARATOR_FOR_STORAGE, 2);
-                row.setKey(new Word(encode[0]));
-                row.setValue(new Word(encode[1]));
-                row = new Row(row.getKey(), row.getValue());
+                row = new Row(new Word(encode[0]), new Word(encode[1]));
+                return row;
 
             } catch (ArrayIndexOutOfBoundsException e) {
                 throw new DictionaryNotFoundException();
             }
-            return row;
         }
     }
 }

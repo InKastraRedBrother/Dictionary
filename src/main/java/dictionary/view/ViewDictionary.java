@@ -58,7 +58,10 @@ public class ViewDictionary {
                     }
                     System.out.println();
                 } else if (s.equals(OPERATION_FIND_ALL)) {
-                    System.out.println(service.findAllRows());
+                    for (Row e: service.findAllRows())
+                    {
+                        System.out.println(e);
+                    }
                 } else if (s.equals(OPERATION_FIND_BY_KEY)) {
                     String key = inputInviter(INPUT_KEY_MESSAGE);
                     Optional<Row> output = service.findRowByKey(key);
