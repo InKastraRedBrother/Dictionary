@@ -1,6 +1,7 @@
 package dictionary.view;
 
 import dictionary.exception.DictionaryNotFoundException;
+import dictionary.model.Row;
 import dictionary.service.Service;
 
 import java.io.Console;
@@ -60,7 +61,8 @@ public class ViewDictionary {
                     System.out.println(service.findAllRows());
                 } else if (s.equals(OPERATION_FIND_BY_KEY)) {
                     String key = inputInviter(INPUT_KEY_MESSAGE);
-                    Optional<String> output = service.findRowByKey(key);
+                    Optional<Row> output = service.findRowByKey(key);
+
                     if (output.isPresent()) {
                         System.out.printf(MESSAGE_ROW_EXIST, key, output.get());
                     } else {

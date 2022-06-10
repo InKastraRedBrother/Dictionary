@@ -17,18 +17,18 @@ public class DictionaryController {
 
     }
 
-    public String setDictionaryLanguage(String s) throws IOException {
-        if(s.equals("1")) {
-            row.language.setLanguage("^[a-z]{4}");
-            file.setFileName("Symbolic.txt");
-
-        } else if (s.equals("2")) {
-            row.language.setLanguage("^[0-9]{5}");
-            file.setFileName("Numeric.txt");
-
-        }
-        return "Language has been set - " + row.language.getLanguage();
-    }
+//    public String setDictionaryLanguage(String s) throws IOException {
+//        if(s.equals("1")) {
+//            row.language.setLanguage("^[a-z]{4}");
+//            file.setFileName("Symbolic.txt");
+//
+//        } else if (s.equals("2")) {
+//            row.language.setLanguage("^[0-9]{5}");
+//            file.setFileName("Numeric.txt");
+//
+//        }
+//        return "Language has been set - " + row.language.getLanguage();
+//    }
 
 //    public String setPairWord(String s) throws IOException {
 //        row.setKey(s);
