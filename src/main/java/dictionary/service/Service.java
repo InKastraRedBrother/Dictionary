@@ -22,23 +22,22 @@ public class Service {
         this.dao = dao;
     }
 
-    public List<Row> findAllRows(ArrayList<String> prop) {
-
-        return  dao.findAll(prop);
+    public List<Row> findAllRows(String fileName) {
+        return dao.findAll(fileName);
     }
 
     public boolean addRow(String key, String value, ArrayList<String> prop) {
-        if (key.matches(prop.get(0))){
-            return dao.save(key, value, prop);
+        if (key.matches(prop.get(0))) {
+            return dao.save(key, value, prop.get(1));
         }
         return false;
     }
 
     public boolean deleteRowByKey(String key, ArrayList<String> prop) {
-        return dao.deleteByKey(key, prop);
+        return dao.deleteByKey(key, prop.get(1));
     }
 
     public Optional<Row> findRowByKey(String key, ArrayList<String> prop) {
-        return dao.findByKey(key, prop);
+        return dao.findByKey(prop.get(1), key);
     }
 }

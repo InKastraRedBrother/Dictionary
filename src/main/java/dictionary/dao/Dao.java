@@ -17,10 +17,8 @@ import java.util.Scanner;
  * Contains business logic.
  */
 public class Dao {
-    private static final String NAME_OF_DIRECTORY = "resources";
-    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator + "out" + File.separator + NAME_OF_DIRECTORY + File.separator;
-    private static final String PATH_AND_FILENAME = PATH_TO_DIRECTORY + "Sym.txt";
-    private static final String TEMPORARY_FILENAME = PATH_TO_DIRECTORY + "temp.txt";
+    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator + "out" + File.separator + "resources" + File.separator;
+    private static final String TEMPORARY_FILENAME = "temp.txt";
 
     /**
      * Empty constructor that create directory for storage files, if they not exist.
@@ -40,7 +38,7 @@ public class Dao {
      */
     private File createFile(String fileName) {
         try {
-            File file = new File(fileName);
+            File file = new File(PATH_TO_DIRECTORY + fileName);
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -48,7 +46,6 @@ public class Dao {
         } catch (IOException e) {
             throw new DictionaryNotFoundException();
         }
-
     }
 
     /**
@@ -56,12 +53,11 @@ public class Dao {
      *
      * @return String that have all rows.
      */
-    public List<Row> findAll(ArrayList<String> prop) {
-        createFile(PATH_AND_FILENAME);
+    public List<Row> findAll(String fileName) {
+        File file = createFile(fileName);
         Row row = new Row();
         Codec codec = new Codec(row);
         List<Row> listRow = new ArrayList<>();
-        File file = createFile(PATH_AND_FILENAME);
         try (Scanner sc = new Scanner(file)) {
             while (sc.hasNextLine()) {
                 listRow.add(codec.convertStorageEntryToKV(sc.nextLine()));
@@ -79,22 +75,20 @@ public class Dao {
      * @param value value of the added row.
      * @return boolean. if row added - true, else - false.
      */
-    public boolean save(String key, String value, ArrayList<String> prop) {
+    public boolean save(String key, String value, String fileName) {
+        File file = createFile(fileName);
         Row row = new Row(new Word(key), new Word(value));
         Codec codec = new Codec(row);
-        File file = createFile(PATH_AND_FILENAME);
-        boolean isAdded;
         try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8, true)) {
             if (file.length() == 0) {
                 fileWriter.write(codec.convertKVToStorageEntry());
             } else {
                 fileWriter.write(System.lineSeparator() + codec.convertKVToStorageEntry());
             }
-            isAdded = true;
         } catch (IOException e) {
             throw new DictionaryNotFoundException();
         }
-        return isAdded;
+        return true;
     }
 
     /**
@@ -103,11 +97,10 @@ public class Dao {
      * @param key by what parameter to search for a string.
      * @return String message that contains null or searched row.
      */
-    public Optional<Row> findByKey(String key, ArrayList<String> prop) {
+    public Optional<Row> findByKey(String fileName, String key) {
+        File file = createFile(fileName);
         Row row = new Row();
         Codec codec = new Codec(row);
-
-        File file = createFile(PATH_AND_FILENAME);
         try (Scanner sc = new Scanner(file)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
@@ -128,14 +121,14 @@ public class Dao {
      * @param inputtedKey by what parameter to search for a row that should be deleted.
      * @return boolean. true - if row was found and deleted. false - if not.
      */
-    public boolean deleteByKey(String inputtedKey, ArrayList<String> prop) {
+    public boolean deleteByKey(String inputtedKey, String fileName) {
         Row row = new Row();
         Codec codec = new Codec(row);
         boolean isExist = false;
         row.setKey(new Word(inputtedKey));
-        if (findByKey(row.getKey().getWord()).isPresent(), prop) {
+        if ((findByKey(fileName, row.getKey().getWord())).isPresent()) {
             boolean isFirstRow = true;
-            File mainFile = createFile(PATH_AND_FILENAME);
+            File mainFile = createFile(fileName);
             File tempFile = createFile(TEMPORARY_FILENAME);
             try (FileWriter fileWriter = new FileWriter(tempFile, StandardCharsets.UTF_8, true);
                  Scanner sc = new Scanner(mainFile)) {

@@ -1,6 +1,5 @@
 package dictionary.view;
 
-import dictionary.dao.Dao;
 import dictionary.exception.DictionaryNotFoundException;
 import dictionary.model.DictionaryInit;
 import dictionary.model.Row;
@@ -8,6 +7,7 @@ import dictionary.service.Service;
 
 import java.io.Console;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -28,7 +28,7 @@ public class ViewDictionary {
     private static final String MESSAGE_ROW_NOT_EXIST = "Didn't find row with key - %s %n";
     private static final String MESSAGE_ROW_DELETED = "Row with key - %s WAS deleted %n";
     private static final String MESSAGE_ROW_NOT_DELETED = "Row with key - %s WAS NOT deleted %n";
-    private static final String MESSAGE_ERROR = "Something bad happened";
+    private static final String MESSAGE_ERROR = "Something bad happened. ";
     private static final String MESSAGE_ADD = "Add key - %s value - %s %n";
     private static final String MESSAGE_CHOSE_DICTIONARY = "Choose dictionary. 1 - symbolic; 2 - numeric";
 
@@ -53,45 +53,45 @@ public class ViewDictionary {
         while (true) {
             String s;
             s = inputInviter(MESSAGE_CHOSE_DICTIONARY);
-            ArrayList<String> prop = dictionaryInit.getEntry(s);
-            if (prop != null) {
+            ArrayList<String> initedDictionary = dictionaryInit.getEntry(s);
+            if (initedDictionary != null) {
                 try {
                     s = inputInviter(MESSAGE_CHOSE_OPERATION);
                     if (s.equals(OPERATION_SAVE)) {
                         String key = inputInviter(INPUT_KEY_MESSAGE);
                         String value = inputInviter(INPUT_VALUE_MESSAGE);
-                        if (service.addRow(key, value, prop)) {
+                        if (service.addRow(key, value, initedDictionary)) {
                             System.out.printf(MESSAGE_ADD, key, value);
                         } else {
                             System.out.println(MESSAGE_INVALID_INPUT);
                         }
                         System.out.println();
                     } else if (s.equals(OPERATION_FIND_ALL)) {
-                        for (Row e : service.findAllRows(prop)) {
+                        for (Row e : service.findAllRows(initedDictionary.get(1))) {
                             System.out.println(e);
                         }
                     } else if (s.equals(OPERATION_FIND_BY_KEY)) {
                         String key = inputInviter(INPUT_KEY_MESSAGE);
-//                        Optional<Row> output = service.findRowByKey(key, prop);
+                        Optional<Row> output = service.findRowByKey(key, initedDictionary);
 
-//                        if (output.isPresent()) {
-//                            System.out.printf(MESSAGE_ROW_EXIST, key, output.get());
-//                        } else {
-//                            System.out.printf(MESSAGE_ROW_NOT_EXIST, key);
-//                        }
+                        if (output.isPresent()) {
+                            System.out.printf(MESSAGE_ROW_EXIST, key, output.get());
+                        } else {
+                            System.out.printf(MESSAGE_ROW_NOT_EXIST, key);
+                        }
 
                     } else if (s.equals(OPERATION_DELETE_BY_KEY)) {
                         String key = inputInviter(INPUT_KEY_MESSAGE);
-//                        if (service.deleteRowByKey(key, prop)) {
-//                            System.out.printf(MESSAGE_ROW_DELETED, key);
-//                        } else {
-//                            System.out.printf(MESSAGE_ROW_NOT_DELETED, key);
-//                        }
+                        if (service.deleteRowByKey(key, initedDictionary)) {
+                            System.out.printf(MESSAGE_ROW_DELETED, key);
+                        } else {
+                            System.out.printf(MESSAGE_ROW_NOT_DELETED, key);
+                        }
                     } else {
                         System.out.println(MESSAGE_INVALID_INPUT);
                     }
                 } catch (DictionaryNotFoundException e) {
-                    System.out.println(MESSAGE_ERROR + e.getMessage());
+                    System.out.println(MESSAGE_ERROR + Arrays.toString(e.getStackTrace()));
                 }
             }
         }
