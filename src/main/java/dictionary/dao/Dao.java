@@ -56,7 +56,7 @@ public class Dao {
      *
      * @return String that have all rows.
      */
-    public List<Row> findAll() {
+    public List<Row> findAll(ArrayList<String> prop) {
         createFile(PATH_AND_FILENAME);
         Row row = new Row();
         Codec codec = new Codec(row);
@@ -79,7 +79,7 @@ public class Dao {
      * @param value value of the added row.
      * @return boolean. if row added - true, else - false.
      */
-    public boolean save(String key, String value) {
+    public boolean save(String key, String value, ArrayList<String> prop) {
         Row row = new Row(new Word(key), new Word(value));
         Codec codec = new Codec(row);
         File file = createFile(PATH_AND_FILENAME);
@@ -103,7 +103,7 @@ public class Dao {
      * @param key by what parameter to search for a string.
      * @return String message that contains null or searched row.
      */
-    public Optional<Row> findByKey(String key) {
+    public Optional<Row> findByKey(String key, ArrayList<String> prop) {
         Row row = new Row();
         Codec codec = new Codec(row);
 
@@ -128,12 +128,12 @@ public class Dao {
      * @param inputtedKey by what parameter to search for a row that should be deleted.
      * @return boolean. true - if row was found and deleted. false - if not.
      */
-    public boolean deleteByKey(String inputtedKey) {
+    public boolean deleteByKey(String inputtedKey, ArrayList<String> prop) {
         Row row = new Row();
         Codec codec = new Codec(row);
         boolean isExist = false;
         row.setKey(new Word(inputtedKey));
-        if (findByKey(row.getKey().getWord()).isPresent()) {
+        if (findByKey(row.getKey().getWord()).isPresent(), prop) {
             boolean isFirstRow = true;
             File mainFile = createFile(PATH_AND_FILENAME);
             File tempFile = createFile(TEMPORARY_FILENAME);

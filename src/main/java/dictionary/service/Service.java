@@ -3,6 +3,7 @@ package dictionary.service;
 import dictionary.dao.Dao;
 import dictionary.model.Row;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,19 +22,23 @@ public class Service {
         this.dao = dao;
     }
 
-    public List<Row> findAllRows() {
-        return dao.findAll();
+    public List<Row> findAllRows(ArrayList<String> prop) {
+
+        return  dao.findAll(prop);
     }
 
-    public boolean addRow(String key, String value) {
-        return dao.save(key, value);
+    public boolean addRow(String key, String value, ArrayList<String> prop) {
+        if (key.matches(prop.get(0))){
+            return dao.save(key, value, prop);
+        }
+        return false;
     }
 
-    public boolean deleteRowByKey(String key) {
-        return dao.deleteByKey(key);
+    public boolean deleteRowByKey(String key, ArrayList<String> prop) {
+        return dao.deleteByKey(key, prop);
     }
 
-    public Optional<Row> findRowByKey(String key) {
-        return dao.findByKey(key);
+    public Optional<Row> findRowByKey(String key, ArrayList<String> prop) {
+        return dao.findByKey(key, prop);
     }
 }

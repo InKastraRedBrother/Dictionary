@@ -1,10 +1,13 @@
 package dictionary.view;
 
+import dictionary.dao.Dao;
 import dictionary.exception.DictionaryNotFoundException;
+import dictionary.model.DictionaryInit;
 import dictionary.model.Row;
 import dictionary.service.Service;
 
 import java.io.Console;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -27,6 +30,7 @@ public class ViewDictionary {
     private static final String MESSAGE_ROW_NOT_DELETED = "Row with key - %s WAS NOT deleted %n";
     private static final String MESSAGE_ERROR = "Something bad happened";
     private static final String MESSAGE_ADD = "Add key - %s value - %s %n";
+    private static final String MESSAGE_CHOSE_DICTIONARY = "Choose dictionary. 1 - symbolic; 2 - numeric";
 
     Service service;
 
@@ -39,6 +43,8 @@ public class ViewDictionary {
         this.service = service;
     }
 
+    DictionaryInit dictionaryInit = new DictionaryInit();
+
     /**
      * Entry point of the program.
      * Input and output info in console.
@@ -46,44 +52,47 @@ public class ViewDictionary {
     public void runApp() {
         while (true) {
             String s;
-            try {
-                s = inputInviter(MESSAGE_CHOSE_OPERATION);
-                if (s.equals(OPERATION_SAVE)) {
-                    String key = inputInviter(INPUT_KEY_MESSAGE);
-                    String value = inputInviter(INPUT_VALUE_MESSAGE);
-                    if (service.addRow(key, value)) {
-                        System.out.printf(MESSAGE_ADD, key, value);
+            s = inputInviter(MESSAGE_CHOSE_DICTIONARY);
+            ArrayList<String> prop = dictionaryInit.getEntry(s);
+            if (prop != null) {
+                try {
+                    s = inputInviter(MESSAGE_CHOSE_OPERATION);
+                    if (s.equals(OPERATION_SAVE)) {
+                        String key = inputInviter(INPUT_KEY_MESSAGE);
+                        String value = inputInviter(INPUT_VALUE_MESSAGE);
+                        if (service.addRow(key, value, prop)) {
+                            System.out.printf(MESSAGE_ADD, key, value);
+                        } else {
+                            System.out.println(MESSAGE_INVALID_INPUT);
+                        }
+                        System.out.println();
+                    } else if (s.equals(OPERATION_FIND_ALL)) {
+                        for (Row e : service.findAllRows(prop)) {
+                            System.out.println(e);
+                        }
+                    } else if (s.equals(OPERATION_FIND_BY_KEY)) {
+                        String key = inputInviter(INPUT_KEY_MESSAGE);
+//                        Optional<Row> output = service.findRowByKey(key, prop);
+
+//                        if (output.isPresent()) {
+//                            System.out.printf(MESSAGE_ROW_EXIST, key, output.get());
+//                        } else {
+//                            System.out.printf(MESSAGE_ROW_NOT_EXIST, key);
+//                        }
+
+                    } else if (s.equals(OPERATION_DELETE_BY_KEY)) {
+                        String key = inputInviter(INPUT_KEY_MESSAGE);
+//                        if (service.deleteRowByKey(key, prop)) {
+//                            System.out.printf(MESSAGE_ROW_DELETED, key);
+//                        } else {
+//                            System.out.printf(MESSAGE_ROW_NOT_DELETED, key);
+//                        }
                     } else {
                         System.out.println(MESSAGE_INVALID_INPUT);
                     }
-                    System.out.println();
-                } else if (s.equals(OPERATION_FIND_ALL)) {
-                    for (Row e: service.findAllRows())
-                    {
-                        System.out.println(e);
-                    }
-                } else if (s.equals(OPERATION_FIND_BY_KEY)) {
-                    String key = inputInviter(INPUT_KEY_MESSAGE);
-                    Optional<Row> output = service.findRowByKey(key);
-
-                    if (output.isPresent()) {
-                        System.out.printf(MESSAGE_ROW_EXIST, key, output.get());
-                    } else {
-                        System.out.printf(MESSAGE_ROW_NOT_EXIST, key);
-                    }
-
-                } else if (s.equals(OPERATION_DELETE_BY_KEY)) {
-                    String key = inputInviter(INPUT_KEY_MESSAGE);
-                    if (service.deleteRowByKey(key)) {
-                        System.out.printf(MESSAGE_ROW_DELETED, key);
-                    } else {
-                        System.out.printf(MESSAGE_ROW_NOT_DELETED, key);
-                    }
-                } else {
-                    System.out.println(MESSAGE_INVALID_INPUT);
+                } catch (DictionaryNotFoundException e) {
+                    System.out.println(MESSAGE_ERROR + e.getMessage());
                 }
-            } catch (DictionaryNotFoundException e) {
-                System.out.println(MESSAGE_ERROR + e.getMessage());
             }
         }
     }
