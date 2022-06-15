@@ -1,12 +1,12 @@
 package dictionary.view;
 
+import dictionary.config.DictionaryInitialization;
+import dictionary.config.DictionaryConfiguration;
 import dictionary.exception.DictionaryNotFoundException;
-import dictionary.model.DictionaryInit;
 import dictionary.model.Row;
 import dictionary.service.Service;
 
 import java.io.Console;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Scanner;
@@ -32,8 +32,6 @@ public class ViewDictionary {
     private static final String MESSAGE_ADD = "Add key - %s value - %s %n";
     private static final String MESSAGE_CHOSE_DICTIONARY = "Choose dictionary. 1 - symbolic; 2 - numeric";
 
-    private static final int FILENAME_SERIAL_NUMBER = 1;
-
     Service service;
 
     /**
@@ -41,11 +39,9 @@ public class ViewDictionary {
      *
      * @param service DI.
      */
-    public ViewDictionary(Service service) {
+    public ViewDictionary(Service service, DictionaryConfiguration dictionaryConfiguration) {
         this.service = service;
     }
-
-    DictionaryInit dictionaryInit = new DictionaryInit();
 
     /**
      * Entry point of the program.
@@ -53,28 +49,28 @@ public class ViewDictionary {
      */
     public void runApp() {
         while (true) {
-            String s;
+            DictionaryConfiguration dictionaryConfiguration = new DictionaryConfiguration();
             String dictionarySelection = inputInviter(MESSAGE_CHOSE_DICTIONARY);
-            ArrayList<String> initedDictionary = dictionaryInit.getEntry(dictionarySelection);
-            if (initedDictionary != null) {
+            DictionaryInitialization dictionaryInitialization = dictionaryConfiguration.getS(dictionarySelection);
+            if (dictionaryInitialization != null) {
                 try {
                     String operationSelection = inputInviter(MESSAGE_CHOSE_OPERATION);
                     if (operationSelection.equals(OPERATION_SAVE)) {
                         String key = inputInviter(INPUT_KEY_MESSAGE);
                         String value = inputInviter(INPUT_VALUE_MESSAGE);
-                        if (service.addRow(key, value, initedDictionary)) {
+                        if (service.addRow(key, value, dictionaryInitialization)) {
                             System.out.printf(MESSAGE_ADD, key, value);
                         } else {
                             System.out.println(MESSAGE_INVALID_INPUT);
                         }
                         System.out.println();
                     } else if (operationSelection.equals(OPERATION_FIND_ALL)) {
-                        for (Row e : service.findAllRows(initedDictionary.get(FILENAME_SERIAL_NUMBER))) {
+                        for (Row e : service.findAllRows(dictionaryInitialization)) {
                             System.out.println(e);
                         }
                     } else if (operationSelection.equals(OPERATION_FIND_BY_KEY)) {
                         String key = inputInviter(INPUT_KEY_MESSAGE);
-                        Optional<Row> output = service.findRowByKey(key, initedDictionary);
+                        Optional<Row> output = service.findRowByKey(key, dictionaryInitialization);
 
                         if (output.isPresent()) {
                             System.out.printf(MESSAGE_ROW_EXIST, key, output.get());
@@ -84,7 +80,7 @@ public class ViewDictionary {
 
                     } else if (operationSelection.equals(OPERATION_DELETE_BY_KEY)) {
                         String key = inputInviter(INPUT_KEY_MESSAGE);
-                        if (service.deleteRowByKey(key, initedDictionary)) {
+                        if (service.deleteRowByKey(key, dictionaryInitialization)) {
                             System.out.printf(MESSAGE_ROW_DELETED, key);
                         } else {
                             System.out.printf(MESSAGE_ROW_NOT_DELETED, key);

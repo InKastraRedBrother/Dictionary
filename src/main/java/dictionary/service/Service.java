@@ -1,9 +1,9 @@
 package dictionary.service;
 
+import dictionary.config.DictionaryInitialization;
 import dictionary.dao.Dao;
 import dictionary.model.Row;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,8 +11,7 @@ import java.util.Optional;
  * Establishes a set of available operations and coordinates the application's response in each operation.
  */
 public class Service {
-    private static final int MASK_SERIAL_NUMBER = 0;
-    private static final int FILENAME_SERIAL_NUMBER = 1;
+
     Dao dao;
 
     /**
@@ -24,22 +23,22 @@ public class Service {
         this.dao = dao;
     }
 
-    public List<Row> findAllRows(String fileName) {
-        return dao.findAll(fileName);
+    public List<Row> findAllRows(DictionaryInitialization dictionaryInitialization) {
+        return dao.findAll(dictionaryInitialization.getFileName());
     }
 
-    public boolean addRow(String key, String value, ArrayList<String> prop) {
-        if (key.matches(prop.get(MASK_SERIAL_NUMBER))) {
-            return dao.save(key, value, prop.get(FILENAME_SERIAL_NUMBER));
+    public boolean addRow(String key, String value, DictionaryInitialization dictionaryInitialization) {
+        if (key.matches(dictionaryInitialization.getMask())) {
+            return dao.save(key, value, dictionaryInitialization.getFileName());
         }
         return false;
     }
 
-    public boolean deleteRowByKey(String key, ArrayList<String> prop) {
-        return dao.deleteByKey(key, prop.get(FILENAME_SERIAL_NUMBER));
+    public boolean deleteRowByKey(String key, DictionaryInitialization dictionaryInitialization) {
+        return dao.deleteByKey(key, dictionaryInitialization.getFileName());
     }
 
-    public Optional<Row> findRowByKey(String key, ArrayList<String> prop) {
-        return dao.findByKey(key, prop.get(FILENAME_SERIAL_NUMBER));
+    public Optional<Row> findRowByKey(String key, DictionaryInitialization dictionaryInitialization) {
+        return dao.findByKey(key, dictionaryInitialization.getFileName());
     }
 }
