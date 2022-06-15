@@ -32,6 +32,8 @@ public class ViewDictionary {
     private static final String MESSAGE_ADD = "Add key - %s value - %s %n";
     private static final String MESSAGE_CHOSE_DICTIONARY = "Choose dictionary. 1 - symbolic; 2 - numeric";
 
+    private static final int FILENAME_SERIAL_NUMBER = 1;
+
     Service service;
 
     /**
@@ -52,12 +54,12 @@ public class ViewDictionary {
     public void runApp() {
         while (true) {
             String s;
-            s = inputInviter(MESSAGE_CHOSE_DICTIONARY);
-            ArrayList<String> initedDictionary = dictionaryInit.getEntry(s);
+            String dictionarySelection = inputInviter(MESSAGE_CHOSE_DICTIONARY);
+            ArrayList<String> initedDictionary = dictionaryInit.getEntry(dictionarySelection);
             if (initedDictionary != null) {
                 try {
-                    s = inputInviter(MESSAGE_CHOSE_OPERATION);
-                    if (s.equals(OPERATION_SAVE)) {
+                    String operationSelection = inputInviter(MESSAGE_CHOSE_OPERATION);
+                    if (operationSelection.equals(OPERATION_SAVE)) {
                         String key = inputInviter(INPUT_KEY_MESSAGE);
                         String value = inputInviter(INPUT_VALUE_MESSAGE);
                         if (service.addRow(key, value, initedDictionary)) {
@@ -66,11 +68,11 @@ public class ViewDictionary {
                             System.out.println(MESSAGE_INVALID_INPUT);
                         }
                         System.out.println();
-                    } else if (s.equals(OPERATION_FIND_ALL)) {
-                        for (Row e : service.findAllRows(initedDictionary.get(1))) {
+                    } else if (operationSelection.equals(OPERATION_FIND_ALL)) {
+                        for (Row e : service.findAllRows(initedDictionary.get(FILENAME_SERIAL_NUMBER))) {
                             System.out.println(e);
                         }
-                    } else if (s.equals(OPERATION_FIND_BY_KEY)) {
+                    } else if (operationSelection.equals(OPERATION_FIND_BY_KEY)) {
                         String key = inputInviter(INPUT_KEY_MESSAGE);
                         Optional<Row> output = service.findRowByKey(key, initedDictionary);
 
@@ -80,7 +82,7 @@ public class ViewDictionary {
                             System.out.printf(MESSAGE_ROW_NOT_EXIST, key);
                         }
 
-                    } else if (s.equals(OPERATION_DELETE_BY_KEY)) {
+                    } else if (operationSelection.equals(OPERATION_DELETE_BY_KEY)) {
                         String key = inputInviter(INPUT_KEY_MESSAGE);
                         if (service.deleteRowByKey(key, initedDictionary)) {
                             System.out.printf(MESSAGE_ROW_DELETED, key);

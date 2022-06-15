@@ -11,6 +11,8 @@ import java.util.Optional;
  * Establishes a set of available operations and coordinates the application's response in each operation.
  */
 public class Service {
+    private static final int MASK_SERIAL_NUMBER = 0;
+    private static final int FILENAME_SERIAL_NUMBER = 1;
     Dao dao;
 
     /**
@@ -27,17 +29,17 @@ public class Service {
     }
 
     public boolean addRow(String key, String value, ArrayList<String> prop) {
-        if (key.matches(prop.get(0))) {
-            return dao.save(key, value, prop.get(1));
+        if (key.matches(prop.get(MASK_SERIAL_NUMBER))) {
+            return dao.save(key, value, prop.get(FILENAME_SERIAL_NUMBER));
         }
         return false;
     }
 
     public boolean deleteRowByKey(String key, ArrayList<String> prop) {
-        return dao.deleteByKey(key, prop.get(1));
+        return dao.deleteByKey(key, prop.get(FILENAME_SERIAL_NUMBER));
     }
 
     public Optional<Row> findRowByKey(String key, ArrayList<String> prop) {
-        return dao.findByKey(prop.get(1), key);
+        return dao.findByKey(prop.get(FILENAME_SERIAL_NUMBER), key);
     }
 }

@@ -10,22 +10,12 @@ import java.util.Map;
  */
 public class DictionaryInit {
 
-    /**
-     * Input key mask for Symbolic java.dictionary.model.Dictionary
-     */
     private static final String PATTERN_SYM = "^[a-z]{4}+$";
-    /**
-     * Input key mask for Numeric java.dictionary.model.Dictionary
-     */
     private static final String PATTERN_NUM = "^[0-9]{5}+$";
-    /**
-     * Filename of Symbolic java.dictionary.model.Dictionary
-     */
     public static final String FILE_SYM = "sym.txt";
-    /**
-     * Filename of Numeric java.dictionary.model.Dictionary
-     */
     public static final String FILE_NUM = "num.txt";
+    public static final String FIRST_DICTIONARY = "1";
+    public static final String SECOND_DICTIONARY = "2";
 
     Map<String, ArrayList<String>> hashMap;
 
@@ -41,9 +31,9 @@ public class DictionaryInit {
      */
     private void createDictionaries() {
         hashMap = new HashMap<>();
-        hashMap.put("1", new ArrayList<>(
+        hashMap.put(FIRST_DICTIONARY, new ArrayList<>(
                 List.of(PATTERN_SYM, FILE_SYM)));
-        hashMap.put("2", new ArrayList<>(
+        hashMap.put(SECOND_DICTIONARY, new ArrayList<>(
                 List.of(PATTERN_NUM, FILE_NUM)));
     }
 

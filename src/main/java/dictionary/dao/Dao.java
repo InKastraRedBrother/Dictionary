@@ -162,10 +162,10 @@ public class Dao {
      * Encapsulates the view in which the line in the file is stored.
      */
     private static class Codec {
-        /**
-         * Separate key and value in file row.
-         */
         private static final String KEY_VALUE_SEPARATOR_FOR_STORAGE = ":";
+        private static final int NUMBER_FOR_SPLIT = 2;
+        private static final int KEY_SERIAL_NUMBER = 0;
+        private static final int VALUE_SERIAL_NUMBER = 1;
 
         Row row;
 
@@ -189,8 +189,8 @@ public class Dao {
          */
         public Row convertStorageEntryToKV(String s) {
             try {
-                String[] encode = s.split(KEY_VALUE_SEPARATOR_FOR_STORAGE, 2);
-                row = new Row(new Word(encode[0]), new Word(encode[1]));
+                String[] encode = s.split(KEY_VALUE_SEPARATOR_FOR_STORAGE, NUMBER_FOR_SPLIT);
+                row = new Row(new Word(encode[KEY_SERIAL_NUMBER]), new Word(encode[VALUE_SERIAL_NUMBER]));
                 return row;
 
             } catch (ArrayIndexOutOfBoundsException e) {
