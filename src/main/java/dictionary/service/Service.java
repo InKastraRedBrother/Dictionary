@@ -40,6 +40,6 @@ public class Service {
     }
 
     public Optional<Row> findRowByKey(String key, ArrayList<String> prop) {
-        return dao.findByKey(prop.get(FILENAME_SERIAL_NUMBER), key);
+        return dao.findByKey(key, prop.get(FILENAME_SERIAL_NUMBER));
     }
 }

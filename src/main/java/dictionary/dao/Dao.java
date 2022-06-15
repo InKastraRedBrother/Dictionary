@@ -20,10 +20,13 @@ public class Dao {
     private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator + "out" + File.separator + "resources" + File.separator;
     private static final String TEMPORARY_FILENAME = "temp.txt";
 
+    private final Codec codec;
+
     /**
      * Empty constructor that create directory for storage files, if they not exist.
      */
     public Dao() {
+        this.codec = new Codec();
         File directory = new File(PATH_TO_DIRECTORY);
         if (!directory.exists()) {
             directory.mkdir();
@@ -55,8 +58,6 @@ public class Dao {
      */
     public List<Row> findAll(String fileName) {
         File file = createFile(fileName);
-        Row row = new Row();
-        Codec codec = new Codec(row);
         List<Row> listRow = new ArrayList<>();
         try (Scanner sc = new Scanner(file)) {
             while (sc.hasNextLine()) {
@@ -77,13 +78,11 @@ public class Dao {
      */
     public boolean save(String key, String value, String fileName) {
         File file = createFile(fileName);
-        Row row = new Row(new Word(key), new Word(value));
-        Codec codec = new Codec(row);
         try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8, true)) {
             if (file.length() == 0) {
-                fileWriter.write(codec.convertKVToStorageEntry());
+                fileWriter.write(codec.convertKVToStorageEntry(new Row(new Word(key), new Word(value))));
             } else {
-                fileWriter.write(System.lineSeparator() + codec.convertKVToStorageEntry());
+                fileWriter.write(System.lineSeparator() + codec.convertKVToStorageEntry(new Row(new Word(key), new Word(value))));
             }
         } catch (IOException e) {
             throw new DictionaryNotFoundException();
@@ -97,14 +96,12 @@ public class Dao {
      * @param key by what parameter to search for a string.
      * @return String message that contains null or searched row.
      */
-    public Optional<Row> findByKey(String fileName, String key) {
+    public Optional<Row> findByKey(String key, String fileName) {
         File file = createFile(fileName);
-        Row row = new Row();
-        Codec codec = new Codec(row);
         try (Scanner sc = new Scanner(file)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
-                row = codec.convertStorageEntryToKV(line);
+                Row row = codec.convertStorageEntryToKV(line);
                 if (row.getKey().getWord().equals(key)) {
                     return Optional.of(row);
                 }
@@ -123,10 +120,9 @@ public class Dao {
      */
     public boolean deleteByKey(String inputtedKey, String fileName) {
         Row row = new Row();
-        Codec codec = new Codec(row);
         boolean isExist = false;
         row.setKey(new Word(inputtedKey));
-        if ((findByKey(fileName, row.getKey().getWord())).isPresent()) {
+        if ((findByKey((row.getKey().getWord()), fileName).isPresent())) {
             boolean isFirstRow = true;
             File mainFile = createFile(fileName);
             File tempFile = createFile(TEMPORARY_FILENAME);
@@ -140,10 +136,10 @@ public class Dao {
                         isExist = true;
                     } else {
                         if (isFirstRow) {
-                            fileWriter.write(codec.convertKVToStorageEntry());
+                            fileWriter.write(codec.convertKVToStorageEntry(row));
                             isFirstRow = false;
                         } else {
-                            fileWriter.write(System.lineSeparator() + codec.convertKVToStorageEntry());
+                            fileWriter.write(System.lineSeparator() + codec.convertKVToStorageEntry(row));
                         }
                     }
                 }
@@ -167,19 +163,13 @@ public class Dao {
         private static final int KEY_SERIAL_NUMBER = 0;
         private static final int VALUE_SERIAL_NUMBER = 1;
 
-        Row row;
-
-        public Codec(Row row) {
-            this.row = row;
-        }
-
         /**
          * Convert key and value into a String to storage format.
          *
          * @return String consisting of a key and value with a given separator.
          */
-        public String convertKVToStorageEntry() {
-            return this.row.getKey().getWord() + KEY_VALUE_SEPARATOR_FOR_STORAGE + this.row.getValue().getWord();
+        public String convertKVToStorageEntry(Row row) {
+            return row.getKey().getWord() + KEY_VALUE_SEPARATOR_FOR_STORAGE + row.getValue().getWord();
         }
 
         /**
@@ -190,8 +180,7 @@ public class Dao {
         public Row convertStorageEntryToKV(String s) {
             try {
                 String[] encode = s.split(KEY_VALUE_SEPARATOR_FOR_STORAGE, NUMBER_FOR_SPLIT);
-                row = new Row(new Word(encode[KEY_SERIAL_NUMBER]), new Word(encode[VALUE_SERIAL_NUMBER]));
-                return row;
+                return new Row(new Word(encode[KEY_SERIAL_NUMBER]), new Word(encode[VALUE_SERIAL_NUMBER]));
 
             } catch (ArrayIndexOutOfBoundsException e) {
                 throw new DictionaryNotFoundException();
