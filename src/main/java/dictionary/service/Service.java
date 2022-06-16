@@ -1,6 +1,6 @@
 package dictionary.service;
 
-import dictionary.config.DictionaryInitialization;
+import dictionary.config.DictionaryParameters;
 import dictionary.dao.Dao;
 import dictionary.model.Row;
 
@@ -23,22 +23,22 @@ public class Service {
         this.dao = dao;
     }
 
-    public List<Row> findAllRows(DictionaryInitialization dictionaryInitialization) {
-        return dao.findAll(dictionaryInitialization.getFileName());
+    public List<Row> findAllRows(DictionaryParameters dictionaryParameters) {
+        return dao.findAll(dictionaryParameters.getFileName());
     }
 
-    public boolean addRow(String key, String value, DictionaryInitialization dictionaryInitialization) {
-        if (key.matches(dictionaryInitialization.getMask())) {
-            return dao.save(key, value, dictionaryInitialization.getFileName());
+    public boolean addRow(String key, String value, DictionaryParameters dictionaryParameters) {
+        if (key.matches(dictionaryParameters.getMask())) {
+            return dao.save(key, value, dictionaryParameters.getFileName());
         }
         return false;
     }
 
-    public boolean deleteRowByKey(String key, DictionaryInitialization dictionaryInitialization) {
-        return dao.deleteByKey(key, dictionaryInitialization.getFileName());
+    public boolean deleteRowByKey(String key, DictionaryParameters dictionaryParameters) {
+        return dao.deleteByKey(key, dictionaryParameters.getFileName());
     }
 
-    public Optional<Row> findRowByKey(String key, DictionaryInitialization dictionaryInitialization) {
-        return dao.findByKey(key, dictionaryInitialization.getFileName());
+    public Optional<Row> findRowByKey(String key, DictionaryParameters dictionaryParameters) {
+        return dao.findByKey(key, dictionaryParameters.getFileName());
     }
 }

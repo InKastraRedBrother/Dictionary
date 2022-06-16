@@ -1,6 +1,10 @@
 package dictionary.model;
 
+/**
+ * Model of row in application
+ */
 public class Row {
+    private static final String KEY_VALUE_SEPARATOR = " ";
     Word key;
     Word value;
 
@@ -29,6 +33,6 @@ public class Row {
     }
     @Override
     public String toString(){
-        return this.key.getWord() + " " + this.value.getWord();
+        return this.key.getWord() + KEY_VALUE_SEPARATOR + this.value.getWord();
     }
 }

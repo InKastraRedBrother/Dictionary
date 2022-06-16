@@ -15,7 +15,7 @@ public class DictionaryConfiguration {
     public static final String FIRST_DICTIONARY = "1";
     public static final String SECOND_DICTIONARY = "2";
 
-    Map<String, DictionaryInitialization> hashMap;
+    Map<String, DictionaryParameters> hashMap;
 
     public DictionaryConfiguration() {
         createDictionaries();
@@ -26,15 +26,16 @@ public class DictionaryConfiguration {
      */
     private void createDictionaries() {
         hashMap = new HashMap<>();
-        hashMap.put(FIRST_DICTIONARY, new DictionaryInitialization(FILE_SYM, PATTERN_SYM));
-        hashMap.put(SECOND_DICTIONARY, new DictionaryInitialization(FILE_NUM, PATTERN_NUM));
+        hashMap.put(FIRST_DICTIONARY, new DictionaryParameters(FILE_SYM, PATTERN_SYM));
+        hashMap.put(SECOND_DICTIONARY, new DictionaryParameters(FILE_NUM, PATTERN_NUM));
     }
 
     /**
-     * @param s get String 1 or 2 by that pre-initialized dictionary will be chosen
-     * @return chosen Map
+     * Chose dictionary
+     * @param inputDictionarySelection get String by that pre-initialized dictionary will be chosen
+     * @return chosen dictionary
      */
-    public DictionaryInitialization getS(String s) {
-        return hashMap.get(s);
+    public DictionaryParameters getSelectedDictionary(String inputDictionarySelection) {
+        return hashMap.get(inputDictionarySelection);
     }
 }

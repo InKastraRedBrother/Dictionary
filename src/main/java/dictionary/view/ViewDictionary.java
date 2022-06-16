@@ -1,6 +1,6 @@
 package dictionary.view;
 
-import dictionary.config.DictionaryInitialization;
+import dictionary.config.DictionaryParameters;
 import dictionary.config.DictionaryConfiguration;
 import dictionary.exception.DictionaryNotFoundException;
 import dictionary.model.Row;
@@ -33,14 +33,17 @@ public class ViewDictionary {
     private static final String MESSAGE_CHOSE_DICTIONARY = "Choose dictionary. 1 - symbolic; 2 - numeric";
 
     Service service;
+    DictionaryConfiguration dictionaryConfiguration;
 
     /**
-     * Constructor.
+     * Constructor for DI.
      *
      * @param service DI.
+     * @param dictionaryConfiguration DI.
      */
     public ViewDictionary(Service service, DictionaryConfiguration dictionaryConfiguration) {
         this.service = service;
+        this.dictionaryConfiguration = dictionaryConfiguration;
     }
 
     /**
@@ -49,28 +52,27 @@ public class ViewDictionary {
      */
     public void runApp() {
         while (true) {
-            DictionaryConfiguration dictionaryConfiguration = new DictionaryConfiguration();
             String dictionarySelection = inputInviter(MESSAGE_CHOSE_DICTIONARY);
-            DictionaryInitialization dictionaryInitialization = dictionaryConfiguration.getS(dictionarySelection);
-            if (dictionaryInitialization != null) {
+            DictionaryParameters dictionaryParameters = dictionaryConfiguration.getSelectedDictionary(dictionarySelection);
+            if (dictionaryParameters != null) {
                 try {
                     String operationSelection = inputInviter(MESSAGE_CHOSE_OPERATION);
                     if (operationSelection.equals(OPERATION_SAVE)) {
                         String key = inputInviter(INPUT_KEY_MESSAGE);
                         String value = inputInviter(INPUT_VALUE_MESSAGE);
-                        if (service.addRow(key, value, dictionaryInitialization)) {
+                        if (service.addRow(key, value, dictionaryParameters)) {
                             System.out.printf(MESSAGE_ADD, key, value);
                         } else {
                             System.out.println(MESSAGE_INVALID_INPUT);
                         }
                         System.out.println();
                     } else if (operationSelection.equals(OPERATION_FIND_ALL)) {
-                        for (Row e : service.findAllRows(dictionaryInitialization)) {
+                        for (Row e : service.findAllRows(dictionaryParameters)) {
                             System.out.println(e);
                         }
                     } else if (operationSelection.equals(OPERATION_FIND_BY_KEY)) {
                         String key = inputInviter(INPUT_KEY_MESSAGE);
-                        Optional<Row> output = service.findRowByKey(key, dictionaryInitialization);
+                        Optional<Row> output = service.findRowByKey(key, dictionaryParameters);
 
                         if (output.isPresent()) {
                             System.out.printf(MESSAGE_ROW_EXIST, key, output.get());
@@ -80,7 +82,7 @@ public class ViewDictionary {
 
                     } else if (operationSelection.equals(OPERATION_DELETE_BY_KEY)) {
                         String key = inputInviter(INPUT_KEY_MESSAGE);
-                        if (service.deleteRowByKey(key, dictionaryInitialization)) {
+                        if (service.deleteRowByKey(key, dictionaryParameters)) {
                             System.out.printf(MESSAGE_ROW_DELETED, key);
                         } else {
                             System.out.printf(MESSAGE_ROW_NOT_DELETED, key);

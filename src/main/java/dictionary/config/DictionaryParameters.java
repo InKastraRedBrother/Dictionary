@@ -1,11 +1,14 @@
 package dictionary.config;
 
-public class DictionaryInitialization {
+/**
+ * Create object with initialized mask and storage's file name
+ */
+public class DictionaryParameters {
 
     String fileName;
     String mask;
 
-    public DictionaryInitialization(String fileName, String mask) {
+    public DictionaryParameters(String fileName, String mask) {
         this.fileName = fileName;
         this.mask = mask;
     }
