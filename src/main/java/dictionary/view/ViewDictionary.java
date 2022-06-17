@@ -1,7 +1,7 @@
 package dictionary.view;
 
-import dictionary.config.DictionaryParameters;
 import dictionary.config.DictionaryConfiguration;
+import dictionary.config.DictionaryParameters;
 import dictionary.exception.DictionaryNotFoundException;
 import dictionary.model.Row;
 import dictionary.service.Service;
@@ -38,7 +38,7 @@ public class ViewDictionary {
     /**
      * Constructor for DI.
      *
-     * @param service DI.
+     * @param service                 DI.
      * @param dictionaryConfiguration DI.
      */
     public ViewDictionary(Service service, DictionaryConfiguration dictionaryConfiguration) {
@@ -60,7 +60,7 @@ public class ViewDictionary {
                     if (operationSelection.equals(OPERATION_SAVE)) {
                         String key = inputInviter(INPUT_KEY_MESSAGE);
                         String value = inputInviter(INPUT_VALUE_MESSAGE);
-                        if (service.addRow(key, value, dictionaryParameters)) {
+                        if (service.addRow(new Row(key, value), dictionaryParameters)) {
                             System.out.printf(MESSAGE_ADD, key, value);
                         } else {
                             System.out.println(MESSAGE_INVALID_INPUT);

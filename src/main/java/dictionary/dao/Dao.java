@@ -2,7 +2,6 @@ package dictionary.dao;
 
 import dictionary.exception.DictionaryNotFoundException;
 import dictionary.model.Row;
-import dictionary.model.Word;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -14,7 +13,7 @@ import java.util.regex.PatternSyntaxException;
 /**
  * Contains business logic.
  */
-public class Dao {
+public class Dao implements DaoInterface {
     private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator + "out" + File.separator + "resources" + File.separator;
     private static final String TEMPORARY_FILENAME = "temp.txt";
 
@@ -22,12 +21,19 @@ public class Dao {
 
     /**
      * Empty constructor that create directory for storage files, if they not exist.
+     *
+     * @throws DictionaryNotFoundException If a security manager exists and its SecurityManager.checkRead(String) method denies read access to the file(SecurityException).
+     *                                     If the <code>pathname</code> argument is <code>null</code> (NullPointerException).
      */
     public Dao() {
         this.codec = new Codec();
-        File directory = new File(PATH_TO_DIRECTORY);
-        if (!directory.exists()) {
-            directory.mkdir();
+        try {
+            File directory = new File(PATH_TO_DIRECTORY);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+        } catch (SecurityException | NullPointerException e) {
+            throw new DictionaryNotFoundException();
         }
     }
 
@@ -36,10 +42,8 @@ public class Dao {
      *
      * @param fileName String that contains Path to file and its name.
      * @return created file.
-     * @throws IOException       If an I/O error occurred
-     * @throws SecurityException If a security manager exists and its {@link
-     *                           java.lang.SecurityManager#checkWrite(java.lang.String)}
-     *                           method denies write access to the file
+     * @throws DictionaryNotFoundException if path will be invalid (IOException).
+     *                                     If a security manager exists and its SecurityManager.checkRead(String) method denies read access to the file(SecurityException).
      */
     private File createFile(String fileName) {
         try {
@@ -57,8 +61,8 @@ public class Dao {
      * Get all rows from file.
      *
      * @return String that have all rows.
-     * @throws NoSuchElementException if no line was found
-     * @throws IllegalStateException  if this scanner is closed
+     * @throws DictionaryNotFoundException if no line was found (NoSuchElementException).
+     *                                     if scanner is closed (IllegalStateException).
      */
     public List<Row> findAll(String fileName) {
         File file = createFile(fileName);
@@ -76,21 +80,21 @@ public class Dao {
     /**
      * Save given pair - key value in storage.
      *
-     * @param key   key of the added row.
-     * @param value value of the added row.
+     * @param row class that contains String key, String value
      * @return boolean. if row added - true.
-     * @throws IOException if the file exists but is a directory rather than
-     *                     a regular file, does not exist but cannot be created,
-     *                     or cannot be opened for any other reason
+     * @throws DictionaryNotFoundException if the file exists but is a directory rather than
+     *                                     a regular file, does not exist but cannot be created,
+     *                                     or cannot be opened for any other reason (IOException).
+     *                                     If a security manager exists and its SecurityManager.checkRead(String) method denies read access to the file(SecurityException).
      */
-    public boolean save(String key, String value, String fileName) {
+    public boolean save(Row row, String fileName) {
         File file = createFile(fileName);
         try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8, true)) {
             if (file.length() != 0) {
                 fileWriter.write(System.lineSeparator());
             }
-            fileWriter.write(codec.convertKVToStorageEntry(new Row(new Word(key), new Word(value))));
-        } catch (IOException e) {
+            fileWriter.write(codec.convertKVToStorageEntry(row));
+        } catch (IOException | SecurityException e) {
             throw new DictionaryNotFoundException();
         }
         return true;
@@ -99,22 +103,23 @@ public class Dao {
     /**
      * compare input row with rows in file.
      *
-     * @param key by what parameter to search for a string.
+     * @param inputtedKeyForSearch by what parameter to search for a string.
      * @return String message that contains null or searched row.
-     * @throws NoSuchElementException if no line was found
-     * @throws IllegalStateException  if this scanner is closed
+     * @throws DictionaryNotFoundException if no line was found (NoSuchElementException).
+     *                                     if scanner is closed (IllegalStateException).
+     *                                     if the file is not found (IOException).
      */
-    public Optional<Row> findByKey(String key, String fileName) {
+    public Optional<Row> findByKey(String inputtedKeyForSearch, String fileName) {
         File file = createFile(fileName);
         try (Scanner sc = new Scanner(file)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 Row row = codec.convertStorageEntryToKV(line);
-                if (row.getKey().getWord().equals(key)) {
+                if (row.getKey().equals(inputtedKeyForSearch)) {
                     return Optional.of(row);
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | NoSuchElementException | IllegalStateException e) {
             throw new DictionaryNotFoundException();
         }
         return Optional.empty();
@@ -123,16 +128,16 @@ public class Dao {
     /**
      * Delete row by key.
      *
-     * @param inputtedKey by what parameter to search for a row that should be deleted.
+     * @param inputtedKeyForDeletion by what parameter to search for a row that should be deleted.
      * @return boolean. true - if row was found and deleted. false - if not.
-     * @throws NoSuchElementException if no line was found
-     * @throws IllegalStateException  if this scanner is closed
-     * @throws SecurityException      If a security manager exists and its SecurityManager.checkDelete method denies delete access to the file
-     * @throws NullPointerException   If parameter <code>mainFile</code> is <code>null</code>
+     * @throws DictionaryNotFoundException if no line was found (NoSuchElementException).
+     *                                     if this scanner is closed(IllegalStateException).
+     *                                     If a security manager exists and its SecurityManager.checkDelete method denies delete access to the file (SecurityException).
+     *                                     If parameter <code>mainFile</code> is <code>null</code> (NullPointerException).
      */
-    public boolean deleteByKey(String inputtedKey, String fileName) {
+    public boolean deleteByKey(String inputtedKeyForDeletion , String fileName) {
         boolean isExist = false;
-        if ((findByKey(inputtedKey, fileName).isPresent())) {
+        if ((findByKey(inputtedKeyForDeletion, fileName).isPresent())) {
             boolean isFirstRow = true;
             File mainFile = createFile(fileName);
             File tempFile = createFile(TEMPORARY_FILENAME);
@@ -142,7 +147,7 @@ public class Dao {
                 while (sc.hasNextLine()) {
                     String line = sc.nextLine();
                     Row row = codec.convertStorageEntryToKV(line);
-                    if (row.getKey().getWord().equals(inputtedKey)) {
+                    if (row.getKey().equals(inputtedKeyForDeletion)) {
                         isExist = true;
                     } else {
                         if (isFirstRow) {
@@ -153,15 +158,17 @@ public class Dao {
                         fileWriter.write(codec.convertKVToStorageEntry(row));
                     }
                 }
-            } catch (IOException | NoSuchElementException | IllegalStateException e) {
+            } catch (IOException | NoSuchElementException | IllegalStateException | NullPointerException |
+                     SecurityException e) {
                 throw new DictionaryNotFoundException();
             }
             try {
                 mainFile.delete();
                 tempFile.renameTo(mainFile);
-            } catch (NullPointerException | SecurityException e) {
+            } catch (SecurityException | NullPointerException e){
                 throw new DictionaryNotFoundException();
             }
+
         }
         return isExist;
     }
@@ -181,20 +188,20 @@ public class Dao {
          * @return String consisting of a key and value with a given separator.
          */
         public String convertKVToStorageEntry(Row row) {
-            return row.getKey().getWord() + KEY_VALUE_SEPARATOR_FOR_STORAGE + row.getValue().getWord();
+            return row.getKey() + KEY_VALUE_SEPARATOR_FOR_STORAGE + row.getValue();
         }
 
         /**
          * Convert String from file to separate variables.
          *
          * @param lineFromFile line from file.
-         * @throws ArrayIndexOutOfBoundsException <code>encode.length</code> is smaller than <code>NUMBER_FOR_SPLIT</code>
-         * @throws PatternSyntaxException         if the regular expression's syntax is invalid
+         * @throws DictionaryNotFoundException <code>encode.length</code> is smaller than <code>NUMBER_FOR_SPLIT</code>(ArrayIndexOutOfBoundsException).
+         *                                     if the regular expression's syntax is invalid(PatternSyntaxException).
          */
         public Row convertStorageEntryToKV(String lineFromFile) {
             try {
                 String[] encode = lineFromFile.split(KEY_VALUE_SEPARATOR_FOR_STORAGE, NUMBER_FOR_SPLIT);
-                return new Row(new Word(encode[KEY_SERIAL_NUMBER]), new Word(encode[VALUE_SERIAL_NUMBER]));
+                return new Row(encode[KEY_SERIAL_NUMBER], encode[VALUE_SERIAL_NUMBER]);
 
             } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
                 throw new DictionaryNotFoundException();
