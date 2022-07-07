@@ -15,6 +15,13 @@ import java.util.Scanner;
  * Provides input output work.
  */
 public class ViewDictionary {
+    Scanner scanner;
+    private Scanner getScanner(){
+        if (scanner == null) {
+            scanner = new Scanner(System.in);
+        }
+        return scanner;
+    }
 
     private static final String INPUT_KEY_MESSAGE = "Input key";
     private static final String INPUT_VALUE_MESSAGE = "Input value";
@@ -106,11 +113,10 @@ public class ViewDictionary {
     private String inputInviter(String message) {
         System.out.println(message);
         Console console = System.console();
-        Scanner sc = new Scanner(System.in);
         if (console != null) {
             return console.readLine();
         } else {
-            return sc.nextLine();
+            return getScanner().nextLine();
         }
     }
 }
