@@ -1,34 +1,28 @@
 package dictionary.model;
 
+/**
+ * Model of row in application
+ */
 public class Row {
-    Word key;
-    Word value;
+    private static final String KEY_VALUE_SEPARATOR = " ";
+    String key;
+    String value;
 
-    public Row(Word key, Word value) {
+    public Row(String key, String value) {
         this.key = key;
         this.value = value;
     }
-    public Row(){
 
-    }
-
-    public Word getKey() {
+    public String getKey() {
         return key;
     }
 
-    public void setKey(Word key) {
-        this.key = key;
-    }
-
-    public Word getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(Word value) {
-        this.value = value;
-    }
     @Override
-    public String toString(){
-        return this.key.getWord() + " " + this.value.getWord();
+    public String toString() {
+        return this.key + KEY_VALUE_SEPARATOR + this.value;
     }
 }

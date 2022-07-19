@@ -1,10 +1,13 @@
 package dictionary.view;
 
+import dictionary.config.DictionaryConfiguration;
+import dictionary.config.DictionaryParameters;
 import dictionary.exception.DictionaryNotFoundException;
 import dictionary.model.Row;
 import dictionary.service.Service;
 
 import java.io.Console;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -12,6 +15,13 @@ import java.util.Scanner;
  * Provides input output work.
  */
 public class ViewDictionary {
+    Scanner scanner;
+    private Scanner getScanner(){
+        if (scanner == null) {
+            scanner = new Scanner(System.in);
+        }
+        return scanner;
+    }
 
     private static final String INPUT_KEY_MESSAGE = "Input key";
     private static final String INPUT_VALUE_MESSAGE = "Input value";
@@ -25,18 +35,22 @@ public class ViewDictionary {
     private static final String MESSAGE_ROW_NOT_EXIST = "Didn't find row with key - %s %n";
     private static final String MESSAGE_ROW_DELETED = "Row with key - %s WAS deleted %n";
     private static final String MESSAGE_ROW_NOT_DELETED = "Row with key - %s WAS NOT deleted %n";
-    private static final String MESSAGE_ERROR = "Something bad happened";
+    private static final String MESSAGE_ERROR = "Something bad happened. ";
     private static final String MESSAGE_ADD = "Add key - %s value - %s %n";
+    private static final String MESSAGE_CHOSE_DICTIONARY = "Choose dictionary. 1 - symbolic; 2 - numeric";
 
     Service service;
+    DictionaryConfiguration dictionaryConfiguration;
 
     /**
-     * Constructor.
+     * Constructor for DI.
      *
-     * @param service DI.
+     * @param service                 DI.
+     * @param dictionaryConfiguration DI.
      */
-    public ViewDictionary(Service service) {
+    public ViewDictionary(Service service, DictionaryConfiguration dictionaryConfiguration) {
         this.service = service;
+        this.dictionaryConfiguration = dictionaryConfiguration;
     }
 
     /**
@@ -45,45 +59,47 @@ public class ViewDictionary {
      */
     public void runApp() {
         while (true) {
-            String s;
-            try {
-                s = inputInviter(MESSAGE_CHOSE_OPERATION);
-                if (s.equals(OPERATION_SAVE)) {
-                    String key = inputInviter(INPUT_KEY_MESSAGE);
-                    String value = inputInviter(INPUT_VALUE_MESSAGE);
-                    if (service.addRow(key, value)) {
-                        System.out.printf(MESSAGE_ADD, key, value);
+            String dictionarySelection = inputInviter(MESSAGE_CHOSE_DICTIONARY);
+            DictionaryParameters dictionaryParameters = dictionaryConfiguration.getSelectedDictionary(dictionarySelection);
+            if (dictionaryParameters != null) {
+                try {
+                    String operationSelection = inputInviter(MESSAGE_CHOSE_OPERATION);
+                    if (operationSelection.equals(OPERATION_SAVE)) {
+                        String key = inputInviter(INPUT_KEY_MESSAGE);
+                        String value = inputInviter(INPUT_VALUE_MESSAGE);
+                        if (service.addRow(new Row(key, value), dictionaryParameters)) {
+                            System.out.printf(MESSAGE_ADD, key, value);
+                        } else {
+                            System.out.println(MESSAGE_INVALID_INPUT);
+                        }
+                        System.out.println();
+                    } else if (operationSelection.equals(OPERATION_FIND_ALL)) {
+                        for (Row e : service.findAllRows(dictionaryParameters)) {
+                            System.out.println(e);
+                        }
+                    } else if (operationSelection.equals(OPERATION_FIND_BY_KEY)) {
+                        String key = inputInviter(INPUT_KEY_MESSAGE);
+                        Optional<Row> output = service.findRowByKey(key, dictionaryParameters);
+
+                        if (output.isPresent()) {
+                            System.out.printf(MESSAGE_ROW_EXIST, key, output.get());
+                        } else {
+                            System.out.printf(MESSAGE_ROW_NOT_EXIST, key);
+                        }
+
+                    } else if (operationSelection.equals(OPERATION_DELETE_BY_KEY)) {
+                        String key = inputInviter(INPUT_KEY_MESSAGE);
+                        if (service.deleteRowByKey(key, dictionaryParameters)) {
+                            System.out.printf(MESSAGE_ROW_DELETED, key);
+                        } else {
+                            System.out.printf(MESSAGE_ROW_NOT_DELETED, key);
+                        }
                     } else {
                         System.out.println(MESSAGE_INVALID_INPUT);
                     }
-                    System.out.println();
-                } else if (s.equals(OPERATION_FIND_ALL)) {
-                    for (Row e: service.findAllRows())
-                    {
-                        System.out.println(e);
-                    }
-                } else if (s.equals(OPERATION_FIND_BY_KEY)) {
-                    String key = inputInviter(INPUT_KEY_MESSAGE);
-                    Optional<Row> output = service.findRowByKey(key);
-
-                    if (output.isPresent()) {
-                        System.out.printf(MESSAGE_ROW_EXIST, key, output.get());
-                    } else {
-                        System.out.printf(MESSAGE_ROW_NOT_EXIST, key);
-                    }
-
-                } else if (s.equals(OPERATION_DELETE_BY_KEY)) {
-                    String key = inputInviter(INPUT_KEY_MESSAGE);
-                    if (service.deleteRowByKey(key)) {
-                        System.out.printf(MESSAGE_ROW_DELETED, key);
-                    } else {
-                        System.out.printf(MESSAGE_ROW_NOT_DELETED, key);
-                    }
-                } else {
-                    System.out.println(MESSAGE_INVALID_INPUT);
+                } catch (DictionaryNotFoundException e) {
+                    System.out.println(MESSAGE_ERROR + Arrays.toString(e.getStackTrace()));
                 }
-            } catch (DictionaryNotFoundException e) {
-                System.out.println(MESSAGE_ERROR + e.getMessage());
             }
         }
     }
@@ -97,11 +113,10 @@ public class ViewDictionary {
     private String inputInviter(String message) {
         System.out.println(message);
         Console console = System.console();
-        Scanner sc = new Scanner(System.in);
         if (console != null) {
             return console.readLine();
         } else {
-            return sc.nextLine();
+            return getScanner().nextLine();
         }
     }
 }

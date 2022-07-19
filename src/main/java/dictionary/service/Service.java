@@ -1,6 +1,8 @@
 package dictionary.service;
 
+import dictionary.config.DictionaryParameters;
 import dictionary.dao.Dao;
+import dictionary.dao.DaoInterface;
 import dictionary.model.Row;
 
 import java.util.List;
@@ -10,30 +12,34 @@ import java.util.Optional;
  * Establishes a set of available operations and coordinates the application's response in each operation.
  */
 public class Service {
-    Dao dao;
+
+    dictionary.dao.DaoInterface DaoInterface;
 
     /**
      * Constructor for DI.
      *
-     * @param dao DI.
+     * @param DaoInterface DI.
      */
-    public Service(Dao dao) {
-        this.dao = dao;
+    public Service(DaoInterface DaoInterface) {
+        this.DaoInterface = DaoInterface;
     }
 
-    public List<Row> findAllRows() {
-        return dao.findAll();
+    public List<Row> findAllRows(DictionaryParameters dictionaryParameters) {
+        return DaoInterface.findAll(dictionaryParameters.getFileName());
     }
 
-    public boolean addRow(String key, String value) {
-        return dao.save(key, value);
+    public boolean addRow(Row row, DictionaryParameters dictionaryParameters) {
+        if (row.getKey().matches(dictionaryParameters.getMask())) {
+            return DaoInterface.save(row, dictionaryParameters.getFileName());
+        }
+        return false;
     }
 
-    public boolean deleteRowByKey(String key) {
-        return dao.deleteByKey(key);
+    public boolean deleteRowByKey(String key, DictionaryParameters dictionaryParameters) {
+        return DaoInterface.deleteByKey(key, dictionaryParameters.getFileName());
     }
 
-    public Optional<Row> findRowByKey(String key) {
-        return dao.findByKey(key);
+    public Optional<Row> findRowByKey(String key, DictionaryParameters dictionaryParameters) {
+        return DaoInterface.findByKey(key, dictionaryParameters.getFileName());
     }
 }

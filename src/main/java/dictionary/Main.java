@@ -1,6 +1,8 @@
 package dictionary;
 
+import dictionary.config.DictionaryConfiguration;
 import dictionary.dao.Dao;
+import dictionary.dao.DaoInterface;
 import dictionary.service.Service;
 import dictionary.view.ViewDictionary;
 
@@ -14,9 +16,10 @@ class Main {
      * @param args null
      */
     public static void main(String[] args) {
-        Dao dao = new Dao();
+        DictionaryConfiguration dictionaryConfiguration = new DictionaryConfiguration();
+        DaoInterface dao = new Dao();
         Service service = new Service(dao);
-        ViewDictionary viewDictionary = new ViewDictionary(service);
+        ViewDictionary viewDictionary = new ViewDictionary(service, dictionaryConfiguration);
         viewDictionary.runApp();
     }
 }
