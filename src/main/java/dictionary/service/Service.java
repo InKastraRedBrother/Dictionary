@@ -4,6 +4,7 @@ import dictionary.config.DictionaryParameters;
 import dictionary.dao.Dao;
 import dictionary.dao.DaoInterface;
 import dictionary.model.Row;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,35 +12,36 @@ import java.util.Optional;
 /**
  * Establishes a set of available operations and coordinates the application's response in each operation.
  */
+@Component
 public class Service {
 
-    dictionary.dao.DaoInterface DaoInterface;
+    DaoInterface dao;
 
     /**
      * Constructor for DI.
      *
-     * @param DaoInterface DI.
+     * @param dao DI.
      */
-    public Service(DaoInterface DaoInterface) {
-        this.DaoInterface = DaoInterface;
+    public Service(Dao dao) {
+        this.dao = dao;
     }
 
     public List<Row> findAllRows(DictionaryParameters dictionaryParameters) {
-        return DaoInterface.findAll(dictionaryParameters.getFileName());
+        return dao.findAll(dictionaryParameters.getFileName());
     }
 
     public boolean addRow(Row row, DictionaryParameters dictionaryParameters) {
         if (row.getKey().matches(dictionaryParameters.getMask())) {
-            return DaoInterface.save(row, dictionaryParameters.getFileName());
+            return dao.save(row, dictionaryParameters.getFileName());
         }
         return false;
     }
 
     public boolean deleteRowByKey(String key, DictionaryParameters dictionaryParameters) {
-        return DaoInterface.deleteByKey(key, dictionaryParameters.getFileName());
+        return dao.deleteByKey(key, dictionaryParameters.getFileName());
     }
 
     public Optional<Row> findRowByKey(String key, DictionaryParameters dictionaryParameters) {
-        return DaoInterface.findByKey(key, dictionaryParameters.getFileName());
+        return dao.findByKey(key, dictionaryParameters.getFileName());
     }
 }

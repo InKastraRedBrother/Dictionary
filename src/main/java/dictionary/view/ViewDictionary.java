@@ -5,6 +5,7 @@ import dictionary.config.DictionaryParameters;
 import dictionary.exception.DictionaryNotFoundException;
 import dictionary.model.Row;
 import dictionary.service.Service;
+import org.springframework.stereotype.Component;
 
 import java.io.Console;
 import java.util.Arrays;
@@ -14,9 +15,12 @@ import java.util.Scanner;
 /**
  * Provides input output work.
  */
+@Component
 public class ViewDictionary {
+
     Scanner scanner;
-    private Scanner getScanner(){
+
+    private Scanner getScanner() {
         if (scanner == null) {
             scanner = new Scanner(System.in);
         }
@@ -39,8 +43,8 @@ public class ViewDictionary {
     private static final String MESSAGE_ADD = "Add key - %s value - %s %n";
     private static final String MESSAGE_CHOSE_DICTIONARY = "Choose dictionary. 1 - symbolic; 2 - numeric";
 
-    Service service;
-    DictionaryConfiguration dictionaryConfiguration;
+    private Service service;
+    private DictionaryConfiguration dictionaryConfiguration;
 
     /**
      * Constructor for DI.
@@ -48,6 +52,7 @@ public class ViewDictionary {
      * @param service                 DI.
      * @param dictionaryConfiguration DI.
      */
+
     public ViewDictionary(Service service, DictionaryConfiguration dictionaryConfiguration) {
         this.service = service;
         this.dictionaryConfiguration = dictionaryConfiguration;
