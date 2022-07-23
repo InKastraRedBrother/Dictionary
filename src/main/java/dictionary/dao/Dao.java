@@ -2,6 +2,7 @@ package dictionary.dao;
 
 import dictionary.exception.DictionaryNotFoundException;
 import dictionary.model.Row;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -27,8 +28,9 @@ public class Dao implements DaoInterface {
      * @throws DictionaryNotFoundException If a security manager exists and its SecurityManager.checkRead(String) method denies read access to the file(SecurityException).
      *                                     If the <code>pathname</code> argument is <code>null</code> (NullPointerException).
      */
-    public Dao() {
-        this.codec = new Codec();
+   @Autowired
+    public Dao(Codec codec) {
+        this.codec = codec;
         try {
             File directory = new File(PATH_TO_DIRECTORY);
             if (!directory.exists()) {
