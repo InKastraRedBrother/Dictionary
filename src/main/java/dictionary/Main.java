@@ -1,14 +1,10 @@
 package dictionary;
 
-import dictionary.config.DictionaryConfiguration;
-import dictionary.dao.Dao;
-import dictionary.dao.DaoInterface;
-import dictionary.service.Service;
+import dictionary.config.AnnotationConfig;
 import dictionary.view.ViewDictionary;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-/**
- * Point of entry
- */
 class Main {
     /**
      * run console application
@@ -16,10 +12,9 @@ class Main {
      * @param args null
      */
     public static void main(String[] args) {
-        DictionaryConfiguration dictionaryConfiguration = new DictionaryConfiguration();
-        DaoInterface dao = new Dao();
-        Service service = new Service(dao);
-        ViewDictionary viewDictionary = new ViewDictionary(service, dictionaryConfiguration);
+        ApplicationContext context = new AnnotationConfigApplicationContext(AnnotationConfig.class);
+
+        ViewDictionary viewDictionary = context.getBean(ViewDictionary.class);
         viewDictionary.runApp();
     }
 }

@@ -1,11 +1,14 @@
 package dictionary.config;
 
+import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Creating, fill and return map
  */
+@Component
 public class DictionaryConfiguration {
 
     private static final String PATTERN_SYM = "^[a-z]{4}+$";

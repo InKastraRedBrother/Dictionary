@@ -2,6 +2,8 @@ package dictionary.dao;
 
 import dictionary.exception.DictionaryNotFoundException;
 import dictionary.model.Row;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -13,8 +15,9 @@ import java.util.regex.PatternSyntaxException;
 /**
  * Contains business logic.
  */
+@Component
 public class Dao implements DaoInterface {
-    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator + "out" + File.separator + "resources" + File.separator;
+    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator + "target" + File.separator + "classes" + File.separator + "dictionariesfiles" + File.separator;
     private static final String TEMPORARY_FILENAME = "temp.txt";
 
     private final Codec codec;
@@ -25,8 +28,9 @@ public class Dao implements DaoInterface {
      * @throws DictionaryNotFoundException If a security manager exists and its SecurityManager.checkRead(String) method denies read access to the file(SecurityException).
      *                                     If the <code>pathname</code> argument is <code>null</code> (NullPointerException).
      */
-    public Dao() {
-        this.codec = new Codec();
+   @Autowired
+    public Dao(Codec codec) {
+        this.codec = codec;
         try {
             File directory = new File(PATH_TO_DIRECTORY);
             if (!directory.exists()) {
@@ -135,7 +139,7 @@ public class Dao implements DaoInterface {
      *                                     If a security manager exists and its SecurityManager.checkDelete method denies delete access to the file (SecurityException).
      *                                     If parameter <code>mainFile</code> is <code>null</code> (NullPointerException).
      */
-    public boolean deleteByKey(String inputtedKeyForDeletion , String fileName) {
+    public boolean deleteByKey(String inputtedKeyForDeletion, String fileName) {
         boolean isExist = false;
         if ((findByKey(inputtedKeyForDeletion, fileName).isPresent())) {
             boolean isFirstRow = true;
@@ -165,7 +169,7 @@ public class Dao implements DaoInterface {
             try {
                 mainFile.delete();
                 tempFile.renameTo(mainFile);
-            } catch (SecurityException | NullPointerException e){
+            } catch (SecurityException | NullPointerException e) {
                 throw new DictionaryNotFoundException();
             }
 
@@ -176,6 +180,7 @@ public class Dao implements DaoInterface {
     /**
      * Encapsulates the format in which the line in the file is stored.
      */
+    @Component
     private static class Codec {
         private static final String KEY_VALUE_SEPARATOR_FOR_STORAGE = ":";
         private static final int NUMBER_FOR_SPLIT = 2;
