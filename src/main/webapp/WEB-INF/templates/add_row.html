@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <title>Add row</title>
+</head>
+<body>
+
+<div>
+    <form action="#" th:action="@{/add_row(id = ${id})}" th:object="${row}" method="post" accept-charset="UTF-8">
+        <input type="text" th:field="*{key}" placeholder="Введите ключ"><br>
+        <input type="text" th:field="*{value}" placeholder="Введите значение"><br>
+
+        <button type="submit" value="add-row">Сохранить</button>
+
+    </form>
+</div>
+
+</body>
+</html>

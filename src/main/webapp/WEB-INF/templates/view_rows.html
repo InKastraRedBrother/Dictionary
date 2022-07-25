@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>View All Rows</title>
+</head>
+<body>
+<div class="container">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>View 4 letters dict</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="row : ${listRow}">
+                <td th:text="${row.key}"></td>
+                <td th:text="${row.value}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <a th:href="@{/add_row(id = ${id})}"
+       th:text="Add"></a>
+
+    <a th:href="@{/delete_row(id = ${id})}"
+    th:text="Delete"></a>
+</div>
+</body>
+</html>

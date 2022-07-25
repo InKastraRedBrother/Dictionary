@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <title>Delete Row</title>
+</head>
+<body>
+
+<div>
+    <form action="#" th:action="@{/delete_row(id = ${id})}" th:object="${row}" method="post" accept-charset="UTF-8">
+        <input type="text" th:field="*{key}" placeholder="Введите ключ"><br>
+        <div>
+            <button>Удалить по ключу</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

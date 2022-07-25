@@ -1,10 +1,10 @@
-package dictionary.view;
+package ru.dictionary.view;
 
-import dictionary.config.DictionaryConfiguration;
-import dictionary.config.DictionaryParameters;
-import dictionary.exception.DictionaryNotFoundException;
-import dictionary.model.Row;
-import dictionary.service.Service;
+import ru.dictionary.config.DictionaryConfiguration;
+import ru.dictionary.config.DictionaryParameters;
+import ru.dictionary.exception.DictionaryNotFoundException;
+import ru.dictionary.model.Row;
+import ru.dictionary.service.Service;
 import org.springframework.stereotype.Component;
 
 import java.io.Console;
@@ -41,7 +41,7 @@ public class ViewDictionary {
     private static final String MESSAGE_ROW_NOT_DELETED = "Row with key - %s WAS NOT deleted %n";
     private static final String MESSAGE_ERROR = "Something bad happened. ";
     private static final String MESSAGE_ADD = "Add key - %s value - %s %n";
-    private static final String MESSAGE_CHOSE_DICTIONARY = "Choose dictionary. 1 - symbolic; 2 - numeric";
+    private static final String MESSAGE_CHOSE_DICTIONARY = "Choose ru.dictionary. 1 - symbolic; 2 - numeric";
 
     private Service service;
     private DictionaryConfiguration dictionaryConfiguration;
@@ -52,7 +52,6 @@ public class ViewDictionary {
      * @param service                 DI.
      * @param dictionaryConfiguration DI.
      */
-
     public ViewDictionary(Service service, DictionaryConfiguration dictionaryConfiguration) {
         this.service = service;
         this.dictionaryConfiguration = dictionaryConfiguration;
