@@ -72,11 +72,11 @@ public class Dao implements DaoInterface {
     public List<Row> findAll(String fileName) {
         List<Row> listRow = new ArrayList<>();
         File file = new File(fileName);
-        try (Scanner sc = new Scanner(file)) {
+        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
                 listRow.add(codec.convertStorageEntryToKV(sc.nextLine()));
             }
-        } catch (NullPointerException | NoSuchElementException | IllegalStateException | FileNotFoundException e) {
+        } catch (NullPointerException | NoSuchElementException | IllegalStateException  | IOException e ) {
             throw new DictionaryNotFoundException("findAll");
         }
         return listRow;
@@ -116,7 +116,7 @@ public class Dao implements DaoInterface {
      */
     public Optional<Row> findByKey(String inputtedKeyForSearch, String fileName) {
         File file = createFile(fileName);
-        try (Scanner sc = new Scanner(file)) {
+        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 Row row = codec.convertStorageEntryToKV(line);
