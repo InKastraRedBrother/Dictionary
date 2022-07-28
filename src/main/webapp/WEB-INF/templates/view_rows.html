@@ -13,18 +13,25 @@
         </tr>
         </thead>
         <tbody>
-            <tr th:each="row : ${listRow}">
-                <td th:text="${row.key}"></td>
-                <td th:text="${row.value}"></td>
-            </tr>
+        <tr th:each="row : ${listRow}">
+            <td th:text="${row.key}"></td>
+            <td th:text="${row.value}"></td>
+        </tr>
         </tbody>
     </table>
     <br>
+
     <a th:href="@{/add_row(id = ${id})}"
        th:text="Add"></a>
 
     <a th:href="@{/delete_row(id = ${id})}"
-    th:text="Delete"></a>
+       th:text="Delete"></a>
+
+    <a th:href="@{/search_row(id = ${id})}"
+       th:text="Search"></a>
+
+    <a th:href="@{/main}">Back to choose</a>
 </div>
+
 </body>
 </html>

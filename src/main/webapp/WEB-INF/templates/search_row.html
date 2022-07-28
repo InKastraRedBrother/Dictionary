@@ -3,23 +3,25 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-    <title>Delete Row</title>
+    <title>Search Row</title>
 </head>
 <body>
 
 <div>
-    <form action="#" th:action="@{/delete_row(id = ${id})}" th:object="${row}" method="post" accept-charset="UTF-8">
+    <form action="#" th:action="@{/search_row/result}" th:object="${row}" method="get" accept-charset="UTF-8">
+        <input name="id" type="hidden" th:valuetype="String" th:value="${id}">
         <input type="text" th:field="*{key}" placeholder="Введите ключ"><br>
         <div>
-            <button>Удалить по ключу</button>
+            <button>Найти по ключу</button>
         </div>
+        <p th:text="${row}"/>
     </form>
 
     <a th:href="@{/add_row(id = ${id})}"
        th:text="Add"></a>
 
-    <a th:href="@{/search_row(id = ${id})}"
-       th:text="Search"></a>
+    <a th:href="@{/delete_row(id = ${id})}"
+       th:text="Delete"></a>
 
     <a th:href="@{/main}">Back to choose</a>
 </div>

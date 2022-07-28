@@ -8,13 +8,21 @@
 <body>
 
 <div>
-    <form action="#" th:action="@{/add_row(id = ${id})}" th:object="${row}" method="post" accept-charset="UTF-8">
+    <form action="#" th:action="@{/add_row}" th:object="${row}" method="post" accept-charset="UTF-8">
+        <input name="id" type="hidden" th:valuetype="String" th:value="${id}">
         <input type="text" th:field="*{key}" placeholder="Введите ключ"><br>
         <input type="text" th:field="*{value}" placeholder="Введите значение"><br>
 
         <button type="submit" value="add-row">Сохранить</button>
-
     </form>
+
+    <a th:href="@{/delete_row(id = ${id})}"
+       th:text="Delete"></a>
+
+    <a th:href="@{/search_row(id = ${id})}"
+       th:text="Search"></a>
+
+    <a th:href="@{/main}">Back to choose</a>
 </div>
 
 </body>

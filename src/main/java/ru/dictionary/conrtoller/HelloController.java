@@ -56,4 +56,18 @@ public class HelloController {
         service.deleteRowByKey(row.getKey(), new DictionaryConfiguration().getSelectedDictionary(id));
         return "redirect:/view_rows?id=" + id;
     }
+
+    @GetMapping("/search_row")
+    public String showSearchRowPage(Model model,@RequestParam(name = "id") String id) {
+        model.addAttribute("row", new Row());
+        model.addAttribute("id", id);
+        return "search_row";
+    }
+
+    @GetMapping("/search_row/result")
+    public String search(@ModelAttribute Row row, @RequestParam(name = "id") String id, Model model) {
+        model.addAttribute("row", service.findRowByKey(row.getKey(), new DictionaryConfiguration().getSelectedDictionary(id)));
+        model.addAttribute("id", id);
+        return "search_row";
+    }
 }
