@@ -1,11 +1,11 @@
-package dictionary.dao;
+package ru.dictionary.dao;
 
-import dictionary.exception.DictionaryNotFoundException;
-import dictionary.model.Row;
-import org.springframework.beans.factory.annotation.Autowired;
+import ru.dictionary.exception.DictionaryNotFoundException;
+import ru.dictionary.model.Row;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -17,10 +17,11 @@ import java.util.regex.PatternSyntaxException;
  */
 @Component
 public class Dao implements DaoInterface {
-    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator + "target" + File.separator + "classes" + File.separator + "dictionariesfiles" + File.separator;
+    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator;
     private static final String TEMPORARY_FILENAME = "temp.txt";
 
-    private final Codec codec;
+
+    private Codec codec;
 
     /**
      * Empty constructor that create directory for storage files, if they not exist.
@@ -28,9 +29,9 @@ public class Dao implements DaoInterface {
      * @throws DictionaryNotFoundException If a security manager exists and its SecurityManager.checkRead(String) method denies read access to the file(SecurityException).
      *                                     If the <code>pathname</code> argument is <code>null</code> (NullPointerException).
      */
-   @Autowired
-    public Dao(Codec codec) {
-        this.codec = codec;
+
+    public Dao() {
+        this.codec = new Codec();
         try {
             File directory = new File(PATH_TO_DIRECTORY);
             if (!directory.exists()) {
@@ -57,7 +58,7 @@ public class Dao implements DaoInterface {
             }
             return file;
         } catch (IOException | SecurityException e) {
-            throw new DictionaryNotFoundException();
+            throw new DictionaryNotFoundException("createFile");
         }
     }
 
@@ -69,14 +70,14 @@ public class Dao implements DaoInterface {
      *                                     if scanner is closed (IllegalStateException).
      */
     public List<Row> findAll(String fileName) {
-        File file = createFile(fileName);
         List<Row> listRow = new ArrayList<>();
-        try (Scanner sc = new Scanner(file)) {
+        File file = new File(fileName);
+        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
                 listRow.add(codec.convertStorageEntryToKV(sc.nextLine()));
             }
-        } catch (IOException | NoSuchElementException | IllegalStateException e) {
-            throw new DictionaryNotFoundException();
+        } catch (NullPointerException | NoSuchElementException | IllegalStateException  | IOException e ) {
+            throw new DictionaryNotFoundException("findAll");
         }
         return listRow;
     }
@@ -99,7 +100,7 @@ public class Dao implements DaoInterface {
             }
             fileWriter.write(codec.convertKVToStorageEntry(row));
         } catch (IOException | SecurityException e) {
-            throw new DictionaryNotFoundException();
+            throw new DictionaryNotFoundException("SAVE");
         }
         return true;
     }
@@ -115,7 +116,7 @@ public class Dao implements DaoInterface {
      */
     public Optional<Row> findByKey(String inputtedKeyForSearch, String fileName) {
         File file = createFile(fileName);
-        try (Scanner sc = new Scanner(file)) {
+        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 Row row = codec.convertStorageEntryToKV(line);
@@ -124,7 +125,7 @@ public class Dao implements DaoInterface {
                 }
             }
         } catch (IOException | NoSuchElementException | IllegalStateException e) {
-            throw new DictionaryNotFoundException();
+            throw new DictionaryNotFoundException("findByKey");
         }
         return Optional.empty();
     }
@@ -164,13 +165,13 @@ public class Dao implements DaoInterface {
                 }
             } catch (IOException | NoSuchElementException | IllegalStateException | NullPointerException |
                      SecurityException e) {
-                throw new DictionaryNotFoundException();
+                throw new DictionaryNotFoundException("deleteByKey");
             }
             try {
                 mainFile.delete();
                 tempFile.renameTo(mainFile);
             } catch (SecurityException | NullPointerException e) {
-                throw new DictionaryNotFoundException();
+                throw new DictionaryNotFoundException("deleteByKey");
             }
 
         }
@@ -180,7 +181,6 @@ public class Dao implements DaoInterface {
     /**
      * Encapsulates the format in which the line in the file is stored.
      */
-    @Component
     private static class Codec {
         private static final String KEY_VALUE_SEPARATOR_FOR_STORAGE = ":";
         private static final int NUMBER_FOR_SPLIT = 2;
@@ -209,7 +209,7 @@ public class Dao implements DaoInterface {
                 return new Row(encode[KEY_SERIAL_NUMBER], encode[VALUE_SERIAL_NUMBER]);
 
             } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
-                throw new DictionaryNotFoundException();
+                throw new DictionaryNotFoundException("convertStorageEntryToKV");
             }
         }
     }

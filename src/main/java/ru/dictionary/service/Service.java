@@ -1,9 +1,9 @@
-package dictionary.service;
+package ru.dictionary.service;
 
-import dictionary.config.DictionaryParameters;
-import dictionary.dao.Dao;
-import dictionary.dao.DaoInterface;
-import dictionary.model.Row;
+import ru.dictionary.config.DictionaryParameters;
+import ru.dictionary.dao.Dao;
+import ru.dictionary.dao.DaoInterface;
+import ru.dictionary.model.Row;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

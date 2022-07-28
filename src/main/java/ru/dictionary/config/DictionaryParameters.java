@@ -1,4 +1,4 @@
-package dictionary.config;
+package ru.dictionary.config;
 
 /**
  * Create object with initialized mask and storage's file name

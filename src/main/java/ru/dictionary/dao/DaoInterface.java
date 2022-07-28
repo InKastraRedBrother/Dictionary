@@ -1,6 +1,6 @@
-package dictionary.dao;
+package ru.dictionary.dao;
 
-import dictionary.model.Row;
+import ru.dictionary.model.Row;
 
 import java.util.List;
 import java.util.Optional;
