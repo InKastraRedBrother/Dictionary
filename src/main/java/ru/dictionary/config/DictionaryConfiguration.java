@@ -2,9 +2,7 @@ package ru.dictionary.config;
 
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,7 +36,7 @@ public class DictionaryConfiguration {
     /**
      * Chose dictionary
      *
-     * @param inputDictionarySelection get String by that pre-initialized ru.dictionary will be chosen
+     * @param inputDictionarySelection get String by that pre-initialized dictionary will be chosen
      * @return chosen dictionary
      */
     public DictionaryParameters getSelectedDictionary(String inputDictionarySelection) {

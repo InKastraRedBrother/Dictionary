@@ -1,11 +1,11 @@
 package ru.dictionary.dao;
 
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
 import ru.dictionary.model.Row;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -16,10 +16,13 @@ import java.util.regex.PatternSyntaxException;
  * Contains business logic.
  */
 @Component
+@PropertySource("classpath:application.properties")
 public class Dao implements DaoInterface {
-    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator;
     private static final String TEMPORARY_FILENAME = "temp.txt";
+    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator;
 
+//    @Value("${dictionary.storage.path}")
+//    private String PATH_TO_DIRECTORY;
 
     private Codec codec;
 
@@ -41,6 +44,7 @@ public class Dao implements DaoInterface {
             throw new DictionaryNotFoundException();
         }
     }
+
 
     /**
      * Create file if file not exists.
@@ -76,7 +80,7 @@ public class Dao implements DaoInterface {
             while (sc.hasNextLine()) {
                 listRow.add(codec.convertStorageEntryToKV(sc.nextLine()));
             }
-        } catch (NullPointerException | NoSuchElementException | IllegalStateException  | IOException e ) {
+        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
             throw new DictionaryNotFoundException("findAll");
         }
         return listRow;
