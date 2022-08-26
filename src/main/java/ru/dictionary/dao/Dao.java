@@ -1,13 +1,10 @@
 package ru.dictionary.dao;
 
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
 import ru.dictionary.model.Row;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.PatternSyntaxException;
@@ -16,13 +13,10 @@ import java.util.regex.PatternSyntaxException;
  * Contains business logic.
  */
 @Component
-@PropertySource("classpath:application.properties")
 public class Dao implements DaoInterface {
+    private static Properties prop;
     private static final String TEMPORARY_FILENAME = "temp.txt";
-    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator;
-
-//    @Value("${dictionary.storage.path}")
-//    private String PATH_TO_DIRECTORY;
+    public static final String PATH_TO_PROPERTIES = "C:\\Users\\student\\IdeaProjects\\Dictionary\\src\\main\\resources\\application.properties";
 
     private Codec codec;
 
@@ -34,9 +28,21 @@ public class Dao implements DaoInterface {
      */
 
     public Dao() {
+        FileInputStream fileInputStream;
+        prop = new Properties();
+        try{
+            fileInputStream = new FileInputStream(PATH_TO_PROPERTIES);
+            prop.load(fileInputStream);
+            System.out.println(prop.getProperty("dictionary.storage.path"));
+        }
+        catch (Exception e){
+
+        }
+
+
         this.codec = new Codec();
         try {
-            File directory = new File(PATH_TO_DIRECTORY);
+            File directory = new File(prop.getProperty("dictionary.storage.path"));
             if (!directory.exists()) {
                 directory.mkdir();
             }
@@ -56,7 +62,7 @@ public class Dao implements DaoInterface {
      */
     private File createFile(String fileName) {
         try {
-            File file = new File(PATH_TO_DIRECTORY + fileName);
+            File file = new File(prop.getProperty("dictionary.storage.path") + fileName);
             if (!file.exists()) {
                 file.createNewFile();
             }
