@@ -11,10 +11,10 @@ import ru.dictionary.dao.Dao;
 @Configuration
 @PropertySource(value = "classpath:application.properties")
 public class AnnotationConfig {
-
-    @Bean
-    @Value("${dictionary.storage.path}")
-    public Dao getPathToDictionary(){
-        return new Dao();
-    }
+//
+//    @Bean
+//    @Value("${dictionary.storage.path}")
+//    public Dao getPathToDictionary(){
+//        return new Dao();
+//    }
 }

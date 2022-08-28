@@ -14,9 +14,9 @@ import java.util.regex.PatternSyntaxException;
  */
 @Component
 public class Dao implements DaoInterface {
-    private static Properties prop;
+
     private static final String TEMPORARY_FILENAME = "temp.txt";
-    public static final String PATH_TO_PROPERTIES = "C:\\Users\\student\\IdeaProjects\\Dictionary\\src\\main\\resources\\application.properties";
+    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator;
 
     private Codec codec;
 
@@ -28,21 +28,11 @@ public class Dao implements DaoInterface {
      */
 
     public Dao() {
-        FileInputStream fileInputStream;
-        prop = new Properties();
-        try{
-            fileInputStream = new FileInputStream(PATH_TO_PROPERTIES);
-            prop.load(fileInputStream);
-            System.out.println(prop.getProperty("dictionary.storage.path"));
-        }
-        catch (Exception e){
-
-        }
 
 
         this.codec = new Codec();
         try {
-            File directory = new File(prop.getProperty("dictionary.storage.path"));
+            File directory = new File(PATH_TO_DIRECTORY);
             if (!directory.exists()) {
                 directory.mkdir();
             }
@@ -62,7 +52,7 @@ public class Dao implements DaoInterface {
      */
     private File createFile(String fileName) {
         try {
-            File file = new File(prop.getProperty("dictionary.storage.path") + fileName);
+            File file = new File(PATH_TO_DIRECTORY);
             if (!file.exists()) {
                 file.createNewFile();
             }
