@@ -1,10 +1,9 @@
 package ru.dictionary.service;
 
+import org.springframework.stereotype.Component;
 import ru.dictionary.config.DictionaryParameters;
-import ru.dictionary.dao.Dao;
 import ru.dictionary.dao.DaoInterface;
 import ru.dictionary.model.Row;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +21,7 @@ public class Service {
      *
      * @param dao DI.
      */
-    public Service(Dao dao) {
+    public Service(DaoInterface dao) {
         this.dao = dao;
     }
 

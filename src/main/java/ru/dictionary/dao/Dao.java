@@ -1,13 +1,10 @@
 package ru.dictionary.dao;
 
+import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
 import ru.dictionary.model.Row;
-import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.PatternSyntaxException;
@@ -17,9 +14,9 @@ import java.util.regex.PatternSyntaxException;
  */
 @Component
 public class Dao implements DaoInterface {
-    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator;
-    private static final String TEMPORARY_FILENAME = "temp.txt";
 
+    private static final String TEMPORARY_FILENAME = "temp.txt";
+    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator;
 
     private Codec codec;
 
@@ -31,6 +28,8 @@ public class Dao implements DaoInterface {
      */
 
     public Dao() {
+
+
         this.codec = new Codec();
         try {
             File directory = new File(PATH_TO_DIRECTORY);
@@ -42,6 +41,7 @@ public class Dao implements DaoInterface {
         }
     }
 
+
     /**
      * Create file if file not exists.
      *
@@ -52,7 +52,7 @@ public class Dao implements DaoInterface {
      */
     private File createFile(String fileName) {
         try {
-            File file = new File(PATH_TO_DIRECTORY + fileName);
+            File file = new File(PATH_TO_DIRECTORY);
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -76,7 +76,7 @@ public class Dao implements DaoInterface {
             while (sc.hasNextLine()) {
                 listRow.add(codec.convertStorageEntryToKV(sc.nextLine()));
             }
-        } catch (NullPointerException | NoSuchElementException | IllegalStateException  | IOException e ) {
+        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
             throw new DictionaryNotFoundException("findAll");
         }
         return listRow;
