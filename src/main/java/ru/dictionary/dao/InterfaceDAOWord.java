@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * Interface provide methods to work with data which stored in file.
  */
-public interface DaoInterface {
+public interface InterfaceDAOWord {
     /**
      * Save given row in given file.
      *

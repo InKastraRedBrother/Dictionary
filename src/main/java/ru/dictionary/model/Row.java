@@ -13,12 +13,14 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Row {
-    private static final String KEY_VALUE_SEPARATOR = " ";
-    private String key;
-    private String value;
+    Word word;
+    private long id_row;
+    private long id_word_key;
+    private long id_word_value;
+    private long dictionary_id;
 
-    @Override
-    public String toString() {
-        return this.key + KEY_VALUE_SEPARATOR + this.value;
+    public String getWordById(long id){
+        return word.getWord_value();
     }
+
 }

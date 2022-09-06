@@ -2,7 +2,7 @@ package ru.dictionary.service;
 
 import org.springframework.stereotype.Component;
 import ru.dictionary.config.DictionaryParameters;
-import ru.dictionary.dao.DaoInterface;
+import ru.dictionary.dao.InterfaceDAOWord;
 import ru.dictionary.model.Row;
 
 import java.util.List;
@@ -14,14 +14,14 @@ import java.util.Optional;
 @Component
 public class Service {
 
-    DaoInterface dao;
+    InterfaceDAOWord dao;
 
     /**
      * Constructor for DI.
      *
      * @param dao DI.
      */
-    public Service(DaoInterface dao) {
+    public Service(InterfaceDAOWord dao) {
         this.dao = dao;
     }
 
@@ -30,9 +30,9 @@ public class Service {
     }
 
     public boolean addRow(Row row, DictionaryParameters dictionaryParameters) {
-        if (row.getKey().matches(dictionaryParameters.getMask())) {
-            return dao.save(row, dictionaryParameters.getFileName());
-        }
+//        if (row.getKey().matches(dictionaryParameters.getMask())) {
+//            return dao.save(row, dictionaryParameters.getFileName());
+//        }
         return false;
     }
 

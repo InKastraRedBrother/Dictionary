@@ -44,6 +44,7 @@ public class MainController {
 //        return "view_rows";
 //    }
 
+
     @GetMapping("/view_rows")
     public String showAllRows(Model model, @RequestParam("id") String id) {
         List<Row> listRows = service.findAllRows(new DictionaryConfiguration().getSelectedDictionary(id));
@@ -72,11 +73,11 @@ public class MainController {
         return "delete_row";
     }
 
-    @PostMapping("/delete_row")
-    public String deleteRow(@ModelAttribute Row row, @RequestParam("id") String id) {
-        service.deleteRowByKey(row.getKey(), dictionaryConfiguration.getSelectedDictionary(id));
-        return "redirect:/view_rows?id=" + id;
-    }
+//    @PostMapping("/delete_row")
+//    public String deleteRow(@ModelAttribute Row row, @RequestParam("id") String id) {
+//        service.deleteRowByKey(row.getKey(), dictionaryConfiguration.getSelectedDictionary(id));
+//        return "redirect:/view_rows?id=" + id;
+//    }
 
     @GetMapping("/search_row")
     public String showSearchRowPage(Model model, @RequestParam(name = "id") String id) {
@@ -85,10 +86,10 @@ public class MainController {
         return "search_row";
     }
 
-    @GetMapping("/search_row/result")
-    public String search(@ModelAttribute Row row, @RequestParam(name = "id") String id, Model model) {
-        model.addAttribute("row", service.findRowByKey(row.getKey(), dictionaryConfiguration.getSelectedDictionary(id)));
-        model.addAttribute("id", id);
-        return "search_row";
-    }
+//    @GetMapping("/search_row/result")
+//    public String search(@ModelAttribute Row row, @RequestParam(name = "id") String id, Model model) {
+//        model.addAttribute("row", service.findRowByKey(row.getKey(), dictionaryConfiguration.getSelectedDictionary(id)));
+//        model.addAttribute("id", id);
+//        return "search_row";
+//    }
 }

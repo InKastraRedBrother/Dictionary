@@ -1,11 +1,11 @@
 package ru.dictionary.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import ru.dictionary.dao.Dao;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 @ComponentScan(basePackages = {"ru.dictionary"})
 @Configuration
@@ -17,4 +17,5 @@ public class AnnotationConfig {
 //    public Dao getPathToDictionary(){
 //        return new Dao();
 //    }
+
 }

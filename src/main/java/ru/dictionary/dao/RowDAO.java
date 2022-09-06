@@ -4,7 +4,9 @@ import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
 import ru.dictionary.model.Row;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.PatternSyntaxException;
@@ -13,7 +15,7 @@ import java.util.regex.PatternSyntaxException;
  * Contains business logic.
  */
 @Component
-public class Dao implements DaoInterface {
+public class RowDAO implements InterfaceDAOWord {
 
     private static final String TEMPORARY_FILENAME = "temp.txt";
     private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator;
@@ -27,9 +29,7 @@ public class Dao implements DaoInterface {
      *                                     If the <code>pathname</code> argument is <code>null</code> (NullPointerException).
      */
 
-    public Dao() {
-
-
+    public RowDAO() {
         this.codec = new Codec();
         try {
             File directory = new File(PATH_TO_DIRECTORY);
@@ -69,18 +69,18 @@ public class Dao implements DaoInterface {
      * @throws DictionaryNotFoundException if no line was found (NoSuchElementException).
      *                                     if scanner is closed (IllegalStateException).
      */
-    public List<Row> findAll(String fileName) {
-        List<Row> listRow = new ArrayList<>();
-        File file = new File(fileName);
-        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
-            while (sc.hasNextLine()) {
-                listRow.add(codec.convertStorageEntryToKV(sc.nextLine()));
-            }
-        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
-            throw new DictionaryNotFoundException("findAll");
-        }
-        return listRow;
-    }
+//    public List<Row> findAll(String fileName) {
+//        List<Row> listRow = new ArrayList<>();
+//        File file = new File(fileName);
+//        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
+//            while (sc.hasNextLine()) {
+//                listRow.add(codec.convertStorageEntryToKV(sc.nextLine()));
+//            }
+//        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
+//            throw new DictionaryNotFoundException("findAll");
+//        }
+//        return listRow;
+//    }
 
     /**
      * Save given pair - key value in storage.
@@ -104,6 +104,21 @@ public class Dao implements DaoInterface {
         }
         return true;
     }
+/* Need to be deleted after*/
+    @Override
+    public List<Row> findAll(String fileName) {
+        return null;
+    }
+
+    @Override
+    public Optional<Row> findByKey(String key, String fileName) {
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean deleteByKey(String inputtedKey, String fileName) {
+        return false;
+    }
 
     /**
      * compare input row with rows in file.
@@ -114,21 +129,21 @@ public class Dao implements DaoInterface {
      *                                     if scanner is closed (IllegalStateException).
      *                                     if the file is not found (IOException).
      */
-    public Optional<Row> findByKey(String inputtedKeyForSearch, String fileName) {
-        File file = createFile(fileName);
-        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                Row row = codec.convertStorageEntryToKV(line);
-                if (row.getKey().equals(inputtedKeyForSearch)) {
-                    return Optional.of(row);
-                }
-            }
-        } catch (IOException | NoSuchElementException | IllegalStateException e) {
-            throw new DictionaryNotFoundException("findByKey");
-        }
-        return Optional.empty();
-    }
+//    public Optional<Row> findByKey(String inputtedKeyForSearch, String fileName) {
+//        File file = createFile(fileName);
+//        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
+//            while (sc.hasNextLine()) {
+//                String line = sc.nextLine();
+//                Row row = codec.convertStorageEntryToKV(line);
+//                if (row.getId_word_key().equals(inputtedKeyForSearch)) {
+//                    return Optional.of(row);
+//                }
+//            }
+//        } catch (IOException | NoSuchElementException | IllegalStateException e) {
+//            throw new DictionaryNotFoundException("findByKey");
+//        }
+//        return Optional.empty();
+//    }
 
     /**
      * Delete row by key.
@@ -140,43 +155,43 @@ public class Dao implements DaoInterface {
      *                                     If a security manager exists and its SecurityManager.checkDelete method denies delete access to the file (SecurityException).
      *                                     If parameter <code>mainFile</code> is <code>null</code> (NullPointerException).
      */
-    public boolean deleteByKey(String inputtedKeyForDeletion, String fileName) {
-        boolean isExist = false;
-        if ((findByKey(inputtedKeyForDeletion, fileName).isPresent())) {
-            boolean isFirstRow = true;
-            File mainFile = createFile(fileName);
-            File tempFile = createFile(TEMPORARY_FILENAME);
-            try (FileWriter fileWriter = new FileWriter(tempFile, StandardCharsets.UTF_8, true);
-                 Scanner sc = new Scanner(mainFile)) {
-
-                while (sc.hasNextLine()) {
-                    String line = sc.nextLine();
-                    Row row = codec.convertStorageEntryToKV(line);
-                    if (row.getKey().equals(inputtedKeyForDeletion)) {
-                        isExist = true;
-                    } else {
-                        if (isFirstRow) {
-                            isFirstRow = false;
-                        } else {
-                            fileWriter.write(System.lineSeparator());
-                        }
-                        fileWriter.write(codec.convertKVToStorageEntry(row));
-                    }
-                }
-            } catch (IOException | NoSuchElementException | IllegalStateException | NullPointerException |
-                     SecurityException e) {
-                throw new DictionaryNotFoundException("deleteByKey");
-            }
-            try {
-                mainFile.delete();
-                tempFile.renameTo(mainFile);
-            } catch (SecurityException | NullPointerException e) {
-                throw new DictionaryNotFoundException("deleteByKey");
-            }
-
-        }
-        return isExist;
-    }
+//    public boolean deleteByKey(String inputtedKeyForDeletion, String fileName) {
+//        boolean isExist = false;
+//        if ((findByKey(inputtedKeyForDeletion, fileName).isPresent())) {
+//            boolean isFirstRow = true;
+//            File mainFile = createFile(fileName);
+//            File tempFile = createFile(TEMPORARY_FILENAME);
+//            try (FileWriter fileWriter = new FileWriter(tempFile, StandardCharsets.UTF_8, true);
+//                 Scanner sc = new Scanner(mainFile)) {
+//
+//                while (sc.hasNextLine()) {
+//                    String line = sc.nextLine();
+//                    Row row = codec.convertStorageEntryToKV(line);
+//                    if (row.id_word_key()..equals(inputtedKeyForDeletion)){
+//                        isExist = true;
+//                    } else{
+//                        if (isFirstRow) {
+//                            isFirstRow = false;
+//                        } else {
+//                            fileWriter.write(System.lineSeparator());
+//                        }
+//                        fileWriter.write(codec.convertKVToStorageEntry(row));
+//                    }
+//                }
+//            } catch (IOException | NoSuchElementException | IllegalStateException | NullPointerException |
+//                     SecurityException e) {
+//                throw new DictionaryNotFoundException("deleteByKey");
+//            }
+//            try {
+//                mainFile.delete();
+//                tempFile.renameTo(mainFile);
+//            } catch (SecurityException | NullPointerException e) {
+//                throw new DictionaryNotFoundException("deleteByKey");
+//            }
+//
+//        }
+//        return isExist;
+//    }
 
     /**
      * Encapsulates the format in which the line in the file is stored.
@@ -193,7 +208,7 @@ public class Dao implements DaoInterface {
          * @return String consisting of a key and value with a given separator.
          */
         public String convertKVToStorageEntry(Row row) {
-            return row.getKey() + KEY_VALUE_SEPARATOR_FOR_STORAGE + row.getValue();
+            return row.getId_word_key() + KEY_VALUE_SEPARATOR_FOR_STORAGE + row.getId_word_value();
         }
 
         /**
@@ -203,14 +218,14 @@ public class Dao implements DaoInterface {
          * @throws DictionaryNotFoundException <code>encode.length</code> is smaller than <code>NUMBER_FOR_SPLIT</code>(ArrayIndexOutOfBoundsException).
          *                                     if the regular expression's syntax is invalid(PatternSyntaxException).
          */
-        public Row convertStorageEntryToKV(String lineFromFile) {
-            try {
-                String[] encode = lineFromFile.split(KEY_VALUE_SEPARATOR_FOR_STORAGE, NUMBER_FOR_SPLIT);
-                return new Row(encode[KEY_SERIAL_NUMBER], encode[VALUE_SERIAL_NUMBER]);
-
-            } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
-                throw new DictionaryNotFoundException("convertStorageEntryToKV");
-            }
-        }
+//        public Row convertStorageEntryToKV(String lineFromFile) {
+//            try {
+//                String[] encode = lineFromFile.split(KEY_VALUE_SEPARATOR_FOR_STORAGE, NUMBER_FOR_SPLIT);
+//                return new Row(encode[KEY_SERIAL_NUMBER], encode[VALUE_SERIAL_NUMBER]);
+//
+//            } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
+//                throw new DictionaryNotFoundException("convertStorageEntryToKV");
+//            }
+//        }
     }
 }
