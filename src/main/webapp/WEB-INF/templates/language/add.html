@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <title>Add row</title>
+</head>
+<body>
+
+<div>
+    <form th:action="@{/language/add}" th:object="${language}" th:method="POST" accept-charset="UTF-8">
+        <input type="text" th:field="*{languageName}" placeholder="Введите название языка (кр. описание)"><br>
+        <input type="text" th:field="*{languageRule}" placeholder="Введите правило (паттерн)"><br>
+
+        <button type="submit" value="add-language">Сохранить</button>
+    </form>
+
+    <a th:href="@{/delete_row(id = ${id})}"
+       th:text="Delete"></a>
+
+    <a th:href="@{/search_row(id = ${id})}"
+       th:text="Search"></a>
+
+    <a th:href="@{/main}">Back to choose</a>
+</div>
+
+</body>
+</html>

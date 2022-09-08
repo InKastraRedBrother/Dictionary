@@ -1,16 +1,10 @@
 package ru.dictionary.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class Word {
-    private long word_id;
-    private String word_value;
-    private long language_id;
+    private String wordId;
+    private String wordValue;
+    private String languageId;
 }

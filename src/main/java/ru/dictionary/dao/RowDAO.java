@@ -11,16 +11,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.regex.PatternSyntaxException;
 
-/**
- * Contains business logic.
- */
+import static ru.dictionary.dao.Util.Util.ELEMENTS_SEPARATOR;
+
 @Component
 public class RowDAO implements InterfaceDAOWord {
 
     private static final String TEMPORARY_FILENAME = "temp.txt";
-    private static final String PATH_TO_DIRECTORY = System.getProperty("user.dir") + File.separator;
+    private final static String PATH_TO_ROW_STORAGE_DIRECTORY = System.getProperty("user.dir");
+    private final static String ROW_STORAGE_PATH_AND_FILENAME = PATH_TO_ROW_STORAGE_DIRECTORY + File.separator + "row.txt";
 
-    private Codec codec;
+    private final Codec codec;
 
     /**
      * Empty constructor that create directory for storage files, if they not exist.
@@ -28,38 +28,23 @@ public class RowDAO implements InterfaceDAOWord {
      * @throws DictionaryNotFoundException If a security manager exists and its SecurityManager.checkRead(String) method denies read access to the file(SecurityException).
      *                                     If the <code>pathname</code> argument is <code>null</code> (NullPointerException).
      */
-
     public RowDAO() {
         this.codec = new Codec();
+
+        File directory = new File(PATH_TO_ROW_STORAGE_DIRECTORY);
+        File rowFile = getRowStorageTxtFile();
+
         try {
-            File directory = new File(PATH_TO_DIRECTORY);
-            if (!directory.exists()) {
-                directory.mkdir();
+            if ((!directory.mkdir() == directory.exists()) && !(!rowFile.createNewFile() == rowFile.exists())) {
+                System.out.println("throw new DictionaryNotFoundException();");
             }
-        } catch (SecurityException | NullPointerException e) {
-            throw new DictionaryNotFoundException();
+        } catch (IOException e) {
+            throw new DictionaryNotFoundException("Error creating storage");
         }
     }
 
-
-    /**
-     * Create file if file not exists.
-     *
-     * @param fileName String that contains Path to file and its name.
-     * @return created file.
-     * @throws DictionaryNotFoundException if path will be invalid (IOException).
-     *                                     If a security manager exists and its SecurityManager.checkRead(String) method denies read access to the file(SecurityException).
-     */
-    private File createFile(String fileName) {
-        try {
-            File file = new File(PATH_TO_DIRECTORY);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            return file;
-        } catch (IOException | SecurityException e) {
-            throw new DictionaryNotFoundException("createFile");
-        }
+    private File getRowStorageTxtFile() {
+        return new File(ROW_STORAGE_PATH_AND_FILENAME);
     }
 
     /**
@@ -69,18 +54,18 @@ public class RowDAO implements InterfaceDAOWord {
      * @throws DictionaryNotFoundException if no line was found (NoSuchElementException).
      *                                     if scanner is closed (IllegalStateException).
      */
-//    public List<Row> findAll(String fileName) {
-//        List<Row> listRow = new ArrayList<>();
-//        File file = new File(fileName);
-//        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
-//            while (sc.hasNextLine()) {
-//                listRow.add(codec.convertStorageEntryToKV(sc.nextLine()));
-//            }
-//        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
-//            throw new DictionaryNotFoundException("findAll");
-//        }
-//        return listRow;
-//    }
+    public List<Row> findAll() {
+        List<Row> listRow = new ArrayList<>();
+        File rowFile = getRowStorageTxtFile();
+        try (Scanner sc = new Scanner(rowFile, StandardCharsets.UTF_8)) {
+            while (sc.hasNextLine()) {
+                listRow.add(codec.convertFromStorageFormatToObjectFormat(sc.nextLine()));
+            }
+        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
+            throw new DictionaryNotFoundException("findAll");
+        }
+        return listRow;
+    }
 
     /**
      * Save given pair - key value in storage.
@@ -92,22 +77,17 @@ public class RowDAO implements InterfaceDAOWord {
      *                                     or cannot be opened for any other reason (IOException).
      *                                     If a security manager exists and its SecurityManager.checkRead(String) method denies read access to the file(SecurityException).
      */
-    public boolean save(Row row, String fileName) {
-        File file = createFile(fileName);
-        try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8, true)) {
-            if (file.length() != 0) {
+    public boolean save(Row row) {
+        File rowsStorage = getRowStorageTxtFile();
+        try (FileWriter fileWriter = new FileWriter(rowsStorage, StandardCharsets.UTF_8, true)) {
+            if (rowsStorage.length() != 0) {
                 fileWriter.write(System.lineSeparator());
             }
-            fileWriter.write(codec.convertKVToStorageEntry(row));
+            fileWriter.write(codec.convertFromObjectFormatToStorageFormat(row));
         } catch (IOException | SecurityException e) {
-            throw new DictionaryNotFoundException("SAVE");
+            throw new DictionaryNotFoundException("problem with save method");
         }
         return true;
-    }
-/* Need to be deleted after*/
-    @Override
-    public List<Row> findAll(String fileName) {
-        return null;
     }
 
     @Override
@@ -197,18 +177,19 @@ public class RowDAO implements InterfaceDAOWord {
      * Encapsulates the format in which the line in the file is stored.
      */
     private static class Codec {
-        private static final String KEY_VALUE_SEPARATOR_FOR_STORAGE = ":";
-        private static final int NUMBER_FOR_SPLIT = 2;
-        private static final int KEY_SERIAL_NUMBER = 0;
-        private static final int VALUE_SERIAL_NUMBER = 1;
+
+        private static final int NUMBER_FOR_SPLIT = Row.class.getDeclaredFields().length;
+        private static final int UUID_ROW_SERIAL_NUMBER = 0;
+        private static final int ID_WORD_KEY_SERIAL_NUMBER = 1;
+        private static final int ID_WORD_VALUE_SERIAL_NUMBER = 2;
 
         /**
          * Convert key and value into a String to storage format.
          *
          * @return String consisting of a key and value with a given separator.
          */
-        public String convertKVToStorageEntry(Row row) {
-            return row.getId_word_key() + KEY_VALUE_SEPARATOR_FOR_STORAGE + row.getId_word_value();
+        public String convertFromObjectFormatToStorageFormat(Row row) {
+            return row.getIdRow() + ELEMENTS_SEPARATOR + row.getIdWordKey() + ELEMENTS_SEPARATOR + row.getIdWordValue();
         }
 
         /**
@@ -218,14 +199,18 @@ public class RowDAO implements InterfaceDAOWord {
          * @throws DictionaryNotFoundException <code>encode.length</code> is smaller than <code>NUMBER_FOR_SPLIT</code>(ArrayIndexOutOfBoundsException).
          *                                     if the regular expression's syntax is invalid(PatternSyntaxException).
          */
-//        public Row convertStorageEntryToKV(String lineFromFile) {
-//            try {
-//                String[] encode = lineFromFile.split(KEY_VALUE_SEPARATOR_FOR_STORAGE, NUMBER_FOR_SPLIT);
-//                return new Row(encode[KEY_SERIAL_NUMBER], encode[VALUE_SERIAL_NUMBER]);
-//
-//            } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
-//                throw new DictionaryNotFoundException("convertStorageEntryToKV");
-//            }
-//        }
+        public Row convertFromStorageFormatToObjectFormat(String lineFromFile) {
+            try {
+                String[] encode = lineFromFile.split(ELEMENTS_SEPARATOR, NUMBER_FOR_SPLIT);
+                Row row = new Row();
+                row.setIdRow(encode[UUID_ROW_SERIAL_NUMBER]);
+                row.setIdWordKey(encode[ID_WORD_KEY_SERIAL_NUMBER]);
+                row.setIdWordValue(encode[ID_WORD_VALUE_SERIAL_NUMBER]);
+                return row;
+
+            } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
+                throw new DictionaryNotFoundException("convertStorageEntryToKV");
+            }
+        }
     }
 }

@@ -6,7 +6,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dictionary</groupId>
-    <artifactId>Dictionary-1.0</artifactId>
+    <artifactId>Dictionary</artifactId>
     <version>1.0</version>
     <properties>
         <org.springframework.version>5.3.20</org.springframework.version>
