@@ -51,6 +51,29 @@ public class ServiceRow {
         return builtRowList;
     }
 
+    public List<BuiltRow> findAllBySelectedLanguageId(String languageSourceId, String languageTargetId) {
+
+
+        List<Word> listWords = serviceWord.getListByLanguageUUID(languageSourceId);
+        List<Row> listRows = dao.findAll();
+        List<BuiltRow> listBuiltRow = new ArrayList<>();
+        for (Word word : listWords) {
+            BuiltRow builtRow = new BuiltRow();
+            String keyWord = word.getWordId();
+            for (Row row : listRows) {
+                if (row.getIdWordKey().equals(keyWord)) {
+                    builtRow.setNameLanguageOfKey(serviceLanguage.getLanguageById(languageSourceId).getLanguageName());
+                    builtRow.setKey(word.getWordValue());
+                    Word wordTemp = serviceWord.getWordById(row.getIdWordValue());
+                    builtRow.setValue(wordTemp.getWordValue());
+                    builtRow.setNameLanguageOfValue(serviceWord.getLanguageByWordId(wordTemp.getLanguageId()).getLanguageName());
+                    listBuiltRow.add(builtRow);
+                }
+            }
+        }
+        return listBuiltRow;
+    }
+
     public void addPair(RequestAddPairWordsDTO requestAddPairWordsDTO) {
 
         String uuidWordKey = UUID.randomUUID().toString();

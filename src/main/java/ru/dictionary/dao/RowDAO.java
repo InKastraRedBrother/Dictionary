@@ -12,13 +12,13 @@ import java.util.*;
 import java.util.regex.PatternSyntaxException;
 
 import static ru.dictionary.dao.Util.Util.ELEMENTS_SEPARATOR;
+import static ru.dictionary.dao.Util.Util.PATH_TO_STORAGE_DIRECTORY;
 
 @Component
 public class RowDAO implements InterfaceDAOWord {
 
     private static final String TEMPORARY_FILENAME = "temp.txt";
-    private final static String PATH_TO_ROW_STORAGE_DIRECTORY = System.getProperty("user.dir");
-    private final static String ROW_STORAGE_PATH_AND_FILENAME = PATH_TO_ROW_STORAGE_DIRECTORY + File.separator + "row.txt";
+    private final static String ROW_STORAGE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + "row.txt";
 
     private final Codec codec;
 
@@ -31,7 +31,7 @@ public class RowDAO implements InterfaceDAOWord {
     public RowDAO() {
         this.codec = new Codec();
 
-        File directory = new File(PATH_TO_ROW_STORAGE_DIRECTORY);
+        File directory = new File(PATH_TO_STORAGE_DIRECTORY);
         File rowFile = getRowStorageTxtFile();
 
         try {

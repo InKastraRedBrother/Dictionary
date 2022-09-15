@@ -1,12 +1,13 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <div th:replace="fragments/components :: header"></div>
     <title>Add row</title>
 </head>
+
 <body>
-<div th:replace="fragments/components :: header"></div>
+
 <div>
     <form th:action="@{/add-row}" th:object="${requestAddPairWordsDTO}" method="post"
           accept-charset="UTF-8">

@@ -8,23 +8,25 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import static ru.dictionary.dao.Util.Util.ELEMENTS_SEPARATOR;
-import static ru.dictionary.dao.Util.Util.PATH_TO_WORD_STORAGE_DIRECTORY;
+import static ru.dictionary.dao.Util.Util.PATH_TO_STORAGE_DIRECTORY;
 
 @Component
 public class WordDAO {
 
-    private final static String WORD_STORAGE_PATH_AND_FILENAME = PATH_TO_WORD_STORAGE_DIRECTORY + File.separator + "word.txt";
+    private final static String WORD_STORAGE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + "word.txt";
     private final Codec codec;
 
 
     public WordDAO() throws IOException {
         this.codec = new Codec();
 
-        File directory = new File(PATH_TO_WORD_STORAGE_DIRECTORY);
+        File directory = new File(PATH_TO_STORAGE_DIRECTORY);
         File wordFile = getWordStorageTxtFile();
 
         try {
@@ -65,6 +67,22 @@ public class WordDAO {
             throw new DictionaryNotFoundException("findByKey");
         }
         return null; //TODO вернуть Optional
+    }
+
+    public List<Word> searchAllById(String languageUUID) {
+        List<Word> listOfWordsWithProperLanguage = new ArrayList<>();
+        File fileWithWords = getWordStorageTxtFile();
+        try (Scanner sc = new Scanner(fileWithWords, StandardCharsets.UTF_8)) {
+            while (sc.hasNextLine()) {
+                Word word = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
+                if (word.getLanguageId().equals(languageUUID)) {
+                    listOfWordsWithProperLanguage.add(word);
+                }
+            }
+            return listOfWordsWithProperLanguage;
+        } catch (IOException | NoSuchElementException | IllegalStateException e) {
+            throw new DictionaryNotFoundException("findByKey");
+        }
     }
 
     private static class Codec {

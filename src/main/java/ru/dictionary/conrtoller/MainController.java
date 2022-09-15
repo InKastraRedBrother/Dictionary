@@ -57,9 +57,12 @@ public class MainController {
     }
 
     @GetMapping("/view-rows/result")
-    public String showAllRowsBySelectedOption(@RequestParam(name = "dropDownListSourceLanguage") String languageSourceId, @RequestParam(name = "dropDownListTargetLanguage") String languageTargetId) {
-        System.out.println(languageSourceId);
-        System.out.println(languageTargetId);
+    public String showAllRowsBySelectedOption(@ModelAttribute BuiltRow builtRow,
+                                              @RequestParam(name = "dropDownListSourceLanguage") String languageSourceId,
+                                              @RequestParam(name = "dropDownListTargetLanguage") String languageTargetId,
+                                              Model model) {
+        List<BuiltRow> listBuiltRows = serviceRow.findAllBySelectedLanguageId(languageSourceId, languageTargetId);
+        model.addAttribute("listBuiltRows", listBuiltRows);
         return "view-rows";
     }
 

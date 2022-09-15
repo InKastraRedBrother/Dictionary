@@ -104,8 +104,6 @@ public class LanguageDAO implements LanguageDAOInterface {
         private static final int LANGUAGE_RULE_SERIAL_NUMBER = 2;
 
         public String convertFromObjectFormatToStorageFormat(Language language) { //mapper
-//            language = new Language(language.getLanguageName(), language.getLanguageRule()); //TODO норм или нет? либо здесь явный new и через кастомный конструктор
-//             TODO либо в сервисе явно через сеттер вызывать uuid
             return language.getLanguageId() + ELEMENTS_SEPARATOR + language.getLanguageName() + ELEMENTS_SEPARATOR + language.getLanguageRule();
         }
 

@@ -6,6 +6,8 @@ import ru.dictionary.dao.WordDAO;
 import ru.dictionary.model.Language;
 import ru.dictionary.model.Word;
 
+import java.util.List;
+
 @Component
 @AllArgsConstructor
 public class ServiceWord {
@@ -21,12 +23,16 @@ public class ServiceWord {
         wordDAO.saveWord(word);
     }
 
+    public List<Word> getListByLanguageUUID(String languageUUID){
+        return wordDAO.searchAllById(languageUUID);
+    }
+
     public Word getWordById(String uuidWord) {
         return wordDAO.searchById(uuidWord);
     }
 
-    public Language getLanguageByWordId(Word word) {
-        return serviceLanguage.getLanguageById(word.getLanguageId());
+    public Language getLanguageByWordId(String uuidWord) {
+        return serviceLanguage.getLanguageById(uuidWord);
 
     }
 }

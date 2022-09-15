@@ -1,15 +1,12 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>View All Rows</title>
 </head>
 <body>
 <div class="container">
-
-        <form th:action="@{/view-rows/result(languageSourceId = ${languageWord.languageId}, targetLanguageId = ${languageTranslate.languageId})}"
-              th:object="${listLanguage}" th:method="GET">
-        </form>
+    <table class="table table-bordered">
 
         <form th:action="@{/view-rows/result(dropDownListSourceLanguage=${dropDownListSourceLanguage}, dropDownListTargetLanguage=${dropDownListTargetLanguage})}"
               th:object="${listLanguage}" th:method="GET"
@@ -50,7 +47,7 @@
             </tr>
             </tbody>
         </table>
-
+    </table>
         <br>
 
         <a th:href="@{/add-row}"
