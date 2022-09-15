@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <div th:replace="fragments/components :: header"></div>
+    <title>Add row</title>
+</head>
+<body>
+<div th:replace="fragments/components :: header"></div>
+<div>
+    <form th:action="@{/add-row}" th:object="${requestAddPairWordsDTO}" method="post"
+          accept-charset="UTF-8">
+
+        <select class="form-control" name="languageSourceId" id="languageSourceId">
+            <option value="0">Выберите язык слова</option>
+            <option th:each="languageWord : ${listLanguage}" th:value="${languageWord.languageId}"
+                    th:text="${languageWord.languageName}"></option>
+        </select>
+
+        <select class="form-control" name="languageTargetId" id="languageTargetId">
+            <option value="0">Выберите язык перевода</option>
+            <option th:each="languageTranslate : ${listLanguage}" th:value="${languageTranslate.languageId}"
+                    th:text="${languageTranslate.languageName}"></option>
+        </select>
+
+        <input type="text" th:field="*{wordKey}" placeholder="Введите ключ"><br>
+        <input type="text" th:field="*{wordValue}" placeholder="Введите значение"><br>
+
+        <button type="submit" value="add-row">Сохранить строку</button>
+    </form>
+
+    <a th:href="@{/main}">Back to choose</a>
+</div>
+
+</body>
+</html>

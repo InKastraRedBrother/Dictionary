@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * Interface provide methods to work with data which stored in file.
  */
-public interface DaoInterface {
+public interface InterfaceDAOWord {
     /**
      * Save given row in given file.
      *
@@ -16,7 +16,7 @@ public interface DaoInterface {
      * @param fileName the name of the file where the data will be stored.
      * @return true if row is stored, else false.
      */
-    boolean save(Row row, String fileName);
+    boolean save(Row row);
 
     /**
      * Show all data from file
@@ -24,7 +24,7 @@ public interface DaoInterface {
      * @param fileName this is the name of the file to get data from.
      * @return <code>List<code/> which contains data from file.
      */
-    List<Row> findAll(String fileName);
+    List<Row> findAll();
 
     /**
      * Search one row from file.
