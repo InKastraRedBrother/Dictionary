@@ -51,7 +51,7 @@ public class WordDAO {
         }
     }
 
-    public Word searchById(UUID UUIDWord) {
+    public Word searchByUUID(UUID UUIDWord) {
         File fileWithWords = getWordStorageTxtFile();
         try (Scanner sc = new Scanner(fileWithWords, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
@@ -66,7 +66,7 @@ public class WordDAO {
         return null; //TODO вернуть Optional
     }
 
-    public List<Word> searchAllById(UUID languageUUID) {
+    public List<Word> searchAllByUUID(UUID languageUUID) {
         List<Word> listOfWordsWithProperLanguage = new ArrayList<>();
         File fileWithWords = getWordStorageTxtFile();
         try (Scanner sc = new Scanner(fileWithWords, StandardCharsets.UTF_8)) {

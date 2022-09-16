@@ -77,12 +77,12 @@ public class LanguageDAO implements LanguageDAOInterface {
     }
 
     @Override
-    public Language searchById(UUID uuidLanguage) {
+    public Language searchByUUID(UUID languageUUID) {
         File file = getLanguageTxtFile();
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
                 Language language = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
-                if (language.getLanguageUUID().equals(uuidLanguage)) {
+                if (language.getLanguageUUID().equals(languageUUID)) {
                     return language;
                 }
             }

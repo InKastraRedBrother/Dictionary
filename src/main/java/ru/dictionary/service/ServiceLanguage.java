@@ -23,7 +23,7 @@ public class ServiceLanguage {
         return languageDAO.saveLanguage(language);
     }
 
-    public Language getLanguageById(UUID uuidLanguage) {
-        return languageDAO.searchById(uuidLanguage);
+    public Language getLanguageByUUID(UUID languageUUID) {
+        return languageDAO.searchByUUID(languageUUID);
     }
 }

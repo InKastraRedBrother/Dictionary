@@ -59,14 +59,14 @@ public class MainController {
 
     @GetMapping("/view-rows/result")
     public String showAllRowsBySelectedOption(@ModelAttribute BuiltRow builtRow,
-                                              @RequestParam(name = "dropDownListSourceLanguage") UUID languageSourceId,
-                                              @RequestParam(name = "dropDownListTargetLanguage") UUID languageTargetId,
+                                              @RequestParam(name = "dropDownListSourceLanguage") UUID languageSourceUUID,
+                                              @RequestParam(name = "dropDownListTargetLanguage") UUID languageTargetUUID,
                                               Model model) {
 
         List<Language> listLanguage = serviceLanguage.findAllLanguages();
         model.addAttribute("listLanguage", listLanguage);
 
-        List<BuiltRow> listBuiltRows = serviceRow.findAllBySelectedLanguageId(languageSourceId, languageTargetId);
+        List<BuiltRow> listBuiltRows = serviceRow.findAllBySelectedLanguageUUID(languageSourceUUID, languageTargetUUID);
         model.addAttribute("listBuiltRows", listBuiltRows);
         return "view-rows";
     }

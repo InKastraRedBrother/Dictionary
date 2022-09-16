@@ -6,8 +6,8 @@ import java.util.UUID;
 
 @Data
 public class RequestAddPairWordsDTO {
-    private UUID languageSourceId;
-    private UUID languageTargetId;
+    private UUID languageSourceUUID;
+    private UUID languageTargetUUID;
     private String wordKey;
     private String wordValue;
 }

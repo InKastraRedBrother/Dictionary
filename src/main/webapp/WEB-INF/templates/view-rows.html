@@ -14,13 +14,13 @@
 
             <select class="form-control" name="dropDownListSourceLanguage" id="dropDownListSourceLanguage">
                 <option value="0">Выберите язык слова</option>
-                <option th:each="languageWord : ${listLanguage}" th:value="${languageWord.languageId}"
+                <option th:each="languageWord : ${listLanguage}" th:value="${languageWord.languageUUID}"
                         th:text="${languageWord.languageName}"></option>
             </select>
 
             <select class="form-control" name="dropDownListTargetLanguage" id="dropDownListTargetLanguage">
                 <option value="0">Выберите язык перевода</option>
-                <option th:each="languageTranslate : ${listLanguage}" th:value="${languageTranslate.languageId}"
+                <option th:each="languageTranslate : ${listLanguage}" th:value="${languageTranslate.languageUUID}"
                         th:text="${languageTranslate.languageName}"></option>
             </select>
 

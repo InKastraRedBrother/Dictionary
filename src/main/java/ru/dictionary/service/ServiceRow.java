@@ -37,12 +37,12 @@ public class ServiceRow {
 
             BuiltRow builtRow = new BuiltRow();
 
-            Word wordKey = serviceWord.getWordById(listWithRawRow.getWordKeyUUID());
-            Word wordValue = serviceWord.getWordById(listWithRawRow.getWordValueUUID());
+            Word wordKey = serviceWord.getWordByUUID(listWithRawRow.getWordKeyUUID());
+            Word wordValue = serviceWord.getWordByUUID(listWithRawRow.getWordValueUUID());
             builtRow.setKey(wordKey.getWordValue());
             builtRow.setValue(wordValue.getWordValue());
-            Language languageKeyWord = serviceLanguage.getLanguageById(wordKey.getWordLanguageUUID());
-            Language languageValueWord = serviceLanguage.getLanguageById(wordValue.getWordLanguageUUID());
+            Language languageKeyWord = serviceLanguage.getLanguageByUUID(wordKey.getWordLanguageUUID());
+            Language languageValueWord = serviceLanguage.getLanguageByUUID(wordValue.getWordLanguageUUID());
             builtRow.setNameLanguageOfKey(languageKeyWord.getLanguageName());
             builtRow.setNameLanguageOfValue(languageValueWord.getLanguageName());
 
@@ -51,10 +51,10 @@ public class ServiceRow {
         return builtRowList;
     }
 
-    public List<BuiltRow> findAllBySelectedLanguageId(UUID languageSourceId, UUID languageTargetId) {
+    public List<BuiltRow> findAllBySelectedLanguageUUID(UUID languageSourceUUID, UUID languageTargetUUID) {
 
 
-        List<Word> listWords = serviceWord.getListByLanguageUUID(languageSourceId);
+        List<Word> listWords = serviceWord.getListByLanguageUUID(languageSourceUUID);
         List<Row> listRows = dao.findAll();
         List<BuiltRow> listBuiltRow = new ArrayList<>();
         for (Word word : listWords) {
@@ -62,11 +62,11 @@ public class ServiceRow {
             UUID keyWord = word.getWordUUID();
             for (Row row : listRows) {
                 if (row.getWordKeyUUID().equals(keyWord)) {
-                    builtRow.setNameLanguageOfKey(serviceLanguage.getLanguageById(languageSourceId).getLanguageName());
+                    builtRow.setNameLanguageOfKey(serviceLanguage.getLanguageByUUID(languageSourceUUID).getLanguageName());
                     builtRow.setKey(word.getWordValue());
-                    Word wordTemp = serviceWord.getWordById(row.getWordValueUUID());
+                    Word wordTemp = serviceWord.getWordByUUID(row.getWordValueUUID());
                     builtRow.setValue(wordTemp.getWordValue());
-                    builtRow.setNameLanguageOfValue(serviceWord.getLanguageByWordId(wordTemp.getWordLanguageUUID()).getLanguageName());
+                    builtRow.setNameLanguageOfValue(serviceWord.getLanguageByWordUUID(wordTemp.getWordLanguageUUID()).getLanguageName());
                     listBuiltRow.add(builtRow);
                 }
             }
@@ -76,16 +76,16 @@ public class ServiceRow {
 
     public void addPair(RequestAddPairWordsDTO requestAddPairWordsDTO) {
 
-        UUID uuidWordKey = UUID.randomUUID();
-        UUID uuidWordValue = UUID.randomUUID();
+        UUID wordKeyUUID = UUID.randomUUID();
+        UUID wordValueUUID = UUID.randomUUID();
 
-        serviceWord.addWord(uuidWordKey, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceId());
-        serviceWord.addWord(uuidWordValue, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetId());
+        serviceWord.addWord(wordKeyUUID, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceUUID());
+        serviceWord.addWord(wordValueUUID, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetUUID());
 
         Row row = new Row();
         row.setRowUUID(UUID.randomUUID());
-        row.setWordKeyUUID(uuidWordKey);
-        row.setWordValueUUID(uuidWordValue);
+        row.setWordKeyUUID(wordKeyUUID);
+        row.setWordValueUUID(wordValueUUID);
 
         dao.save(row);
     }

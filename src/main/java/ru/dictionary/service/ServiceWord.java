@@ -15,25 +15,25 @@ public class ServiceWord {
     WordDAO wordDAO;
     ServiceLanguage serviceLanguage;
 
-    public void addWord(UUID uuidWordId, String wordValue, UUID uuidLanguageId) {
+    public void addWord(UUID wordUUID, String wordValue, UUID wordLanguageUUID) {
         Word word = new Word();
-        word.setWordUUID(uuidWordId);
+        word.setWordUUID(wordUUID);
         word.setWordValue(wordValue);
-        word.setWordLanguageUUID(uuidLanguageId);
+        word.setWordLanguageUUID(wordLanguageUUID);
 
         wordDAO.saveWord(word);
     }
 
     public List<Word> getListByLanguageUUID(UUID languageUUID){
-        return wordDAO.searchAllById(languageUUID);
+        return wordDAO.searchAllByUUID(languageUUID);
     }
 
-    public Word getWordById(UUID uuidWord) {
-        return wordDAO.searchById(uuidWord);
+    public Word getWordByUUID(UUID wordUUID) {
+        return wordDAO.searchByUUID(wordUUID);
     }
 
-    public Language getLanguageByWordId(UUID uuidWord) {
-        return serviceLanguage.getLanguageById(uuidWord);
+    public Language getLanguageByWordUUID(UUID wordUUID) {
+        return serviceLanguage.getLanguageByUUID(wordUUID);
 
     }
 }

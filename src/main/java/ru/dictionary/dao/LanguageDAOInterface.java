@@ -10,7 +10,7 @@ public interface LanguageDAOInterface {
 
     List<Language> getAllLanguages();
 
-    Language searchById(UUID languageUUID) throws IOException;
+    Language searchByUUID(UUID languageUUID) throws IOException;
 
     boolean saveLanguage(Language language);
 
