@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface LanguageDAOInterface {
 
-    List<String> getAllLanguages();
+    List<Language> getAllLanguages();
 
     Language searchById(UUID id) throws IOException;
 

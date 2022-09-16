@@ -60,15 +60,15 @@ public class LanguageDAO implements LanguageDAOInterface {
     }
 
     @Override
-    public List<String> getAllLanguages() {
+    public List<Language> getAllLanguages() {
 
         File file = getLanguageTxtFile();
 
-        List<String> listStringsFromStorage = new ArrayList<>();
+        List<Language> listStringsFromStorage = new ArrayList<>();
 
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
-                listStringsFromStorage.add(sc.nextLine());
+                listStringsFromStorage.add(codec.convertFromStorageFormatToObjectFormat(sc.nextLine()));
             }
         } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
             throw new DictionaryNotFoundException("findAll languages");
