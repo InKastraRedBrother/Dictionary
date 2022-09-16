@@ -6,8 +6,7 @@ import java.util.UUID;
 
 @Data
 public class Language {
-    private UUID languageId;
+    private UUID languageUUID;
     private String languageName;
     private String languageRule;
-
 }

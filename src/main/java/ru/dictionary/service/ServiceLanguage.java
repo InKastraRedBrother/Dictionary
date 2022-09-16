@@ -19,7 +19,7 @@ public class ServiceLanguage {
     }
 
     public boolean addLanguage(Language language) {
-        language.setLanguageId(UUID.randomUUID());
+        language.setLanguageUUID(UUID.randomUUID());
         return languageDAO.saveLanguage(language);
     }
 

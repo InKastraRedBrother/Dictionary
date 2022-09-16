@@ -17,9 +17,9 @@ public class ServiceWord {
 
     public void addWord(UUID uuidWordId, String wordValue, UUID uuidLanguageId) {
         Word word = new Word();
-        word.setWordId(uuidWordId);
+        word.setWordUUID(uuidWordId);
         word.setWordValue(wordValue);
-        word.setLanguageId(uuidLanguageId);
+        word.setWordLanguageUUID(uuidLanguageId);
 
         wordDAO.saveWord(word);
     }

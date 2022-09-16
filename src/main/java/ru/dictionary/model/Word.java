@@ -8,7 +8,7 @@ import java.util.UUID;
 @Data
 @ToString
 public class Word {
-    private UUID wordId;
+    private UUID wordUUID;
     private String wordValue;
-    private UUID languageId;
+    private UUID wordLanguageUUID;
 }

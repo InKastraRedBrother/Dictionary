@@ -56,7 +56,7 @@ public class WordDAO {
         try (Scanner sc = new Scanner(fileWithWords, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
                 Word word = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
-                if (word.getWordId().equals(UUIDWord)) {
+                if (word.getWordUUID().equals(UUIDWord)) {
                     return word;
                 }
             }
@@ -72,7 +72,7 @@ public class WordDAO {
         try (Scanner sc = new Scanner(fileWithWords, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
                 Word word = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
-                if (word.getLanguageId().equals(languageUUID)) {
+                if (word.getWordLanguageUUID().equals(languageUUID)) {
                     listOfWordsWithProperLanguage.add(word);
                 }
             }
@@ -90,15 +90,15 @@ public class WordDAO {
         private static final int WORD_LANGUAGE_ID_SERIAL_NUMBER = 2;
 
         public String convertFromObjectFormatToStorageFormat(Word word) { //mapper
-            return word.getWordId() + ELEMENTS_SEPARATOR + word.getWordValue() + ELEMENTS_SEPARATOR + word.getLanguageId();
+            return word.getWordUUID() + ELEMENTS_SEPARATOR + word.getWordValue() + ELEMENTS_SEPARATOR + word.getWordLanguageUUID();
         }
 
         public Word convertFromStorageFormatToObjectFormat(String lineFromFile) { //builder
             String[] arrayOfValue = lineFromFile.split(ELEMENTS_SEPARATOR, NUMBER_FOR_SPLIT); //перенести разделенире строки в сервис
             Word word = new Word();
-            word.setWordId(UUID.fromString(arrayOfValue[WORD_ID_SERIAL_NUMBER]));
+            word.setWordUUID(UUID.fromString(arrayOfValue[WORD_ID_SERIAL_NUMBER]));
             word.setWordValue(arrayOfValue[WORD_VALUE_SERIAL_NUMBER]);
-            word.setLanguageId(UUID.fromString(arrayOfValue[WORD_LANGUAGE_ID_SERIAL_NUMBER]));
+            word.setWordLanguageUUID(UUID.fromString(arrayOfValue[WORD_LANGUAGE_ID_SERIAL_NUMBER]));
             return word;
         }
     }

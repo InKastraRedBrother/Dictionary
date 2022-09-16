@@ -64,16 +64,16 @@ public class LanguageDAO implements LanguageDAOInterface {
 
         File file = getLanguageTxtFile();
 
-        List<Language> listStringsFromStorage = new ArrayList<>();
+        List<Language> listLanguagesFromStorage = new ArrayList<>();
 
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
-                listStringsFromStorage.add(codec.convertFromStorageFormatToObjectFormat(sc.nextLine()));
+                listLanguagesFromStorage.add(codec.convertFromStorageFormatToObjectFormat(sc.nextLine()));
             }
         } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
             throw new DictionaryNotFoundException("findAll languages");
         }
-        return listStringsFromStorage;
+        return listLanguagesFromStorage;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class LanguageDAO implements LanguageDAOInterface {
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
                 Language language = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
-                if (language.getLanguageId().equals(uuidLanguage)) {
+                if (language.getLanguageUUID().equals(uuidLanguage)) {
                     return language;
                 }
             }
@@ -101,13 +101,13 @@ public class LanguageDAO implements LanguageDAOInterface {
         private static final int LANGUAGE_RULE_SERIAL_NUMBER = 2;
 
         public String convertFromObjectFormatToStorageFormat(Language language) { //mapper
-            return language.getLanguageId() + ELEMENTS_SEPARATOR + language.getLanguageName() + ELEMENTS_SEPARATOR + language.getLanguageRule();
+            return language.getLanguageUUID() + ELEMENTS_SEPARATOR + language.getLanguageName() + ELEMENTS_SEPARATOR + language.getLanguageRule();
         }
 
         public Language convertFromStorageFormatToObjectFormat(String lineFromFile) { //builder
             String[] arrayOfValue = lineFromFile.split(ELEMENTS_SEPARATOR, NUMBER_FOR_SPLIT); //перенести разделенире строки в сервис
             Language language = new Language();
-            language.setLanguageId(UUID.fromString(arrayOfValue[LANGUAGE_ID_SERIAL_NUMBER]));
+            language.setLanguageUUID(UUID.fromString(arrayOfValue[LANGUAGE_ID_SERIAL_NUMBER]));
             language.setLanguageName(arrayOfValue[LANGUAGE_NAME_SERIAL_NUMBER]);
             language.setLanguageRule(arrayOfValue[LANGUAGE_RULE_SERIAL_NUMBER]);
             return language;

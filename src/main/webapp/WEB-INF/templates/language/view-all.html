@@ -10,7 +10,7 @@
 
         <tbody>
         <tr th:each="language : ${listLanguages}">
-            <td th:text="${language.languageId}"></td>
+            <td th:text="${language.getLanguageUUID}"></td>
             <td th:text="${language.languageName}"></td>
             <td th:text="${language.languageRule}"></td>
         </tr>

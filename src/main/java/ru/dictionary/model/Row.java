@@ -9,9 +9,7 @@ import java.util.UUID;
  */
 @Data
 public class Row {
-
-    private UUID idRow;
-    private UUID idWordKey;
-    private UUID idWordValue;
-
+    private UUID rowUUID;
+    private UUID wordKeyUUID;
+    private UUID wordValueUUID;
 }

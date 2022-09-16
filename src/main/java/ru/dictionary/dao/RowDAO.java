@@ -189,7 +189,7 @@ public class RowDAO implements InterfaceDAOWord {
          * @return String consisting of a key and value with a given separator.
          */
         public String convertFromObjectFormatToStorageFormat(Row row) {
-            return row.getIdRow() + ELEMENTS_SEPARATOR + row.getIdWordKey() + ELEMENTS_SEPARATOR + row.getIdWordValue();
+            return row.getRowUUID() + ELEMENTS_SEPARATOR + row.getWordKeyUUID() + ELEMENTS_SEPARATOR + row.getWordValueUUID();
         }
 
         /**
@@ -203,9 +203,9 @@ public class RowDAO implements InterfaceDAOWord {
             try {
                 String[] encode = lineFromFile.split(ELEMENTS_SEPARATOR, NUMBER_FOR_SPLIT);
                 Row row = new Row();
-                row.setIdRow(UUID.fromString(encode[UUID_ROW_SERIAL_NUMBER]));
-                row.setIdWordKey(UUID.fromString(encode[ID_WORD_KEY_SERIAL_NUMBER]));
-                row.setIdWordValue(UUID.fromString(encode[ID_WORD_VALUE_SERIAL_NUMBER]));
+                row.setRowUUID(UUID.fromString(encode[UUID_ROW_SERIAL_NUMBER]));
+                row.setWordKeyUUID(UUID.fromString(encode[ID_WORD_KEY_SERIAL_NUMBER]));
+                row.setWordValueUUID(UUID.fromString(encode[ID_WORD_VALUE_SERIAL_NUMBER]));
                 return row;
 
             } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
