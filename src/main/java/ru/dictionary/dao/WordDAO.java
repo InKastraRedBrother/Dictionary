@@ -8,10 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 
 import static ru.dictionary.dao.Util.Util.ELEMENTS_SEPARATOR;
 import static ru.dictionary.dao.Util.Util.PATH_TO_STORAGE_DIRECTORY;
@@ -54,7 +51,7 @@ public class WordDAO {
         }
     }
 
-    public Word searchById(String UUIDWord) {
+    public Word searchById(UUID UUIDWord) {
         File fileWithWords = getWordStorageTxtFile();
         try (Scanner sc = new Scanner(fileWithWords, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
@@ -69,7 +66,7 @@ public class WordDAO {
         return null; //TODO вернуть Optional
     }
 
-    public List<Word> searchAllById(String languageUUID) {
+    public List<Word> searchAllById(UUID languageUUID) {
         List<Word> listOfWordsWithProperLanguage = new ArrayList<>();
         File fileWithWords = getWordStorageTxtFile();
         try (Scanner sc = new Scanner(fileWithWords, StandardCharsets.UTF_8)) {
@@ -99,9 +96,9 @@ public class WordDAO {
         public Word convertFromStorageFormatToObjectFormat(String lineFromFile) { //builder
             String[] arrayOfValue = lineFromFile.split(ELEMENTS_SEPARATOR, NUMBER_FOR_SPLIT); //перенести разделенире строки в сервис
             Word word = new Word();
-            word.setWordId(arrayOfValue[WORD_ID_SERIAL_NUMBER]);
+            word.setWordId(UUID.fromString(arrayOfValue[WORD_ID_SERIAL_NUMBER]));
             word.setWordValue(arrayOfValue[WORD_VALUE_SERIAL_NUMBER]);
-            word.setLanguageId(arrayOfValue[WORD_LANGUAGE_ID_SERIAL_NUMBER]);
+            word.setLanguageId(UUID.fromString(arrayOfValue[WORD_LANGUAGE_ID_SERIAL_NUMBER]));
             return word;
         }
     }

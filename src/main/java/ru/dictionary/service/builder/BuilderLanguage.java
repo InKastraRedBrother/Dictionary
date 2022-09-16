@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.dictionary.model.Language;
 
+import java.util.UUID;
+
 @Service
 @AllArgsConstructor
 public class BuilderLanguage {
@@ -15,7 +17,7 @@ public class BuilderLanguage {
 
         Language language = new Language();
 
-        language.setLanguageId(arrayStringOfRawLanguageRows[LANGUAGE_ID_SERIAL_NUMBER]);
+        language.setLanguageId(UUID.fromString(arrayStringOfRawLanguageRows[LANGUAGE_ID_SERIAL_NUMBER]));
         language.setLanguageName(arrayStringOfRawLanguageRows[LANGUAGE_NAME_SERIAL_NUMBER]);
         language.setLanguageRule(arrayStringOfRawLanguageRows[LANGUAGE_RULE_SERIAL_NUMBER]);
 

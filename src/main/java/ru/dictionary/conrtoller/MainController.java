@@ -16,6 +16,7 @@ import ru.dictionary.service.ServiceLanguage;
 import ru.dictionary.service.ServiceRow;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @AllArgsConstructor
@@ -58,9 +59,13 @@ public class MainController {
 
     @GetMapping("/view-rows/result")
     public String showAllRowsBySelectedOption(@ModelAttribute BuiltRow builtRow,
-                                              @RequestParam(name = "dropDownListSourceLanguage") String languageSourceId,
-                                              @RequestParam(name = "dropDownListTargetLanguage") String languageTargetId,
+                                              @RequestParam(name = "dropDownListSourceLanguage") UUID languageSourceId,
+                                              @RequestParam(name = "dropDownListTargetLanguage") UUID languageTargetId,
                                               Model model) {
+
+        List<Language> listLanguage = serviceLanguage.findAllLanguages();
+        model.addAttribute("listLanguage", listLanguage);
+
         List<BuiltRow> listBuiltRows = serviceRow.findAllBySelectedLanguageId(languageSourceId, languageTargetId);
         model.addAttribute("listBuiltRows", listBuiltRows);
         return "view-rows";

@@ -203,9 +203,9 @@ public class RowDAO implements InterfaceDAOWord {
             try {
                 String[] encode = lineFromFile.split(ELEMENTS_SEPARATOR, NUMBER_FOR_SPLIT);
                 Row row = new Row();
-                row.setIdRow(encode[UUID_ROW_SERIAL_NUMBER]);
-                row.setIdWordKey(encode[ID_WORD_KEY_SERIAL_NUMBER]);
-                row.setIdWordValue(encode[ID_WORD_VALUE_SERIAL_NUMBER]);
+                row.setIdRow(UUID.fromString(encode[UUID_ROW_SERIAL_NUMBER]));
+                row.setIdWordKey(UUID.fromString(encode[ID_WORD_KEY_SERIAL_NUMBER]));
+                row.setIdWordValue(UUID.fromString(encode[ID_WORD_VALUE_SERIAL_NUMBER]));
                 return row;
 
             } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {

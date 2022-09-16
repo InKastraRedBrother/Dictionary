@@ -34,11 +34,11 @@ public class ServiceLanguage {
     }
 
     public boolean addLanguage(Language language) {
-        language.setLanguageId(UUID.randomUUID().toString());
+        language.setLanguageId(UUID.randomUUID());
         return languageDAO.saveLanguage(language);
     }
 
-    public Language getLanguageById(String uuidLanguage) {
+    public Language getLanguageById(UUID uuidLanguage) {
         return languageDAO.searchById(uuidLanguage);
     }
 }

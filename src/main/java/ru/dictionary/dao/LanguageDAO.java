@@ -8,10 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 
 import static ru.dictionary.dao.Util.Util.ELEMENTS_SEPARATOR;
 
@@ -80,7 +77,7 @@ public class LanguageDAO implements LanguageDAOInterface {
     }
 
     @Override
-    public Language searchById(String uuidLanguage) {
+    public Language searchById(UUID uuidLanguage) {
         File file = getLanguageTxtFile();
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
@@ -110,7 +107,7 @@ public class LanguageDAO implements LanguageDAOInterface {
         public Language convertFromStorageFormatToObjectFormat(String lineFromFile) { //builder
             String[] arrayOfValue = lineFromFile.split(ELEMENTS_SEPARATOR, NUMBER_FOR_SPLIT); //перенести разделенире строки в сервис
             Language language = new Language();
-            language.setLanguageId(arrayOfValue[LANGUAGE_ID_SERIAL_NUMBER]);
+            language.setLanguageId(UUID.fromString(arrayOfValue[LANGUAGE_ID_SERIAL_NUMBER]));
             language.setLanguageName(arrayOfValue[LANGUAGE_NAME_SERIAL_NUMBER]);
             language.setLanguageRule(arrayOfValue[LANGUAGE_RULE_SERIAL_NUMBER]);
             return language;

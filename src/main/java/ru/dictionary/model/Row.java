@@ -1,6 +1,8 @@
 package ru.dictionary.model;
 
-import lombok.*;
+import lombok.Data;
+
+import java.util.UUID;
 
 /**
  * Model of row in application
@@ -8,8 +10,8 @@ import lombok.*;
 @Data
 public class Row {
 
-    private String idRow;
-    private String idWordKey;
-    private String idWordValue;
+    private UUID idRow;
+    private UUID idWordKey;
+    private UUID idWordValue;
 
 }

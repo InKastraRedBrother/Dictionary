@@ -51,7 +51,7 @@ public class ServiceRow {
         return builtRowList;
     }
 
-    public List<BuiltRow> findAllBySelectedLanguageId(String languageSourceId, String languageTargetId) {
+    public List<BuiltRow> findAllBySelectedLanguageId(UUID languageSourceId, UUID languageTargetId) {
 
 
         List<Word> listWords = serviceWord.getListByLanguageUUID(languageSourceId);
@@ -59,7 +59,7 @@ public class ServiceRow {
         List<BuiltRow> listBuiltRow = new ArrayList<>();
         for (Word word : listWords) {
             BuiltRow builtRow = new BuiltRow();
-            String keyWord = word.getWordId();
+            UUID keyWord = word.getWordId();
             for (Row row : listRows) {
                 if (row.getIdWordKey().equals(keyWord)) {
                     builtRow.setNameLanguageOfKey(serviceLanguage.getLanguageById(languageSourceId).getLanguageName());
@@ -76,14 +76,14 @@ public class ServiceRow {
 
     public void addPair(RequestAddPairWordsDTO requestAddPairWordsDTO) {
 
-        String uuidWordKey = UUID.randomUUID().toString();
-        String uuidWordValue = UUID.randomUUID().toString();
+        UUID uuidWordKey = UUID.randomUUID();
+        UUID uuidWordValue = UUID.randomUUID();
 
         serviceWord.addWord(uuidWordKey, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceId());
         serviceWord.addWord(uuidWordValue, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetId());
 
         Row row = new Row();
-        row.setIdRow(UUID.randomUUID().toString());
+        row.setIdRow(UUID.randomUUID());
         row.setIdWordKey(uuidWordKey);
         row.setIdWordValue(uuidWordValue);
 

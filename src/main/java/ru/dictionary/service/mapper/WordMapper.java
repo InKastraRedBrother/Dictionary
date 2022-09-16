@@ -11,7 +11,7 @@ public class WordMapper {
 
     public Word fromDTOToEntity(RequestAddPairWordsDTO requestAddPairWordsDTO) {
         Word word = new Word();
-        word.setWordId(UUID.randomUUID().toString());
+        word.setWordId(UUID.randomUUID());
         word.setWordValue(requestAddPairWordsDTO.getWordKey());
         word.setLanguageId(requestAddPairWordsDTO.getLanguageSourceId());
         return word;
