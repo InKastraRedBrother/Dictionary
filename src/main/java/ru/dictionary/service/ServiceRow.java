@@ -9,10 +9,7 @@ import ru.dictionary.model.Word;
 import ru.dictionary.model.dto.BuiltRow;
 import ru.dictionary.model.dto.RequestAddPairWordsDTO;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Establishes a set of available operations and coordinates the application's response in each operation.
@@ -25,60 +22,49 @@ public class ServiceRow {
     ServiceWord serviceWord;
     ServiceLanguage serviceLanguage;
 
+    private <V> Map<UUID, V> convertListToMap(List<V> list) {
+        Map<UUID, V> hashMap = new HashMap<>();
+
+        for (V elem : list) {
+            hashMap.put(UUID.fromString(elem.toString()), elem);
+        }
+        return hashMap;
+    }
 
     public List<BuiltRow> findAllRows() {
 
         List<Row> listRow = dao.findAll();
         List<Language> listLanguage = serviceLanguage.findAllLanguages();
-
-//        List<UUID> keyUUIDList = listRow.stream().map(Row::getWordKeyUUID).collect(Collectors.toList());
-
         List<Word> listWord = serviceWord.findAllWords();
 
-//        for (UUID uuid : keyUUIDList) {
-//            System.out.println(uuid);
-//        }
+        Map<UUID, Row> hashMapRow = convertListToMap(listRow);
+        Map<UUID, Language> hashMapLanguage = convertListToMap(listLanguage);
+        Map<UUID, Word> hashMapWord = convertListToMap(listWord);
 
-//        Map<UUID, Word> keysMap = new HashMap<>(); //TODO реализовать позже, когда будет продумана реализация хранения дублей Word
-//
-//        for (Word wordKey : wordKeys) {
-//            keysMap.put(wordKey.getWordUUID(), wordKey);
-//        }
         List<BuiltRow> builtRowList = new ArrayList<>();
-        for (Row row : listRow) {
 
+        for (UUID uuid : hashMapRow.keySet()) {
             BuiltRow builtRow = new BuiltRow();
 
-            for (Word word : listWord) {
-                for (Language language : listLanguage) {
-                    if (row.getWordKeyUUID().equals(word.getWordUUID())) {
-                        builtRow.setKey(word.getWordValue());
-                        if (word.getWordLanguageUUID().equals(language.getLanguageUUID())) {
-                            builtRow.setNameLanguageOfKey(language.getLanguageName());
-                            continue;
-                        }
+            Row row = hashMapRow.get(uuid);
 
-                    }
-                    if (row.getWordValueUUID().equals(word.getWordUUID())) {
-                        builtRow.setValue(word.getWordValue());
-                        if (word.getWordLanguageUUID().equals(language.getLanguageUUID())) {
-                            builtRow.setNameLanguageOfValue(language.getLanguageName());
-                        }
-                    }
-                }
-            }
+            Word wordKey = hashMapWord.get(row.getWordKeyUUID());
+            Word wordValue = hashMapWord.get(row.getWordValueUUID());
+
+            Language languageKey = hashMapLanguage.get(wordKey.getWordLanguageUUID());
+            Language languageValue = hashMapLanguage.get(wordValue.getWordLanguageUUID());
+
+            builtRow.setKey(wordKey.getWordValue());
+            builtRow.setValue(wordValue.getWordValue());
+            builtRow.setNameLanguageOfKey(languageKey.getLanguageName());
+            builtRow.setNameLanguageOfValue(languageValue.getLanguageName());
+
             builtRowList.add(builtRow);
-//            Word wordValue = serviceWord.getWordByUUID(row.getWordValueUUID());
-//            builtRow.setKey(wordKey.getWordValue());
-//            builtRow.setValue(wordValue.getWordValue());
-//            Language languageKeyWord = serviceLanguage.getLanguageByUUID(wordKey.getWordLanguageUUID());
-//            Language languageValueWord = serviceLanguage.getLanguageByUUID(wordValue.getWordLanguageUUID());
-//            builtRow.setNameLanguageOfKey(languageKeyWord.getLanguageName());
-//            builtRow.setNameLanguageOfValue(languageValueWord.getLanguageName());
 
         }
         return builtRowList;
     }
+
 
     public List<BuiltRow> findAllBySelectedLanguageUUID(UUID languageSourceUUID, UUID languageTargetUUID) {
 
