@@ -2,7 +2,6 @@ package ru.dictionary.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.dictionary.config.DictionaryParameters;
 import ru.dictionary.dao.InterfaceDAOWord;
 import ru.dictionary.model.Language;
 import ru.dictionary.model.Row;
@@ -29,34 +28,63 @@ public class ServiceRow {
 
     public List<BuiltRow> findAllRows() {
 
-        List<Row> listWithRawRows = dao.findAll();
+        List<Row> listRow = dao.findAll();
+        List<Language> listLanguage = serviceLanguage.findAllLanguages();
 
+//        List<UUID> keyUUIDList = listRow.stream().map(Row::getWordKeyUUID).collect(Collectors.toList());
+
+        List<Word> listWord = serviceWord.findAllWords();
+
+//        for (UUID uuid : keyUUIDList) {
+//            System.out.println(uuid);
+//        }
+
+//        Map<UUID, Word> keysMap = new HashMap<>(); //TODO реализовать позже, когда будет продумана реализация хранения дублей Word
+//
+//        for (Word wordKey : wordKeys) {
+//            keysMap.put(wordKey.getWordUUID(), wordKey);
+//        }
         List<BuiltRow> builtRowList = new ArrayList<>();
-
-        for (Row listWithRawRow : listWithRawRows) {
+        for (Row row : listRow) {
 
             BuiltRow builtRow = new BuiltRow();
 
-            Word wordKey = serviceWord.getWordByUUID(listWithRawRow.getWordKeyUUID());
-            Word wordValue = serviceWord.getWordByUUID(listWithRawRow.getWordValueUUID());
-            builtRow.setKey(wordKey.getWordValue());
-            builtRow.setValue(wordValue.getWordValue());
-            Language languageKeyWord = serviceLanguage.getLanguageByUUID(wordKey.getWordLanguageUUID());
-            Language languageValueWord = serviceLanguage.getLanguageByUUID(wordValue.getWordLanguageUUID());
-            builtRow.setNameLanguageOfKey(languageKeyWord.getLanguageName());
-            builtRow.setNameLanguageOfValue(languageValueWord.getLanguageName());
+            for (Word word : listWord) {
+                for (Language language : listLanguage) {
+                    if (row.getWordKeyUUID().equals(word.getWordUUID())) {
+                        builtRow.setKey(word.getWordValue());
+                        if (word.getWordLanguageUUID().equals(language.getLanguageUUID())) {
+                            builtRow.setNameLanguageOfKey(language.getLanguageName());
+                            continue;
+                        }
 
+                    }
+                    if (row.getWordValueUUID().equals(word.getWordUUID())) {
+                        builtRow.setValue(word.getWordValue());
+                        if (word.getWordLanguageUUID().equals(language.getLanguageUUID())) {
+                            builtRow.setNameLanguageOfValue(language.getLanguageName());
+                        }
+                    }
+                }
+            }
             builtRowList.add(builtRow);
+//            Word wordValue = serviceWord.getWordByUUID(row.getWordValueUUID());
+//            builtRow.setKey(wordKey.getWordValue());
+//            builtRow.setValue(wordValue.getWordValue());
+//            Language languageKeyWord = serviceLanguage.getLanguageByUUID(wordKey.getWordLanguageUUID());
+//            Language languageValueWord = serviceLanguage.getLanguageByUUID(wordValue.getWordLanguageUUID());
+//            builtRow.setNameLanguageOfKey(languageKeyWord.getLanguageName());
+//            builtRow.setNameLanguageOfValue(languageValueWord.getLanguageName());
+
         }
         return builtRowList;
     }
 
     public List<BuiltRow> findAllBySelectedLanguageUUID(UUID languageSourceUUID, UUID languageTargetUUID) {
 
-
         List<Word> listWords = serviceWord.getListByLanguageUUID(languageSourceUUID);
         List<Row> listRows = dao.findAll();
-        List<BuiltRow> listBuiltRow = new ArrayList<>();
+        List<BuiltRow> builtRowList = new ArrayList<>();
         for (Word word : listWords) {
             BuiltRow builtRow = new BuiltRow();
             UUID keyWord = word.getWordUUID();
@@ -66,12 +94,12 @@ public class ServiceRow {
                     builtRow.setKey(word.getWordValue());
                     Word wordTemp = serviceWord.getWordByUUID(row.getWordValueUUID());
                     builtRow.setValue(wordTemp.getWordValue());
-                    builtRow.setNameLanguageOfValue(serviceWord.getLanguageByWordUUID(wordTemp.getWordLanguageUUID()).getLanguageName());
-                    listBuiltRow.add(builtRow);
+                    builtRow.setNameLanguageOfValue(serviceWord.getLanguageByWordUUID(languageTargetUUID).getLanguageName());
+                    builtRowList.add(builtRow);
                 }
             }
         }
-        return listBuiltRow;
+        return builtRowList;
     }
 
     public void addPair(RequestAddPairWordsDTO requestAddPairWordsDTO) {
@@ -90,11 +118,11 @@ public class ServiceRow {
         dao.save(row);
     }
 
-    public boolean deleteRowByKey(String key, DictionaryParameters dictionaryParameters) {
-        return dao.deleteByKey(key, dictionaryParameters.getFileName());
+    public boolean deleteRowByKey(String key) {
+        return dao.deleteByKey(key);
     }
 
-    public Optional<Row> findRowByKey(String key, DictionaryParameters dictionaryParameters) {
-        return dao.findByKey(key, dictionaryParameters.getFileName());
+    public Optional<Row> findRowByKey(String key) {
+        return dao.findByKey(key);
     }
 }

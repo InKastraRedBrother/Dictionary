@@ -91,12 +91,12 @@ public class RowDAO implements InterfaceDAOWord {
     }
 
     @Override
-    public Optional<Row> findByKey(String key, String fileName) {
+    public Optional<Row> findByKey(String key) {
         return Optional.empty();
     }
 
     @Override
-    public boolean deleteByKey(String inputtedKey, String fileName) {
+    public boolean deleteByKey(String inputtedKey) {
         return false;
     }
 

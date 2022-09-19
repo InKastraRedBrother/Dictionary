@@ -2,6 +2,7 @@ package ru.dictionary.dao;
 
 import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
+import ru.dictionary.model.Language;
 import ru.dictionary.model.Word;
 
 import java.io.File;
@@ -82,6 +83,39 @@ public class WordDAO {
         }
     }
 
+    public List<Word> searchAllByListUUID(List<UUID> keyUUIDList) { //TODO как правильно реализовать? 1) Вытащить все word в List и сравнить внутри цикла здесь 2) Брать по одному ключу и каждый раз заново идти в файл и искать совпадение?
+        File fileWithWords = getWordStorageTxtFile();
+        List<Word> wordList = new ArrayList<>();
+        try (Scanner sc = new Scanner(fileWithWords, StandardCharsets.UTF_8)) {
+            while (sc.hasNextLine()) {
+                for (UUID uuid : keyUUIDList) {
+                    var wordFromFileEncodedFromString = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
+                    if (uuid.equals(wordFromFileEncodedFromString.getWordUUID())) {
+                        wordList.add(wordFromFileEncodedFromString);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new DictionaryNotFoundException("searchAllByListUUID");
+        }
+        return wordList;
+    }
+
+    public List<Word> getAllWords() {
+        File file = getWordStorageTxtFile();
+
+        List<Word> listWordsFromStorage = new ArrayList<>();
+
+        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
+            while (sc.hasNextLine()) {
+                listWordsFromStorage.add(codec.convertFromStorageFormatToObjectFormat(sc.nextLine()));
+            }
+        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
+            throw new DictionaryNotFoundException("findAll languages");
+        }
+        return listWordsFromStorage;
+    }
+
     private static class Codec {
 
         private static final int NUMBER_FOR_SPLIT = Word.class.getFields().length;
@@ -102,17 +136,4 @@ public class WordDAO {
             return word;
         }
     }
-
-//    public List<Word> findAll(String fileName) {
-//        List<Word> listWord = new ArrayList<>();
-//        File file = new File(System.getProperty("user.dir") + "/qqq.txt");
-//        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
-//            while (sc.hasNextLine()) {
-//                listWord.add(sc.nextLine());
-//            }
-//        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
-//            throw new DictionaryNotFoundException("findAll");
-//        }
-//        return listRow;
-//    }
 }

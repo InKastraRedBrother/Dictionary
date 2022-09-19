@@ -33,7 +33,7 @@ public interface InterfaceDAOWord {
      * @param fileName name of the file to get data from.
      * @return one row or null.
      */
-    Optional<Row> findByKey(String key, String fileName);
+    Optional<Row> findByKey(String key);
 
     /**
      * delete row by key.
@@ -42,5 +42,5 @@ public interface InterfaceDAOWord {
      * @param fileName    name of the file where row will be deleted.
      * @return true if row was found and deleted, else false
      */
-    boolean deleteByKey(String inputtedKey, String fileName);
+    boolean deleteByKey(String inputtedKey);
 }
