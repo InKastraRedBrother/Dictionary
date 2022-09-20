@@ -47,8 +47,8 @@
                 <td th:text="${builtRows.nameLanguageOfValue}"></td>
                 <!--                <td> <form action="#" th:action="@{edit/{rowUUID}(rowUUID=${builtRows.rowUUID})}"><button type="submit" class="btn btn-indigo btn-sm m-0">Edit</button></form></td>-->
                 <td>
-                    <form action="#" th:action="@{delete/{rowUUID}(rowUUID=${builtRows.rowUUID})}">
-                        <button type="submit" class="btn btn-indigo btn-sm m-0">Delete</button>
+                    <form th:method="POST" th:action="@{delete-row/{rowUUID}(rowUUID=${builtRows.rowUUID})}">
+                        <button type="submit">Delete</button>
                     </form>
                 </td>
             </tr>

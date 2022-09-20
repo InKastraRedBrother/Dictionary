@@ -18,6 +18,7 @@ import static ru.dictionary.dao.Util.Util.PATH_TO_STORAGE_DIRECTORY;
 public class RowDAO implements InterfaceDAOWord {
 
     private static final String TEMPORARY_FILENAME = "temp.txt";
+    private static final String TEMPORARY_FILE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + TEMPORARY_FILENAME;
     private final static String ROW_STORAGE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + "row.txt";
 
     private final Codec codec;
@@ -96,9 +97,43 @@ public class RowDAO implements InterfaceDAOWord {
     }
 
     @Override
-    public boolean deleteByKey(String inputtedKey) {
-        return false;
+    public boolean deleteByKey(UUID rowUUID) {
+        boolean isExistRowInStorage = false;
+        boolean isFirstRow = true;
+        File rowsStorage = getRowStorageTxtFile();
+        File tempFile = new File(TEMPORARY_FILE_PATH_AND_FILENAME);
+        try (FileWriter fileWriter = new FileWriter(tempFile, StandardCharsets.UTF_8, true);
+             Scanner sc = new Scanner(rowsStorage)) {
+
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                Row row = codec.convertFromStorageFormatToObjectFormat(line);
+                if (row.getRowUUID().equals(rowUUID)){
+                    isExistRowInStorage = true;
+                } else{
+                    if (isFirstRow) {
+                        isFirstRow = false;
+                    } else {
+                        fileWriter.write(System.lineSeparator());
+                    }
+                    fileWriter.write(codec.convertFromObjectFormatToStorageFormat(row));
+                }
+            }
+        } catch (IOException | NoSuchElementException | IllegalStateException | NullPointerException |
+                 SecurityException e) {
+            throw new DictionaryNotFoundException("deleteByKey");
+        }
+        try {
+            if(!rowsStorage.delete() || !tempFile.renameTo(rowsStorage)){
+                throw new DictionaryNotFoundException("deleteByKey");
+            }
+
+        } catch (SecurityException | NullPointerException e) {
+            throw new DictionaryNotFoundException("deleteByKey");
+        }
+        return isExistRowInStorage;
     }
+
 
     /**
      * compare input row with rows in file.

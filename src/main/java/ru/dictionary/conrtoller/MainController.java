@@ -3,10 +3,7 @@ package ru.dictionary.conrtoller;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.dictionary.config.DictionaryConfiguration;
 import ru.dictionary.model.Language;
 import ru.dictionary.model.Row;
@@ -85,12 +82,12 @@ public class MainController {
         return "redirect:/view-rows";
     }
 
-    @GetMapping("/delete-row")
-    public String showDeleteRowPage(Model model, @RequestParam("id") String id) {
-        model.addAttribute("row", new Row());
-        model.addAttribute("id", id);
-        return "delete-row";
+    @PostMapping("/delete-row/{rowUUID}")
+    public String deleteRow(@PathVariable("rowUUID") UUID rowUUID, Model model) {
+        serviceRow.deleteRowByKey(rowUUID);
+        return "redirect:/view-rows";
     }
+//  /\ DELETE/\
 
 //    @PostMapping("/delete_row")
 //    public String deleteRow(@ModelAttribute Row row, @RequestParam("id") String id) {

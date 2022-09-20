@@ -95,8 +95,8 @@ public class ServiceRow {
         dao.save(row);
     }
 
-    public boolean deleteRowByKey(String key) {
-        return dao.deleteByKey(key);
+    public boolean deleteRowByKey(UUID rowUUID) {
+        return dao.deleteByKey(rowUUID);
     }
 
     public Optional<Row> findRowByKey(String key) {
