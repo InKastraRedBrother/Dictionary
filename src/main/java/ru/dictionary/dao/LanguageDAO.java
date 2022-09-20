@@ -28,7 +28,7 @@ public class LanguageDAO implements LanguageDAOInterface {
 
         try {
             if ((!directory.mkdir() == directory.exists()) && !(!languageFile.createNewFile() == languageFile.exists())) {
-                throw new DictionaryNotFoundException();
+                throw new DictionaryNotFoundException("Error creating storage");
             }
         } catch (IOException e) {
             throw new DictionaryNotFoundException("Error creating storage");

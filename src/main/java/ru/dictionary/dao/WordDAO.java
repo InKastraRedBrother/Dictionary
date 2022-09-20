@@ -28,7 +28,7 @@ public class WordDAO {
 
         try {
             if ((!directory.mkdir() == directory.exists()) && !(!wordFile.createNewFile() == wordFile.exists())) {
-                throw new DictionaryNotFoundException();
+                throw new DictionaryNotFoundException("Error creating storage");
             }
         } catch (IOException e) {
             throw new DictionaryNotFoundException("Error creating storage for words");

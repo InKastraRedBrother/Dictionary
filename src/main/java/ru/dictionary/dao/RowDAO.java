@@ -36,7 +36,7 @@ public class RowDAO implements InterfaceDAOWord {
 
         try {
             if ((!directory.mkdir() == directory.exists()) && !(!rowFile.createNewFile() == rowFile.exists())) {
-                throw new DictionaryNotFoundException();
+                throw new DictionaryNotFoundException("Error creating storage");
             }
         } catch (IOException e) {
             throw new DictionaryNotFoundException("Error creating storage");

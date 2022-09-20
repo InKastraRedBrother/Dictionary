@@ -40,6 +40,7 @@
             </thead>
             <tbody>
             <tr th:each="builtRows : ${listBuiltRows}">
+                <td th:hidden="${builtRows.rowUUID}"></td>
                 <td th:text="${builtRows.key}"></td>
                 <td th:text="${builtRows.nameLanguageOfKey}"></td>
                 <td th:text="${builtRows.value}"></td>
