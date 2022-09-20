@@ -57,10 +57,10 @@ public class MainController {
         return "view-rows";
     }
 
-    @GetMapping("/view-rows/result")
+    @GetMapping(value = "/view-rows/result", params = {"dropDownListSourceLanguage", "dropDownListSourceLanguage"})
     public String showAllRowsBySelectedOption(@ModelAttribute BuiltRow builtRow,
-                                              @RequestParam(name = "dropDownListSourceLanguage") UUID languageSourceUUID,
-                                              @RequestParam(name = "dropDownListTargetLanguage") UUID languageTargetUUID,
+                                              @RequestParam(name = "dropDownListSourceLanguage", required = false) UUID languageSourceUUID,
+                                              @RequestParam(name = "dropDownListTargetLanguage", required = false) UUID languageTargetUUID,
                                               Model model) {
 
         List<Language> listLanguage = serviceLanguage.findAllLanguages();
@@ -85,11 +85,11 @@ public class MainController {
         return "redirect:/view-rows";
     }
 
-    @GetMapping("/delete_row")
+    @GetMapping("/delete-row")
     public String showDeleteRowPage(Model model, @RequestParam("id") String id) {
         model.addAttribute("row", new Row());
         model.addAttribute("id", id);
-        return "delete_row";
+        return "delete-row";
     }
 
 //    @PostMapping("/delete_row")

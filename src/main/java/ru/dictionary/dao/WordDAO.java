@@ -2,7 +2,6 @@ package ru.dictionary.dao;
 
 import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
-import ru.dictionary.model.Language;
 import ru.dictionary.model.Word;
 
 import java.io.File;
@@ -29,7 +28,7 @@ public class WordDAO {
 
         try {
             if ((!directory.mkdir() == directory.exists()) && !(!wordFile.createNewFile() == wordFile.exists())) {
-                System.out.println("throw new DictionaryNotFoundException();");
+                throw new DictionaryNotFoundException();
             }
         } catch (IOException e) {
             throw new DictionaryNotFoundException("Error creating storage for words");

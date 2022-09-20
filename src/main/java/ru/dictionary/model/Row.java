@@ -10,7 +10,7 @@ import java.util.UUID;
  */
 @Data
 @ToString
-class Row {
+public class Row {
     private UUID rowUUID;
     private UUID wordKeyUUID;
     private UUID wordValueUUID;

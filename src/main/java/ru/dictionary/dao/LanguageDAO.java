@@ -23,13 +23,12 @@ public class LanguageDAO implements LanguageDAOInterface {
     public LanguageDAO() throws IOException {
         this.codec = new Codec();
 
-
         File directory = new File(LANGUAGE_STORAGE_DIRECTORY);
         File languageFile = getLanguageTxtFile();
 
         try {
             if ((!directory.mkdir() == directory.exists()) && !(!languageFile.createNewFile() == languageFile.exists())) {
-                System.out.println("throw new DictionaryNotFoundException();");
+                throw new DictionaryNotFoundException();
             }
         } catch (IOException e) {
             throw new DictionaryNotFoundException("Error creating storage");
