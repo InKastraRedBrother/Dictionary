@@ -8,10 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 
 import static ru.dictionary.dao.Util.Util.ELEMENTS_SEPARATOR;
 
@@ -26,13 +23,12 @@ public class LanguageDAO implements LanguageDAOInterface {
     public LanguageDAO() throws IOException {
         this.codec = new Codec();
 
-
         File directory = new File(LANGUAGE_STORAGE_DIRECTORY);
         File languageFile = getLanguageTxtFile();
 
         try {
             if ((!directory.mkdir() == directory.exists()) && !(!languageFile.createNewFile() == languageFile.exists())) {
-                System.out.println("throw new DictionaryNotFoundException();");
+                throw new DictionaryNotFoundException("Error creating storage");
             }
         } catch (IOException e) {
             throw new DictionaryNotFoundException("Error creating storage");
@@ -63,29 +59,29 @@ public class LanguageDAO implements LanguageDAOInterface {
     }
 
     @Override
-    public List<String> getAllLanguages() {
+    public List<Language> getAllLanguages() {
 
         File file = getLanguageTxtFile();
 
-        List<String> listStringsFromStorage = new ArrayList<>();
+        List<Language> listLanguagesFromStorage = new ArrayList<>();
 
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
-                listStringsFromStorage.add(sc.nextLine());
+                listLanguagesFromStorage.add(codec.convertFromStorageFormatToObjectFormat(sc.nextLine()));
             }
         } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
             throw new DictionaryNotFoundException("findAll languages");
         }
-        return listStringsFromStorage;
+        return listLanguagesFromStorage;
     }
 
     @Override
-    public Language searchById(String uuidLanguage) {
+    public Language searchByUUID(UUID languageUUID) {
         File file = getLanguageTxtFile();
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
                 Language language = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
-                if (language.getLanguageId().equals(uuidLanguage)) {
+                if (language.getLanguageUUID().equals(languageUUID)) {
                     return language;
                 }
             }
@@ -104,15 +100,13 @@ public class LanguageDAO implements LanguageDAOInterface {
         private static final int LANGUAGE_RULE_SERIAL_NUMBER = 2;
 
         public String convertFromObjectFormatToStorageFormat(Language language) { //mapper
-//            language = new Language(language.getLanguageName(), language.getLanguageRule()); //TODO норм или нет? либо здесь явный new и через кастомный конструктор
-//             TODO либо в сервисе явно через сеттер вызывать uuid
-            return language.getLanguageId() + ELEMENTS_SEPARATOR + language.getLanguageName() + ELEMENTS_SEPARATOR + language.getLanguageRule();
+            return language.getLanguageUUID() + ELEMENTS_SEPARATOR + language.getLanguageName() + ELEMENTS_SEPARATOR + language.getLanguageRule();
         }
 
         public Language convertFromStorageFormatToObjectFormat(String lineFromFile) { //builder
             String[] arrayOfValue = lineFromFile.split(ELEMENTS_SEPARATOR, NUMBER_FOR_SPLIT); //перенести разделенире строки в сервис
             Language language = new Language();
-            language.setLanguageId(arrayOfValue[LANGUAGE_ID_SERIAL_NUMBER]);
+            language.setLanguageUUID(UUID.fromString(arrayOfValue[LANGUAGE_ID_SERIAL_NUMBER]));
             language.setLanguageName(arrayOfValue[LANGUAGE_NAME_SERIAL_NUMBER]);
             language.setLanguageRule(arrayOfValue[LANGUAGE_RULE_SERIAL_NUMBER]);
             return language;

@@ -16,6 +16,7 @@ import ru.dictionary.service.ServiceLanguage;
 import ru.dictionary.service.ServiceRow;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @AllArgsConstructor
@@ -56,10 +57,17 @@ public class MainController {
         return "view-rows";
     }
 
-    @GetMapping("/view-rows/result")
-    public String showAllRowsBySelectedOption(@RequestParam(name = "dropDownListSourceLanguage") String languageSourceId, @RequestParam(name = "dropDownListTargetLanguage") String languageTargetId) {
-        System.out.println(languageSourceId);
-        System.out.println(languageTargetId);
+    @GetMapping(value = "/view-rows/result", params = {"dropDownListSourceLanguage", "dropDownListSourceLanguage"})
+    public String showAllRowsBySelectedOption(@ModelAttribute BuiltRow builtRow,
+                                              @RequestParam(name = "dropDownListSourceLanguage", required = false) UUID languageSourceUUID,
+                                              @RequestParam(name = "dropDownListTargetLanguage", required = false) UUID languageTargetUUID,
+                                              Model model) {
+
+        List<Language> listLanguage = serviceLanguage.findAllLanguages();
+        model.addAttribute("listLanguage", listLanguage);
+
+        List<BuiltRow> listBuiltRows = serviceRow.findAllBySelectedLanguageUUID(languageSourceUUID, languageTargetUUID);
+        model.addAttribute("listBuiltRows", listBuiltRows);
         return "view-rows";
     }
 
@@ -77,11 +85,11 @@ public class MainController {
         return "redirect:/view-rows";
     }
 
-    @GetMapping("/delete_row")
+    @GetMapping("/delete-row")
     public String showDeleteRowPage(Model model, @RequestParam("id") String id) {
         model.addAttribute("row", new Row());
         model.addAttribute("id", id);
-        return "delete_row";
+        return "delete-row";
     }
 
 //    @PostMapping("/delete_row")

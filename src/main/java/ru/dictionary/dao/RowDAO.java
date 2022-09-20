@@ -12,13 +12,13 @@ import java.util.*;
 import java.util.regex.PatternSyntaxException;
 
 import static ru.dictionary.dao.Util.Util.ELEMENTS_SEPARATOR;
+import static ru.dictionary.dao.Util.Util.PATH_TO_STORAGE_DIRECTORY;
 
 @Component
 public class RowDAO implements InterfaceDAOWord {
 
     private static final String TEMPORARY_FILENAME = "temp.txt";
-    private final static String PATH_TO_ROW_STORAGE_DIRECTORY = System.getProperty("user.dir");
-    private final static String ROW_STORAGE_PATH_AND_FILENAME = PATH_TO_ROW_STORAGE_DIRECTORY + File.separator + "row.txt";
+    private final static String ROW_STORAGE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + "row.txt";
 
     private final Codec codec;
 
@@ -31,12 +31,12 @@ public class RowDAO implements InterfaceDAOWord {
     public RowDAO() {
         this.codec = new Codec();
 
-        File directory = new File(PATH_TO_ROW_STORAGE_DIRECTORY);
+        File directory = new File(PATH_TO_STORAGE_DIRECTORY);
         File rowFile = getRowStorageTxtFile();
 
         try {
             if ((!directory.mkdir() == directory.exists()) && !(!rowFile.createNewFile() == rowFile.exists())) {
-                System.out.println("throw new DictionaryNotFoundException();");
+                throw new DictionaryNotFoundException("Error creating storage");
             }
         } catch (IOException e) {
             throw new DictionaryNotFoundException("Error creating storage");
@@ -91,12 +91,12 @@ public class RowDAO implements InterfaceDAOWord {
     }
 
     @Override
-    public Optional<Row> findByKey(String key, String fileName) {
+    public Optional<Row> findByKey(String key) {
         return Optional.empty();
     }
 
     @Override
-    public boolean deleteByKey(String inputtedKey, String fileName) {
+    public boolean deleteByKey(String inputtedKey) {
         return false;
     }
 
@@ -189,7 +189,7 @@ public class RowDAO implements InterfaceDAOWord {
          * @return String consisting of a key and value with a given separator.
          */
         public String convertFromObjectFormatToStorageFormat(Row row) {
-            return row.getIdRow() + ELEMENTS_SEPARATOR + row.getIdWordKey() + ELEMENTS_SEPARATOR + row.getIdWordValue();
+            return row.getRowUUID() + ELEMENTS_SEPARATOR + row.getWordKeyUUID() + ELEMENTS_SEPARATOR + row.getWordValueUUID();
         }
 
         /**
@@ -203,9 +203,9 @@ public class RowDAO implements InterfaceDAOWord {
             try {
                 String[] encode = lineFromFile.split(ELEMENTS_SEPARATOR, NUMBER_FOR_SPLIT);
                 Row row = new Row();
-                row.setIdRow(encode[UUID_ROW_SERIAL_NUMBER]);
-                row.setIdWordKey(encode[ID_WORD_KEY_SERIAL_NUMBER]);
-                row.setIdWordValue(encode[ID_WORD_VALUE_SERIAL_NUMBER]);
+                row.setRowUUID(UUID.fromString(encode[UUID_ROW_SERIAL_NUMBER]));
+                row.setWordKeyUUID(UUID.fromString(encode[ID_WORD_KEY_SERIAL_NUMBER]));
+                row.setWordValueUUID(UUID.fromString(encode[ID_WORD_VALUE_SERIAL_NUMBER]));
                 return row;
 
             } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {

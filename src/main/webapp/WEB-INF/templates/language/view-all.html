@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>View All Languages</title>
@@ -10,7 +10,7 @@
 
         <tbody>
         <tr th:each="language : ${listLanguages}">
-            <td th:text="${language.languageId}"></td>
+            <td th:text="${language.getLanguageUUID}"></td>
             <td th:text="${language.languageName}"></td>
             <td th:text="${language.languageRule}"></td>
         </tr>

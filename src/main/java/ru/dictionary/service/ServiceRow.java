@@ -2,7 +2,6 @@ package ru.dictionary.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.dictionary.config.DictionaryParameters;
 import ru.dictionary.dao.InterfaceDAOWord;
 import ru.dictionary.model.Language;
 import ru.dictionary.model.Row;
@@ -10,10 +9,8 @@ import ru.dictionary.model.Word;
 import ru.dictionary.model.dto.BuiltRow;
 import ru.dictionary.model.dto.RequestAddPairWordsDTO;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Establishes a set of available operations and coordinates the application's response in each operation.
@@ -26,52 +23,100 @@ public class ServiceRow {
     ServiceWord serviceWord;
     ServiceLanguage serviceLanguage;
 
+    private <V> Map<UUID, V> convertListToMap(List<V> list) {
+        Map<UUID, V> hashMap = new HashMap<>();
+
+        for (V elem : list) {
+            hashMap.put(UUID.fromString(elem.toString()), elem);
+        }
+        return hashMap;
+    }
 
     public List<BuiltRow> findAllRows() {
 
-        List<Row> listWithRawRows = dao.findAll();
+        List<Row> listRow = dao.findAll();
+        List<Language> listLanguage = serviceLanguage.findAllLanguages();
+        List<Word> listWord = serviceWord.findAllWords();
+
+        Map<UUID, Row> hashMapRow = listRow.stream().collect(Collectors.toMap(Row::getRowUUID, row -> row));
+        Map<UUID, Language> hashMapLanguage = listLanguage.stream().collect(Collectors.toMap(Language::getLanguageUUID, language -> language));
+        Map<UUID, Word> hashMapWord = listWord.stream().collect(Collectors.toMap(Word::getWordUUID, word -> word));
+
+//        Map<UUID, Row> hashMapRow = convertListToMap(listRow); //TODO REQUIRE OVERRIDE TO.STRING IN MODELS TO RETURN STRING FORMAT OF UUID
+//        Map<UUID, Language> hashMapLanguage = convertListToMap(listLanguage);
+//        Map<UUID, Word> hashMapWord = convertListToMap(listWord);
 
         List<BuiltRow> builtRowList = new ArrayList<>();
 
-        for (Row listWithRawRow : listWithRawRows) {
-
+        for (UUID uuid : hashMapRow.keySet()) {
             BuiltRow builtRow = new BuiltRow();
 
-            Word wordKey = serviceWord.getWordById(listWithRawRow.getIdWordKey());
-            Word wordValue = serviceWord.getWordById(listWithRawRow.getIdWordValue());
+            Row row = hashMapRow.get(uuid);
+
+            Word wordKey = hashMapWord.get(row.getWordKeyUUID());
+            Word wordValue = hashMapWord.get(row.getWordValueUUID());
+
+            Language languageKey = hashMapLanguage.get(wordKey.getWordLanguageUUID());
+            Language languageValue = hashMapLanguage.get(wordValue.getWordLanguageUUID());
+
+            builtRow.setRowUUID(row.getRowUUID());
+
             builtRow.setKey(wordKey.getWordValue());
             builtRow.setValue(wordValue.getWordValue());
-            Language languageKeyWord = serviceLanguage.getLanguageById(wordKey.getLanguageId());
-            Language languageValueWord = serviceLanguage.getLanguageById(wordValue.getLanguageId());
-            builtRow.setNameLanguageOfKey(languageKeyWord.getLanguageName());
-            builtRow.setNameLanguageOfValue(languageValueWord.getLanguageName());
+            builtRow.setNameLanguageOfKey(languageKey.getLanguageName());
+            builtRow.setNameLanguageOfValue(languageValue.getLanguageName());
 
             builtRowList.add(builtRow);
+
+        }
+        return builtRowList;
+    }
+
+
+    public List<BuiltRow> findAllBySelectedLanguageUUID(UUID languageSourceUUID, UUID languageTargetUUID) {
+
+        List<Word> listWords = serviceWord.getListByLanguageUUID(languageSourceUUID);
+        List<Row> listRows = dao.findAll();
+        List<BuiltRow> builtRowList = new ArrayList<>();
+        for (Word word : listWords) {
+            BuiltRow builtRow = new BuiltRow();
+            UUID keyWord = word.getWordUUID();
+            for (Row row : listRows) {
+                builtRow.setRowUUID(row.getRowUUID());
+                if (row.getWordKeyUUID().equals(keyWord)) {
+                    builtRow.setNameLanguageOfKey(serviceLanguage.getLanguageByUUID(languageSourceUUID).getLanguageName());
+                    builtRow.setKey(word.getWordValue());
+                    Word wordTemp = serviceWord.getWordByUUID(row.getWordValueUUID());
+                    builtRow.setValue(wordTemp.getWordValue());
+                    builtRow.setNameLanguageOfValue(serviceWord.getLanguageByWordUUID(languageTargetUUID).getLanguageName());
+                    builtRowList.add(builtRow);
+                }
+            }
         }
         return builtRowList;
     }
 
     public void addPair(RequestAddPairWordsDTO requestAddPairWordsDTO) {
 
-        String uuidWordKey = UUID.randomUUID().toString();
-        String uuidWordValue = UUID.randomUUID().toString();
+        UUID wordKeyUUID = UUID.randomUUID();
+        UUID wordValueUUID = UUID.randomUUID();
 
-        serviceWord.addWord(uuidWordKey, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceId());
-        serviceWord.addWord(uuidWordValue, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetId());
+        serviceWord.addWord(wordKeyUUID, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceUUID());
+        serviceWord.addWord(wordValueUUID, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetUUID());
 
         Row row = new Row();
-        row.setIdRow(UUID.randomUUID().toString());
-        row.setIdWordKey(uuidWordKey);
-        row.setIdWordValue(uuidWordValue);
+        row.setRowUUID(UUID.randomUUID());
+        row.setWordKeyUUID(wordKeyUUID);
+        row.setWordValueUUID(wordValueUUID);
 
         dao.save(row);
     }
 
-    public boolean deleteRowByKey(String key, DictionaryParameters dictionaryParameters) {
-        return dao.deleteByKey(key, dictionaryParameters.getFileName());
+    public boolean deleteRowByKey(String key) {
+        return dao.deleteByKey(key);
     }
 
-    public Optional<Row> findRowByKey(String key, DictionaryParameters dictionaryParameters) {
-        return dao.findByKey(key, dictionaryParameters.getFileName());
+    public Optional<Row> findRowByKey(String key) {
+        return dao.findByKey(key);
     }
 }

@@ -1,29 +1,26 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>View All Rows</title>
 </head>
 <body>
 <div class="container">
-
-        <form th:action="@{/view-rows/result(languageSourceId = ${languageWord.languageId}, targetLanguageId = ${languageTranslate.languageId})}"
-              th:object="${listLanguage}" th:method="GET">
-        </form>
+    <table class="table table-bordered">
 
         <form th:action="@{/view-rows/result(dropDownListSourceLanguage=${dropDownListSourceLanguage}, dropDownListTargetLanguage=${dropDownListTargetLanguage})}"
               th:object="${listLanguage}" th:method="GET"
               accept-charset="UTF-8">
 
             <select class="form-control" name="dropDownListSourceLanguage" id="dropDownListSourceLanguage">
-                <option value="0">Выберите язык слова</option>
-                <option th:each="languageWord : ${listLanguage}" th:value="${languageWord.languageId}"
+                <option value="">Выберите язык слова</option>
+                <option th:each="languageWord : ${listLanguage}" th:value="${languageWord.languageUUID}"
                         th:text="${languageWord.languageName}"></option>
             </select>
 
             <select class="form-control" name="dropDownListTargetLanguage" id="dropDownListTargetLanguage">
-                <option value="0">Выберите язык перевода</option>
-                <option th:each="languageTranslate : ${listLanguage}" th:value="${languageTranslate.languageId}"
+                <option value="">Выберите язык перевода</option>
+                <option th:each="languageTranslate : ${listLanguage}" th:value="${languageTranslate.languageUUID}"
                         th:text="${languageTranslate.languageName}"></option>
             </select>
 
@@ -43,6 +40,7 @@
             </thead>
             <tbody>
             <tr th:each="builtRows : ${listBuiltRows}">
+                <td th:hidden="${builtRows.rowUUID}"></td>
                 <td th:text="${builtRows.key}"></td>
                 <td th:text="${builtRows.nameLanguageOfKey}"></td>
                 <td th:text="${builtRows.value}"></td>
@@ -50,7 +48,7 @@
             </tr>
             </tbody>
         </table>
-
+    </table>
         <br>
 
         <a th:href="@{/add-row}"

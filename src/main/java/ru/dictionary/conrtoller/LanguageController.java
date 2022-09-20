@@ -33,7 +33,7 @@ public class LanguageController {
     }
 
     @PostMapping("/add")
-    public String addLanguage(@ModelAttribute("language") Language language) {
+    public String addLanguage(@ModelAttribute(name="language") Language language) {
         serviceLanguage.addLanguage(language);
         return "redirect:/language/view-all";
     }

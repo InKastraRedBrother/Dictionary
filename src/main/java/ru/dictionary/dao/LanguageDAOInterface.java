@@ -4,12 +4,13 @@ import ru.dictionary.model.Language;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 public interface LanguageDAOInterface {
 
-    List<String> getAllLanguages();
+    List<Language> getAllLanguages();
 
-    Language searchById(String id) throws IOException;
+    Language searchByUUID(UUID languageUUID) throws IOException;
 
     boolean saveLanguage(Language language);
 

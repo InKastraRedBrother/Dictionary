@@ -6,27 +6,42 @@ import ru.dictionary.dao.WordDAO;
 import ru.dictionary.model.Language;
 import ru.dictionary.model.Word;
 
+import java.util.List;
+import java.util.UUID;
+
 @Component
 @AllArgsConstructor
 public class ServiceWord {
     WordDAO wordDAO;
     ServiceLanguage serviceLanguage;
 
-    public void addWord(String uuidWordId, String wordValue, String uuidLanguageId) {
+    public void addWord(UUID wordUUID, String wordValue, UUID wordLanguageUUID) {
         Word word = new Word();
-        word.setWordId(uuidWordId);
+        word.setWordUUID(wordUUID);
         word.setWordValue(wordValue);
-        word.setLanguageId(uuidLanguageId);
+        word.setWordLanguageUUID(wordLanguageUUID);
 
         wordDAO.saveWord(word);
     }
 
-    public Word getWordById(String uuidWord) {
-        return wordDAO.searchById(uuidWord);
+    public List<Word> getListByLanguageUUID(UUID languageUUID){
+        return wordDAO.searchAllByUUID(languageUUID);
     }
 
-    public Language getLanguageByWordId(Word word) {
-        return serviceLanguage.getLanguageById(word.getLanguageId());
+    public Word getWordByUUID(UUID wordUUID) {
+        return wordDAO.searchByUUID(wordUUID);
+    }
 
+    public Language getLanguageByWordUUID(UUID wordUUID) {
+        return serviceLanguage.getLanguageByUUID(wordUUID);
+
+    }
+
+    public List<Word> getListWordByListUUID(List<UUID> keyUUIDList) {
+        return wordDAO.searchAllByListUUID(keyUUIDList);
+    }
+
+    public List<Word> findAllWords() {
+        return wordDAO.getAllWords();
     }
 }
