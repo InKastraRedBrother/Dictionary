@@ -45,22 +45,25 @@
                 <td th:text="${builtRows.nameLanguageOfKey}"></td>
                 <td th:text="${builtRows.value}"></td>
                 <td th:text="${builtRows.nameLanguageOfValue}"></td>
+                <!--                <td> <form action="#" th:action="@{edit/{rowUUID}(rowUUID=${builtRows.rowUUID})}"><button type="submit" class="btn btn-indigo btn-sm m-0">Edit</button></form></td>-->
+                <td>
+                    <form action="#" th:action="@{delete/{rowUUID}(rowUUID=${builtRows.rowUUID})}">
+                        <button type="submit" class="btn btn-indigo btn-sm m-0">Delete</button>
+                    </form>
+                </td>
             </tr>
             </tbody>
         </table>
     </table>
-        <br>
+    <br>
 
-        <a th:href="@{/add-row}"
-           th:text="Add"></a>
+    <a th:href="@{/add-row}"
+       th:text="Add"></a>
 
-        <a th:href="@{/delete-row}"
-           th:text="Delete"></a>
+    <a th:href="@{/search-row}"
+       th:text="Search"></a>
 
-        <a th:href="@{/search-row}"
-           th:text="Search"></a>
-
-        <a th:href="@{/main}">Back to choose</a>
+    <a th:href="@{/main}">Back to choose</a>
 
 </div>
 
