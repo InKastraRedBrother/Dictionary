@@ -8,6 +8,7 @@ import ru.dictionary.config.DictionaryConfiguration;
 import ru.dictionary.model.Language;
 import ru.dictionary.model.Row;
 import ru.dictionary.model.dto.BuiltRow;
+import ru.dictionary.model.dto.DeleteForm;
 import ru.dictionary.model.dto.RequestAddPairWordsDTO;
 import ru.dictionary.service.ServiceLanguage;
 import ru.dictionary.service.ServiceRow;
@@ -44,7 +45,7 @@ public class MainController {
 
 
     @GetMapping("/view-rows")
-    public String showAllRows(Model model) {
+    public String showAllRows(@ModelAttribute BuiltRow builtRow, Model model) {
         List<Language> listLanguage = serviceLanguage.findAllLanguages();
         model.addAttribute("listLanguage", listLanguage);
 
@@ -83,7 +84,7 @@ public class MainController {
     }
 
     @PostMapping("/delete-row/{rowUUID}")
-    public String deleteRow(@PathVariable("rowUUID") UUID rowUUID, Model model) {
+    public String deleteRow(@PathVariable("rowUUID") UUID rowUUID) {
         serviceRow.deleteRowByKey(rowUUID);
         return "redirect:/view-rows";
     }

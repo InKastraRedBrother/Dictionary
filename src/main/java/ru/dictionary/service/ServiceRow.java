@@ -46,7 +46,9 @@ public class ServiceRow {
             builtRow.setRowUUID(row.getRowUUID());
 
             builtRow.setKey(wordKey.getWordValue());
+            builtRow.setKeyUUID(wordKey.getWordUUID());
             builtRow.setValue(wordValue.getWordValue());
+            builtRow.setValueUUID(wordKey.getWordUUID());
             builtRow.setNameLanguageOfKey(languageKey.getLanguageName());
             builtRow.setNameLanguageOfValue(languageValue.getLanguageName());
 
@@ -95,11 +97,15 @@ public class ServiceRow {
         dao.save(row);
     }
 
-    public boolean deleteRowByKey(UUID rowUUID) {
-        return dao.deleteByKey(rowUUID);
+    public boolean deleteRowByKey(UUID uuid) {
+        Row row = dao.findById(uuid);
+        serviceWord.deleteWordByUUID(row.getWordKeyUUID());
+        serviceWord.deleteWordByUUID(row.getWordValueUUID());
+
+        return dao.deleteByKey(uuid);
     }
 
-    public Optional<Row> findRowByKey(String key) {
-        return dao.findByKey(key);
+    public Row findRowById(UUID uuid) {
+        return dao.findById(uuid);
     }
 }

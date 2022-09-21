@@ -34,7 +34,7 @@ public interface InterfaceDAOWord {
      * @param fileName name of the file to get data from.
      * @return one row or null.
      */
-    Optional<Row> findByKey(String key);
+    Row findById(UUID uuid);
 
     /**
      * delete row by key.
