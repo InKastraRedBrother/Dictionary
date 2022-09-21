@@ -6,9 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.dictionary.config.DictionaryConfiguration;
 import ru.dictionary.model.Language;
-import ru.dictionary.model.Row;
 import ru.dictionary.model.dto.BuiltRow;
-import ru.dictionary.model.dto.DeleteForm;
 import ru.dictionary.model.dto.RequestAddPairWordsDTO;
 import ru.dictionary.service.ServiceLanguage;
 import ru.dictionary.service.ServiceRow;
@@ -24,8 +22,7 @@ public class MainController {
     DictionaryConfiguration dictionaryConfiguration;
 
     @GetMapping("/main")
-    public String sayHello(Model model) {
-        model.addAttribute("nameDictionary");
+    public String sayHello() {
         return "main";
     }
 
@@ -35,14 +32,6 @@ public class MainController {
 //        model.addAttribute("id", id);
 //        return service.findAllRows(dictionaryConfiguration.getSelectedDictionary(id));
 //    }
-
-//    @GetMapping("/view-rows") //dto
-//    public String showAllRows(Model model, @RequestParam("id") String id) {
-//        List<Row> listRows = service.findAllRows(new DictionaryConfiguration().getSelectedDictionary(id));
-//        model.addAttribute(new WordsDTO(id, listRows));
-//        return "view-rows";
-//    }
-
 
     @GetMapping("/view-rows")
     public String showAllRows(@ModelAttribute BuiltRow builtRow, Model model) {
@@ -69,6 +58,14 @@ public class MainController {
         return "view-rows";
     }
 
+    @GetMapping("/view-rows/search/result")
+    public String home(@ModelAttribute BuiltRow builtRow, Model model,
+                       @RequestParam(name = "wordValue") String wordValue) {
+        List<BuiltRow> listBuiltRows = serviceRow.findRowByWordValue(wordValue);
+        model.addAttribute("listBuiltRows", listBuiltRows);
+        return "view-rows";
+    }
+
     @GetMapping("/add-row")
     public String showSaveRowPage(Model model) {
         List<Language> listLanguage = serviceLanguage.findAllLanguages();
@@ -88,25 +85,4 @@ public class MainController {
         serviceRow.deleteRowByKey(rowUUID);
         return "redirect:/view-rows";
     }
-//  /\ DELETE/\
-
-//    @PostMapping("/delete_row")
-//    public String deleteRow(@ModelAttribute Row row, @RequestParam("id") String id) {
-//        service.deleteRowByKey(row.getKey(), dictionaryConfiguration.getSelectedDictionary(id));
-//        return "redirect:/view-rows?id=" + id;
-//    }
-
-    @GetMapping("/search_row")
-    public String showSearchRowPage(Model model, @RequestParam(name = "id") String id) {
-        model.addAttribute("row", new Row());
-        model.addAttribute("id", id);
-        return "search_row";
-    }
-
-//    @GetMapping("/search_row/result")
-//    public String search(@ModelAttribute Row row, @RequestParam(name = "id") String id, Model model) {
-//        model.addAttribute("row", service.findRowByKey(row.getKey(), dictionaryConfiguration.getSelectedDictionary(id)));
-//        model.addAttribute("id", id);
-//        return "search_row";
-//    }
 }

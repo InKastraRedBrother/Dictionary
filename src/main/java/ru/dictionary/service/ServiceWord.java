@@ -36,6 +36,10 @@ public class ServiceWord {
         return wordDAO.searchByUUID(wordUUID);
     }
 
+    public List<Word> getListWordsByWordValue(String wordValue){
+        return wordDAO.getWordsByWordValue(wordValue);
+    }
+
     public Language getLanguageByWordUUID(UUID wordUUID) {
         return serviceLanguage.getLanguageByUUID(wordUUID);
 

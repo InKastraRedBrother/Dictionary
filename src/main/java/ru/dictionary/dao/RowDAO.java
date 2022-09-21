@@ -91,6 +91,15 @@ public class RowDAO implements InterfaceDAOWord {
         return true;
     }
 
+    /**
+     * Find row in storage by ID.
+     *
+     * @param rowUUID by what parameter to search for a string.
+     * @return String message that contains null or searched row.
+     * @throws DictionaryNotFoundException if no line was found (NoSuchElementException).
+     *                                     if scanner is closed (IllegalStateException).
+     *                                     if the file is not found (IOException).
+     */
     public Row findById(UUID rowUUID) {
         File file = getRowStorageTxtFile();
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
@@ -107,6 +116,16 @@ public class RowDAO implements InterfaceDAOWord {
         return null;
     }
 
+    /**
+     * Delete row by ID.
+     *
+     * @param rowUUID by what parameter to search for a row that should be deleted.
+     * @return boolean. true - if row was found and deleted. false - if not.
+     * @throws DictionaryNotFoundException if no line was found (NoSuchElementException).
+     *                                     if this scanner is closed(IllegalStateException).
+     *                                     If a security manager exists and its SecurityManager.checkDelete method denies delete access to the file (SecurityException).
+     *                                     If parameter <code>mainFile</code> is <code>null</code> (NullPointerException).
+     */
     @Override
     public boolean deleteByKey(UUID rowUUID) {
         boolean isExistRowInStorage = false;
@@ -114,7 +133,7 @@ public class RowDAO implements InterfaceDAOWord {
         File rowsStorage = getRowStorageTxtFile();
         File tempFile = new File(TEMPORARY_FILE_PATH_AND_FILENAME);
         try (FileWriter fileWriter = new FileWriter(tempFile, StandardCharsets.UTF_8, true);
-            Scanner sc = new Scanner(rowsStorage)) {
+             Scanner sc = new Scanner(rowsStorage)) {
 
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
@@ -145,16 +164,12 @@ public class RowDAO implements InterfaceDAOWord {
         return isExistRowInStorage;
     }
 
+    @Override
+    public Row findRowByWordValue(String wordValue) {
+        return null;
+    }
 
-    /**
-     * compare input row with rows in file.
-     *
-     * @param inputtedKeyForSearch by what parameter to search for a string.
-     * @return String message that contains null or searched row.
-     * @throws DictionaryNotFoundException if no line was found (NoSuchElementException).
-     *                                     if scanner is closed (IllegalStateException).
-     *                                     if the file is not found (IOException).
-     */
+
 //    public Optional<Row> findByKey(String inputtedKeyForSearch, String fileName) {
 //        File file = createFile(fileName);
 //        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
@@ -171,53 +186,6 @@ public class RowDAO implements InterfaceDAOWord {
 //        return Optional.empty();
 //    }
 
-    /**
-     * Delete row by key.
-     *
-     * @param inputtedKeyForDeletion by what parameter to search for a row that should be deleted.
-     * @return boolean. true - if row was found and deleted. false - if not.
-     * @throws DictionaryNotFoundException if no line was found (NoSuchElementException).
-     *                                     if this scanner is closed(IllegalStateException).
-     *                                     If a security manager exists and its SecurityManager.checkDelete method denies delete access to the file (SecurityException).
-     *                                     If parameter <code>mainFile</code> is <code>null</code> (NullPointerException).
-     */
-//    public boolean deleteByKey(String inputtedKeyForDeletion, String fileName) {
-//        boolean isExist = false;
-//        if ((findByKey(inputtedKeyForDeletion, fileName).isPresent())) {
-//            boolean isFirstRow = true;
-//            File mainFile = createFile(fileName);
-//            File tempFile = createFile(TEMPORARY_FILENAME);
-//            try (FileWriter fileWriter = new FileWriter(tempFile, StandardCharsets.UTF_8, true);
-//                 Scanner sc = new Scanner(mainFile)) {
-//
-//                while (sc.hasNextLine()) {
-//                    String line = sc.nextLine();
-//                    Row row = codec.convertStorageEntryToKV(line);
-//                    if (row.id_word_key()..equals(inputtedKeyForDeletion)){
-//                        isExist = true;
-//                    } else{
-//                        if (isFirstRow) {
-//                            isFirstRow = false;
-//                        } else {
-//                            fileWriter.write(System.lineSeparator());
-//                        }
-//                        fileWriter.write(codec.convertKVToStorageEntry(row));
-//                    }
-//                }
-//            } catch (IOException | NoSuchElementException | IllegalStateException | NullPointerException |
-//                     SecurityException e) {
-//                throw new DictionaryNotFoundException("deleteByKey");
-//            }
-//            try {
-//                mainFile.delete();
-//                tempFile.renameTo(mainFile);
-//            } catch (SecurityException | NullPointerException e) {
-//                throw new DictionaryNotFoundException("deleteByKey");
-//            }
-//
-//        }
-//        return isExist;
-//    }
 
     /**
      * Encapsulates the format in which the line in the file is stored.
