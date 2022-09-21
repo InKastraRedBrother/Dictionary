@@ -2,6 +2,7 @@ package ru.dictionary.dao;
 
 import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
+import ru.dictionary.model.Row;
 import ru.dictionary.model.Word;
 
 import java.io.File;
@@ -15,7 +16,8 @@ import static ru.dictionary.dao.Util.Util.PATH_TO_STORAGE_DIRECTORY;
 
 @Component
 public class WordDAO {
-
+    private static final String TEMPORARY_FILENAME = "tempForWord.txt";
+    private static final String TEMPORARY_FILE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + TEMPORARY_FILENAME;
     private final static String WORD_STORAGE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + "word.txt";
     private final Codec codec;
 
@@ -113,6 +115,42 @@ public class WordDAO {
             throw new DictionaryNotFoundException("findAll languages");
         }
         return listWordsFromStorage;
+    }
+
+    public boolean deleteById(UUID wordUUID) {
+        boolean isExistWordInStorage = false;
+        boolean isFirstRow = true;
+        File rowsStorage = getWordStorageTxtFile();
+        File tempFile = new File(TEMPORARY_FILE_PATH_AND_FILENAME);
+        try (FileWriter fileWriter = new FileWriter(tempFile, StandardCharsets.UTF_8, true);
+             Scanner sc = new Scanner(rowsStorage)) {
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                Word word = codec.convertFromStorageFormatToObjectFormat(line);
+                if (word.getWordUUID().equals(wordUUID)) {
+                    isExistWordInStorage = true;
+                } else {
+                    if (isFirstRow) {
+                        isFirstRow = false;
+                    } else {
+                        fileWriter.write(System.lineSeparator());
+                    }
+                    fileWriter.write(codec.convertFromObjectFormatToStorageFormat(word));
+                }
+            }
+        } catch (IOException | NoSuchElementException | IllegalStateException | NullPointerException |
+                 SecurityException e) {
+            throw new DictionaryNotFoundException("deleteByKey");
+        }
+        try {
+            if (!rowsStorage.delete() || !tempFile.renameTo(rowsStorage)) {
+                throw new DictionaryNotFoundException("deleteByKey");
+            }
+
+        } catch (SecurityException | NullPointerException e) {
+            throw new DictionaryNotFoundException("deleteByKey");
+        }
+        return isExistWordInStorage;
     }
 
     private static class Codec {

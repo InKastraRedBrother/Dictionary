@@ -4,6 +4,7 @@ import ru.dictionary.model.Row;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Interface provide methods to work with data which stored in file.
@@ -33,7 +34,7 @@ public interface InterfaceDAOWord {
      * @param fileName name of the file to get data from.
      * @return one row or null.
      */
-    Optional<Row> findByKey(String key);
+    Row findById(UUID uuid);
 
     /**
      * delete row by key.
@@ -42,5 +43,5 @@ public interface InterfaceDAOWord {
      * @param fileName    name of the file where row will be deleted.
      * @return true if row was found and deleted, else false
      */
-    boolean deleteByKey(String inputtedKey);
+    boolean deleteByKey(UUID uuid);
 }

@@ -23,35 +23,19 @@ public class ServiceRow {
     ServiceWord serviceWord;
     ServiceLanguage serviceLanguage;
 
-    private <V> Map<UUID, V> convertListToMap(List<V> list) {
-        Map<UUID, V> hashMap = new HashMap<>();
-
-        for (V elem : list) {
-            hashMap.put(UUID.fromString(elem.toString()), elem);
-        }
-        return hashMap;
-    }
-
     public List<BuiltRow> findAllRows() {
 
         List<Row> listRow = dao.findAll();
         List<Language> listLanguage = serviceLanguage.findAllLanguages();
         List<Word> listWord = serviceWord.findAllWords();
 
-        Map<UUID, Row> hashMapRow = listRow.stream().collect(Collectors.toMap(Row::getRowUUID, row -> row));
         Map<UUID, Language> hashMapLanguage = listLanguage.stream().collect(Collectors.toMap(Language::getLanguageUUID, language -> language));
         Map<UUID, Word> hashMapWord = listWord.stream().collect(Collectors.toMap(Word::getWordUUID, word -> word));
 
-//        Map<UUID, Row> hashMapRow = convertListToMap(listRow); //TODO REQUIRE OVERRIDE TO.STRING IN MODELS TO RETURN STRING FORMAT OF UUID
-//        Map<UUID, Language> hashMapLanguage = convertListToMap(listLanguage);
-//        Map<UUID, Word> hashMapWord = convertListToMap(listWord);
-
         List<BuiltRow> builtRowList = new ArrayList<>();
 
-        for (UUID uuid : hashMapRow.keySet()) {
+        for (Row row : listRow) {
             BuiltRow builtRow = new BuiltRow();
-
-            Row row = hashMapRow.get(uuid);
 
             Word wordKey = hashMapWord.get(row.getWordKeyUUID());
             Word wordValue = hashMapWord.get(row.getWordValueUUID());
@@ -62,12 +46,13 @@ public class ServiceRow {
             builtRow.setRowUUID(row.getRowUUID());
 
             builtRow.setKey(wordKey.getWordValue());
+            builtRow.setKeyUUID(wordKey.getWordUUID());
             builtRow.setValue(wordValue.getWordValue());
+            builtRow.setValueUUID(wordKey.getWordUUID());
             builtRow.setNameLanguageOfKey(languageKey.getLanguageName());
             builtRow.setNameLanguageOfValue(languageValue.getLanguageName());
 
             builtRowList.add(builtRow);
-
         }
         return builtRowList;
     }
@@ -112,11 +97,15 @@ public class ServiceRow {
         dao.save(row);
     }
 
-    public boolean deleteRowByKey(String key) {
-        return dao.deleteByKey(key);
+    public boolean deleteRowByKey(UUID uuid) {
+        Row row = dao.findById(uuid);
+        serviceWord.deleteWordByUUID(row.getWordKeyUUID());
+        serviceWord.deleteWordByUUID(row.getWordValueUUID());
+
+        return dao.deleteByKey(uuid);
     }
 
-    public Optional<Row> findRowByKey(String key) {
-        return dao.findByKey(key);
+    public Row findRowById(UUID uuid) {
+        return dao.findById(uuid);
     }
 }

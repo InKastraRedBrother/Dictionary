@@ -6,61 +6,66 @@
 </head>
 <body>
 <div class="container">
-    <table class="table table-bordered">
 
-        <form th:action="@{/view-rows/result(dropDownListSourceLanguage=${dropDownListSourceLanguage}, dropDownListTargetLanguage=${dropDownListTargetLanguage})}"
-              th:object="${listLanguage}" th:method="GET"
-              accept-charset="UTF-8">
+    <form th:action="@{/view-rows/result(dropDownListSourceLanguage=${dropDownListSourceLanguage}, dropDownListTargetLanguage=${dropDownListTargetLanguage})}"
+          th:object="${listLanguage}" th:method="GET"
+          accept-charset="UTF-8">
 
-            <select class="form-control" name="dropDownListSourceLanguage" id="dropDownListSourceLanguage">
-                <option value="">Выберите язык слова</option>
-                <option th:each="languageWord : ${listLanguage}" th:value="${languageWord.languageUUID}"
-                        th:text="${languageWord.languageName}"></option>
-            </select>
+        <select class="form-control" name="dropDownListSourceLanguage" id="dropDownListSourceLanguage">
+            <option value="">Выберите язык слова</option>
+            <option th:each="languageWord : ${listLanguage}" th:value="${languageWord.languageUUID}"
+                    th:text="${languageWord.languageName}"></option>
+        </select>
 
-            <select class="form-control" name="dropDownListTargetLanguage" id="dropDownListTargetLanguage">
-                <option value="">Выберите язык перевода</option>
-                <option th:each="languageTranslate : ${listLanguage}" th:value="${languageTranslate.languageUUID}"
-                        th:text="${languageTranslate.languageName}"></option>
-            </select>
+        <select class="form-control" name="dropDownListTargetLanguage" id="dropDownListTargetLanguage">
+            <option value="">Выберите язык перевода</option>
+            <option th:each="languageTranslate : ${listLanguage}" th:value="${languageTranslate.languageUUID}"
+                    th:text="${languageTranslate.languageName}"></option>
+        </select>
 
-            <div>
-                <button>Выбрать языки</button>
-            </div>
-        </form>
+        <div>
+            <button>Выбрать языки</button>
+        </div>
+    </form>
 
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Ключ</th>
-                <th>Язык ключа</th>
-                <th>Значение</th>
-                <th>Язык значения</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="builtRows : ${listBuiltRows}">
-                <td th:hidden="${builtRows.rowUUID}"></td>
-                <td th:text="${builtRows.key}"></td>
-                <td th:text="${builtRows.nameLanguageOfKey}"></td>
-                <td th:text="${builtRows.value}"></td>
-                <td th:text="${builtRows.nameLanguageOfValue}"></td>
-            </tr>
-            </tbody>
-        </table>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Ключ</th>
+            <th>Язык ключа</th>
+            <th>Значение</th>
+            <th>Язык значения</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="builtRows : ${listBuiltRows}">
+            <td th:hidden="${builtRows.rowUUID}"></td>
+            <td th:text="${builtRows.key}"></td>
+            <td th:hidden="${builtRows.keyUUID}"></td>
+            <td th:text="${builtRows.nameLanguageOfKey}"></td>
+            <td th:hidden="${builtRows.valueUUID}"></td>
+            <td th:text="${builtRows.value}"></td>
+            <td th:text="${builtRows.nameLanguageOfValue}"></td>
+            <!--                <td> <form action="#" th:action="@{edit/{rowUUID}(rowUUID=${builtRows.rowUUID})}"><button type="submit" class="btn btn-indigo btn-sm m-0">Edit</button></form></td>-->
+            <td>
+                <form th:method="POST"
+                      th:action="@{delete-row/{rowUUID}(rowUUID=${builtRows.rowUUID})}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
     </table>
-        <br>
 
-        <a th:href="@{/add-row}"
-           th:text="Add"></a>
+    <br>
 
-        <a th:href="@{/delete-row}"
-           th:text="Delete"></a>
+    <a th:href="@{/add-row}"
+       th:text="Add"></a>
 
-        <a th:href="@{/search-row}"
-           th:text="Search"></a>
+    <a th:href="@{/search-row}"
+       th:text="Search"></a>
 
-        <a th:href="@{/main}">Back to choose</a>
+    <a th:href="@{/main}">Back to choose</a>
 
 </div>
 

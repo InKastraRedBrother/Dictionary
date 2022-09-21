@@ -24,6 +24,10 @@ public class ServiceWord {
         wordDAO.saveWord(word);
     }
 
+    public void deleteWordByUUID(UUID wordUUID){
+        wordDAO.deleteById(wordUUID);
+    }
+
     public List<Word> getListByLanguageUUID(UUID languageUUID){
         return wordDAO.searchAllByUUID(languageUUID);
     }
