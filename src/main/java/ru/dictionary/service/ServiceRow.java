@@ -61,9 +61,12 @@ public class ServiceRow {
     }
 
 
-    public List<BuiltRow> findAllBySelectedLanguageUUID(UUID languageSourceUUID, UUID languageTargetUUID) {
+    public List<BuiltRow> findAllBySelectedLanguageUUID(String languageSourceUUID, String languageTargetUUID) {
 
-        List<Word> listWords = serviceWord.getListByLanguageUUID(languageSourceUUID);
+        UUID languageSourceUUIDFromString = UUID.fromString(languageSourceUUID);
+        UUID languageTargetUUIDFromString = UUID.fromString(languageTargetUUID);
+
+        List<Word> listWords = serviceWord.getListByLanguageUUID(languageSourceUUIDFromString);
         List<Row> listRows = dao.findAll();
         List<BuiltRow> builtRowList = new ArrayList<>();
         for (Word word : listWords) {
@@ -72,11 +75,11 @@ public class ServiceRow {
             for (Row row : listRows) {
                 builtRow.setRowUUID(row.getRowUUID());
                 if (row.getWordKeyUUID().equals(keyWord)) {
-                    builtRow.setNameLanguageOfKey(serviceLanguage.getLanguageByUUID(languageSourceUUID).getLanguageName());
+                    builtRow.setNameLanguageOfKey(serviceLanguage.getLanguageByUUID(languageSourceUUIDFromString).getLanguageName());
                     builtRow.setKey(word.getWordValue());
                     Word wordTemp = serviceWord.getWordByUUID(row.getWordValueUUID());
                     builtRow.setValue(wordTemp.getWordValue());
-                    builtRow.setNameLanguageOfValue(serviceWord.getLanguageByWordUUID(languageTargetUUID).getLanguageName());
+                    builtRow.setNameLanguageOfValue(serviceWord.getLanguageByWordUUID(languageTargetUUIDFromString).getLanguageName());
                     builtRowList.add(builtRow);
                 }
             }
@@ -100,12 +103,13 @@ public class ServiceRow {
         dao.save(row);
     }
 
-    public boolean deleteRowByKey(UUID uuid) {
-        Row row = dao.findById(uuid);
+    public boolean deleteRowByKey(String uuid) {
+        UUID uuidForDelete = UUID.fromString(uuid);
+        Row row = dao.findById(uuidForDelete);
         serviceWord.deleteWordByUUID(row.getWordKeyUUID());
         serviceWord.deleteWordByUUID(row.getWordValueUUID());
 
-        return dao.deleteById(uuid);
+        return dao.deleteById(uuidForDelete);
     }
 
     public List<BuiltRow> findRowByWordValue(String wordValueFromView) {

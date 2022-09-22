@@ -3,14 +3,12 @@ package ru.dictionary.conrtoller;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.dictionary.model.Language;
 import ru.dictionary.service.ServiceLanguage;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/language")
@@ -35,6 +33,12 @@ public class LanguageController {
     @PostMapping("/add")
     public String addLanguage(@ModelAttribute(name = "language") Language language) {
         serviceLanguage.addLanguage(language);
+        return "redirect:/language/view-all";
+    }
+
+    @PostMapping("/delete-language/{languageUUID}") //TODO мб сделать касадное удаление всех строк, где есть слова удаляемого языка?
+    public String deleteLanguage(@PathVariable("languageUUID") String languageUUID){
+        System.out.println(languageUUID);
         return "redirect:/language/view-all";
     }
 

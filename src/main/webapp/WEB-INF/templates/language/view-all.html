@@ -9,10 +9,19 @@
     <table class="table table-bordered">
 
         <tbody>
+        <tr>
+            <th>Название языка</th>
+            <th>Правило языка</th>
+        </tr>
         <tr th:each="language : ${listLanguages}">
-            <td th:text="${language.getLanguageUUID}"></td>
             <td th:text="${language.languageName}"></td>
             <td th:text="${language.languageRule}"></td>
+            <td>
+                <form th:method="POST"
+                      th:action="@{delete-language/{languageUUID}(languageUUID=${language.languageUUID})}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>

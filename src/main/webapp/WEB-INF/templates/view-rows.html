@@ -47,11 +47,8 @@
         </thead>
         <tbody>
         <tr th:each="builtRows : ${listBuiltRows}">
-            <td th:hidden="${builtRows.rowUUID}"></td>
             <td th:text="${builtRows.key}"></td>
-            <td th:hidden="${builtRows.keyUUID}"></td>
             <td th:text="${builtRows.nameLanguageOfKey}"></td>
-            <td th:hidden="${builtRows.valueUUID}"></td>
             <td th:text="${builtRows.value}"></td>
             <td th:text="${builtRows.nameLanguageOfValue}"></td>
             <td>

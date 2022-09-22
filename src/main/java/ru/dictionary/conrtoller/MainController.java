@@ -46,8 +46,8 @@ public class MainController {
 
     @GetMapping(value = "/view-rows/result", params = {"dropDownListSourceLanguage", "dropDownListSourceLanguage"})
     public String showAllRowsBySelectedOption(@ModelAttribute BuiltRow builtRow,
-                                              @RequestParam(name = "dropDownListSourceLanguage", required = false) UUID languageSourceUUID,
-                                              @RequestParam(name = "dropDownListTargetLanguage", required = false) UUID languageTargetUUID,
+                                              @RequestParam(name = "dropDownListSourceLanguage", required = false) String languageSourceUUID,
+                                              @RequestParam(name = "dropDownListTargetLanguage", required = false) String languageTargetUUID,
                                               Model model) {
 
         List<Language> listLanguage = serviceLanguage.findAllLanguages();
@@ -81,7 +81,7 @@ public class MainController {
     }
 
     @PostMapping("/delete-row/{rowUUID}")
-    public String deleteRow(@PathVariable("rowUUID") UUID rowUUID) {
+    public String deleteRow(@PathVariable("rowUUID") String rowUUID) {
         serviceRow.deleteRowByKey(rowUUID);
         return "redirect:/view-rows";
     }
