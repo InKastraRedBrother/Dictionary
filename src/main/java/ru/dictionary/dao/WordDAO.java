@@ -2,7 +2,6 @@ package ru.dictionary.dao;
 
 import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
-import ru.dictionary.model.Row;
 import ru.dictionary.model.Word;
 
 import java.io.File;
@@ -22,7 +21,7 @@ public class WordDAO {
     private final Codec codec;
 
 
-    public WordDAO() throws IOException {
+    public WordDAO() {
         this.codec = new Codec();
 
         File directory = new File(PATH_TO_STORAGE_DIRECTORY);
@@ -117,7 +116,7 @@ public class WordDAO {
         return listWordsFromStorage;
     }
 
-    public List<Word> getWordsByWordValue(String wordValue){
+    public List<Word> getWordsByWordValue(String wordValue) {
         File file = getWordStorageTxtFile();
 
         List<Word> listWordsFromStorage = new ArrayList<>();

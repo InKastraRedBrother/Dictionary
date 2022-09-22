@@ -105,7 +105,7 @@ public class ServiceRow {
         serviceWord.deleteWordByUUID(row.getWordKeyUUID());
         serviceWord.deleteWordByUUID(row.getWordValueUUID());
 
-        return dao.deleteByKey(uuid);
+        return dao.deleteById(uuid);
     }
 
     public List<BuiltRow> findRowByWordValue(String wordValueFromView) {
@@ -119,7 +119,7 @@ public class ServiceRow {
         List<Row> cleanListRow = new ArrayList<>();
         for (Row row : listRow) {
             for (Word word : listWord) {
-                if ( row.getWordKeyUUID().equals(word.getWordUUID()) || row.getWordValueUUID().equals(word.getWordUUID())){
+                if (row.getWordKeyUUID().equals(word.getWordUUID()) || row.getWordValueUUID().equals(word.getWordUUID())) {
                     cleanListRow.add(row);
                 }
             }

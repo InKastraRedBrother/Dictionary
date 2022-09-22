@@ -127,7 +127,7 @@ public class RowDAO implements InterfaceDAOWord {
      *                                     If parameter <code>mainFile</code> is <code>null</code> (NullPointerException).
      */
     @Override
-    public boolean deleteByKey(UUID rowUUID) {
+    public boolean deleteById(UUID rowUUID) {
         boolean isExistRowInStorage = false;
         boolean isFirstRow = true;
         File rowsStorage = getRowStorageTxtFile();
@@ -163,29 +163,6 @@ public class RowDAO implements InterfaceDAOWord {
         }
         return isExistRowInStorage;
     }
-
-    @Override
-    public Row findRowByWordValue(String wordValue) {
-        return null;
-    }
-
-
-//    public Optional<Row> findByKey(String inputtedKeyForSearch, String fileName) {
-//        File file = createFile(fileName);
-//        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
-//            while (sc.hasNextLine()) {
-//                String line = sc.nextLine();
-//                Row row = codec.convertStorageEntryToKV(line);
-//                if (row.getId_word_key().equals(inputtedKeyForSearch)) {
-//                    return Optional.of(row);
-//                }
-//            }
-//        } catch (IOException | NoSuchElementException | IllegalStateException e) {
-//            throw new DictionaryNotFoundException("findByKey");
-//        }
-//        return Optional.empty();
-//    }
-
 
     /**
      * Encapsulates the format in which the line in the file is stored.

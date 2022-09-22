@@ -20,7 +20,7 @@ public class LanguageDAO implements LanguageDAOInterface {
     private final Codec codec;
 
 
-    public LanguageDAO() throws IOException {
+    public LanguageDAO() {
         this.codec = new Codec();
 
         File directory = new File(LANGUAGE_STORAGE_DIRECTORY);
