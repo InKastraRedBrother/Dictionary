@@ -3,7 +3,6 @@ package ru.dictionary.dao;
 import ru.dictionary.model.Row;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -13,16 +12,14 @@ public interface InterfaceDAOWord {
     /**
      * Save given row in given file.
      *
-     * @param row      - row is a model. contains (String key, String value).
-     * @param fileName the name of the file where the data will be stored.
+     * @param row entity.
      * @return true if row is stored, else false.
      */
     boolean save(Row row);
 
     /**
-     * Show all data from file
+     * Show all data from storage.
      *
-     * @param fileName this is the name of the file to get data from.
      * @return <code>List<code/> which contains data from file.
      */
     List<Row> findAll();
@@ -30,20 +27,17 @@ public interface InterfaceDAOWord {
     /**
      * Search one row from file.
      *
-     * @param key      the key word by which the entire string will be searched in the file.
-     * @param fileName name of the file to get data from.
+     * @param uuid id by which the entire string will be searched in the file.
      * @return one row or null.
      */
     Row findById(UUID uuid);
 
     /**
-     * delete row by key.
+     * delete row.
      *
-     * @param inputtedKey the key word by which the entire string will be deleted from file.
-     * @param fileName    name of the file where row will be deleted.
-     * @return true if row was found and deleted, else false
+     * @param uuid id by which the entire string will be deleted from storage.
+     * @return true if row was found and deleted, else false.
      */
-    boolean deleteByKey(UUID uuid);
+    boolean deleteById(UUID uuid);
 
-    Row findRowByWordValue(String wordValue);
 }

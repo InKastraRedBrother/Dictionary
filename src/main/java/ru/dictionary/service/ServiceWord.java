@@ -24,11 +24,11 @@ public class ServiceWord {
         wordDAO.saveWord(word);
     }
 
-    public void deleteWordByUUID(UUID wordUUID){
+    public void deleteWordByUUID(UUID wordUUID) {
         wordDAO.deleteById(wordUUID);
     }
 
-    public List<Word> getListByLanguageUUID(UUID languageUUID){
+    public List<Word> getListByLanguageUUID(UUID languageUUID) {
         return wordDAO.searchAllByUUID(languageUUID);
     }
 
@@ -36,7 +36,7 @@ public class ServiceWord {
         return wordDAO.searchByUUID(wordUUID);
     }
 
-    public List<Word> getListWordsByWordValue(String wordValue){
+    public List<Word> getListWordsByWordValue(String wordValue) {
         return wordDAO.getWordsByWordValue(wordValue);
     }
 

@@ -10,7 +10,7 @@
     <form th:action="@{/view-rows/search/result}"
           th:method="GET"
           accept-charset="UTF-8">
-        <input type="text" name="wordValue" th:value="${wordValue}"  placeholder="Find by Word Value" size="50" >
+        <input type="text" name="wordValue" th:value="${wordValue}" placeholder="Find by Word Value" size="50">
 
         <button>Поиск</button>
     </form>
@@ -54,7 +54,6 @@
             <td th:hidden="${builtRows.valueUUID}"></td>
             <td th:text="${builtRows.value}"></td>
             <td th:text="${builtRows.nameLanguageOfValue}"></td>
-            <!--                <td> <form action="#" th:action="@{edit/{rowUUID}(rowUUID=${builtRows.rowUUID})}"><button type="submit" class="btn btn-indigo btn-sm m-0">Edit</button></form></td>-->
             <td>
                 <form th:method="POST"
                       th:action="@{delete-row/{rowUUID}(rowUUID=${builtRows.rowUUID})}">
@@ -73,10 +72,8 @@
     <a th:href="@{/add-row}"
        th:text="Add"></a>
 
-    <a th:href="@{/search-row}"
-       th:text="Search"></a>
-
-    <a th:href="@{/main}">Back to choose</a>
+    <a th:href="@{/main}">
+        Back to main menu</a>
 
 </div>
 
