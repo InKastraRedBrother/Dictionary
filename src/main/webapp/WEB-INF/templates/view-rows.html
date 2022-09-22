@@ -1,11 +1,15 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:formth="http://www.w3.org/1999/html" lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>View All Rows</title>
 </head>
 <body>
 <div class="container">
+
+    <form th:object="${successMessage}"></form>
+    <p th:text="${successMessage}">Here will be a Player age</p>
+
 
     <form th:action="@{/view-rows/search/result}"
           th:method="GET"

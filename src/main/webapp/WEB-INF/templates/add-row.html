@@ -9,6 +9,8 @@
 <body>
 
 <div>
+    <span th:text="${successMessage?.getErrorMessage()}">Static summary</span>
+
     <form th:action="@{/add-row}" th:object="${requestAddPairWordsDTO}" method="post"
           accept-charset="UTF-8">
 

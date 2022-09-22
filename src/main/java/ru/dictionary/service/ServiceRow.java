@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.dictionary.dao.InterfaceDAOWord;
 import ru.dictionary.model.Language;
 import ru.dictionary.model.Row;
+import ru.dictionary.model.SuccessMessage;
 import ru.dictionary.model.Word;
 import ru.dictionary.model.dto.BuiltRow;
 import ru.dictionary.model.dto.RequestAddPairWordsDTO;
@@ -25,6 +26,7 @@ public class ServiceRow {
     InterfaceDAOWord dao;
     ServiceWord serviceWord;
     ServiceLanguage serviceLanguage;
+    SuccessMessage successMessage;
 
     public List<BuiltRow> findAllRows() {
 
@@ -49,9 +51,7 @@ public class ServiceRow {
             builtRow.setRowUUID(row.getRowUUID());
 
             builtRow.setKey(wordKey.getWordValue());
-            builtRow.setKeyUUID(wordKey.getWordUUID());
             builtRow.setValue(wordValue.getWordValue());
-            builtRow.setValueUUID(wordKey.getWordUUID());
             builtRow.setNameLanguageOfKey(languageKey.getLanguageName());
             builtRow.setNameLanguageOfValue(languageValue.getLanguageName());
 
@@ -87,20 +87,32 @@ public class ServiceRow {
         return builtRowList;
     }
 
-    public void addPair(RequestAddPairWordsDTO requestAddPairWordsDTO) {
+    public SuccessMessage addPair(RequestAddPairWordsDTO requestAddPairWordsDTO) {
 
-        UUID wordKeyUUID = UUID.randomUUID();
-        UUID wordValueUUID = UUID.randomUUID();
+        Language languageSource = serviceLanguage.getLanguageByUUID(requestAddPairWordsDTO.getLanguageSourceUUID());
+        Language languageTarget = serviceLanguage.getLanguageByUUID(requestAddPairWordsDTO.getLanguageTargetUUID());
 
-        serviceWord.addWord(wordKeyUUID, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceUUID());
-        serviceWord.addWord(wordValueUUID, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetUUID());
+        if (requestAddPairWordsDTO.getWordKey().matches(languageSource.getLanguageRule()) && requestAddPairWordsDTO.getWordValue().matches(languageTarget.getLanguageRule())) {
 
-        Row row = new Row();
-        row.setRowUUID(UUID.randomUUID());
-        row.setWordKeyUUID(wordKeyUUID);
-        row.setWordValueUUID(wordValueUUID);
 
-        dao.save(row);
+            UUID wordKeyUUID = UUID.randomUUID();
+            UUID wordValueUUID = UUID.randomUUID();
+
+            serviceWord.addWord(wordKeyUUID, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceUUID());
+            serviceWord.addWord(wordValueUUID, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetUUID());
+
+            Row row = new Row();
+            row.setRowUUID(UUID.randomUUID());
+            row.setWordKeyUUID(wordKeyUUID);
+            row.setWordValueUUID(wordValueUUID);
+
+            dao.save(row);
+
+            successMessage.setErrorMessage("Pair have been added" + requestAddPairWordsDTO.getWordKey() + " : " + requestAddPairWordsDTO.getWordValue());
+        } else {
+            successMessage.setErrorMessage("Pattern mismatch");
+        }
+        return successMessage;
     }
 
     public boolean deleteRowByKey(String uuid) {
@@ -149,9 +161,7 @@ public class ServiceRow {
             builtRow.setRowUUID(row.getRowUUID());
 
             builtRow.setKey(wordKey.getWordValue());
-            builtRow.setKeyUUID(wordKey.getWordUUID());
             builtRow.setValue(wordValue.getWordValue());
-            builtRow.setValueUUID(wordKey.getWordUUID());
             builtRow.setNameLanguageOfKey(languageKey.getLanguageName());
             builtRow.setNameLanguageOfValue(languageValue.getLanguageName());
 
