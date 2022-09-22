@@ -44,4 +44,6 @@ public interface InterfaceDAOWord {
      * @return true if row was found and deleted, else false
      */
     boolean deleteByKey(UUID uuid);
+
+    Row findRowByWordValue(String wordValue);
 }

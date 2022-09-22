@@ -7,6 +7,14 @@
 <body>
 <div class="container">
 
+    <form th:action="@{/view-rows/search/result}"
+          th:method="GET"
+          accept-charset="UTF-8">
+        <input type="text" name="wordValue" th:value="${wordValue}"  placeholder="Find by Word Value" size="50" >
+
+        <button>Поиск</button>
+    </form>
+
     <form th:action="@{/view-rows/result(dropDownListSourceLanguage=${dropDownListSourceLanguage}, dropDownListTargetLanguage=${dropDownListTargetLanguage})}"
           th:object="${listLanguage}" th:method="GET"
           accept-charset="UTF-8">
@@ -58,6 +66,9 @@
     </table>
 
     <br>
+
+    <a th:href="@{/view-rows}"
+       th:text="RESET"></a>
 
     <a th:href="@{/add-row}"
        th:text="Add"></a>

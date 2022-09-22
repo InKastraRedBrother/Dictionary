@@ -117,6 +117,24 @@ public class WordDAO {
         return listWordsFromStorage;
     }
 
+    public List<Word> getWordsByWordValue(String wordValue){
+        File file = getWordStorageTxtFile();
+
+        List<Word> listWordsFromStorage = new ArrayList<>();
+
+        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
+            while (sc.hasNextLine()) {
+                Word word = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
+                if (word.getWordValue().equals(wordValue)) {
+                    listWordsFromStorage.add(word);
+                }
+            }
+        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
+            throw new DictionaryNotFoundException("findAll languages");
+        }
+        return listWordsFromStorage;
+    }
+
     public boolean deleteById(UUID wordUUID) {
         boolean isExistWordInStorage = false;
         boolean isFirstRow = true;
