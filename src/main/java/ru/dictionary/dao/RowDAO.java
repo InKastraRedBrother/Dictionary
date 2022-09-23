@@ -1,7 +1,6 @@
 package ru.dictionary.dao;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
 import ru.dictionary.model.Row;
@@ -17,7 +16,7 @@ import static ru.dictionary.dao.Util.Util.ELEMENTS_SEPARATOR;
 import static ru.dictionary.dao.Util.Util.PATH_TO_STORAGE_DIRECTORY;
 
 @Component
-public class RowDAO implements InterfaceRowDAO{
+public class RowDAO implements InterfaceRowDAO {
 
     private static final String TEMPORARY_FILENAME = "tempForRow.txt";
     private static final String TEMPORARY_FILE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + TEMPORARY_FILENAME;

@@ -20,29 +20,10 @@ import ru.dictionary.dao.*;
 @EnableWebMvc
 @Configuration
 @ComponentScan(basePackages = {"ru.dictionary"})
-@PropertySource("classpath:application.properties")
 @AllArgsConstructor
 public class MvcConfig implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
-
-    @Bean
-    @Value("${row.path}")
-    InterfaceRowDAO rowDAO(String path) {
-        return new RowDAO(path);
-    }
-
-    @Bean
-    @Value("${word.path}")
-    InterfaceWordDAO wordDAO(String path) {
-        return new WordDAO(path);
-    }
-
-    @Bean
-    @Value("${language.path}")
-    InterfaceLanguageDAO languageDAO(String path) {
-        return new LanguageDAO(path);
-    }
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {

@@ -3,7 +3,6 @@ package ru.dictionary.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.dictionary.dao.InterfaceRowDAO;
-import ru.dictionary.dao.RowDAO;
 import ru.dictionary.model.Language;
 import ru.dictionary.model.Row;
 import ru.dictionary.model.SuccessMessage;
