@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 import ru.dictionary.config.DictionaryConfiguration;
 import ru.dictionary.model.Language;
 import ru.dictionary.model.SuccessMessage;
@@ -71,21 +70,20 @@ public class MainController {
     @GetMapping("/add-row")
     public String showSaveRowPage(Model model) {
         List<Language> listLanguage = serviceLanguage.findAllLanguages();
-        SuccessMessage successMessage = null;
         model.addAttribute("listLanguage", listLanguage);
         model.addAttribute("requestAddPairWordsDTO", new RequestAddPairWordsDTO());
-        model.addAttribute("successMessage", successMessage);
         return "add-row";
     }
 
     @PostMapping("/add-row")
-    public RedirectView saveRow(@ModelAttribute RequestAddPairWordsDTO requestAddPairWordsDTO, @ModelAttribute SuccessMessage successMessage, Model model, RedirectAttributes ra) {
-        successMessage = serviceRow.addPair(requestAddPairWordsDTO);
-        model.addAttribute("successMessage", successMessage);
-        String responseFromServiceValidator  = successMessage.getErrorMessage();
-        RedirectView rv = new RedirectView("/view-rows", true); ra.addFlashAttribute("successMessage", responseFromServiceValidator);
-        return rv;
-//        return "redirect:/view-rows";
+    public String saveRow(@ModelAttribute RequestAddPairWordsDTO requestAddPairWordsDTO, RedirectAttributes redirectAttributes) {
+        SuccessMessage successMessage = serviceRow.addPair(requestAddPairWordsDTO);
+        redirectAttributes.addFlashAttribute("successMessage", successMessage);
+        if (successMessage.isSuccessful()) {
+            return "redirect:/view-rows";
+        } else {
+            return "redirect:/add-row";
+        }
     }
 
     @PostMapping("/delete-row/{rowUUID}")

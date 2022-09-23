@@ -6,5 +6,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class SuccessMessage {
-    private String errorMessage;
+    private boolean isSuccessful;
+    private String message;
 }

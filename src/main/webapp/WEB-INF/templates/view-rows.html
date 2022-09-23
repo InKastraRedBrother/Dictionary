@@ -7,9 +7,7 @@
 <body>
 <div class="container">
 
-    <form th:object="${successMessage}"></form>
-    <p th:text="${successMessage}">Here will be a Player age</p>
-
+    <p th:text="${successMessage?.getMessage}">Here will be a Player age</p>
 
     <form th:action="@{/view-rows/search/result}"
           th:method="GET"

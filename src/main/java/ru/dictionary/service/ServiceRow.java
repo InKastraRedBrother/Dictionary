@@ -108,9 +108,11 @@ public class ServiceRow {
 
             dao.save(row);
 
-            successMessage.setErrorMessage("Pair have been added" + requestAddPairWordsDTO.getWordKey() + " : " + requestAddPairWordsDTO.getWordValue());
+            successMessage.setMessage("Pair have been added" + requestAddPairWordsDTO.getWordKey() + " : " + requestAddPairWordsDTO.getWordValue());
+            successMessage.setSuccessful(true);
         } else {
-            successMessage.setErrorMessage("Pattern mismatch");
+            successMessage.setMessage("Pattern mismatch");
+            successMessage.setSuccessful(false);
         }
         return successMessage;
     }
