@@ -1,14 +1,14 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Add row</title>
 </head>
-
 <body>
+<div class="container">
 
-<div>
+    <p th:text="${successMessage?.getMessage}">Here will be a Player age</p>
+
     <form th:action="@{/add-row}" th:object="${requestAddPairWordsDTO}" method="post"
           accept-charset="UTF-8">
 
@@ -22,9 +22,9 @@
             <option value="0">Выберите язык перевода</option>
             <option th:each="languageTranslate : ${listLanguage}" th:value="${languageTranslate.getLanguageUUID}"
                     th:text="${languageTranslate.languageName}"></option>
-        </select>
+        </select><br>
 
-        <input type="text" th:field="*{wordKey}" placeholder="Введите ключ"><br>
+        <input type="text" th:field="*{wordKey}" placeholder="Введите ключ">
         <input type="text" th:field="*{wordValue}" placeholder="Введите значение"><br>
 
         <button type="submit" value="add-row">Сохранить строку</button>
