@@ -2,7 +2,7 @@ package ru.dictionary.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.dictionary.dao.InterfaceDAOWord;
+import ru.dictionary.dao.InterfaceWordDAO;
 import ru.dictionary.model.Language;
 import ru.dictionary.model.Word;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 public class ServiceWord {
-    InterfaceDAOWord wordDAO;
+    InterfaceWordDAO wordDAO;
     ServiceLanguage serviceLanguage;
 
     public void addWord(UUID wordUUID, String wordValue, UUID wordLanguageUUID) {

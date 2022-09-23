@@ -2,6 +2,7 @@ package ru.dictionary.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.dictionary.dao.InterfaceRowDAO;
 import ru.dictionary.dao.RowDAO;
 import ru.dictionary.model.Language;
 import ru.dictionary.model.Row;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ServiceRow {
 
-    RowDAO rowDAO;
+    InterfaceRowDAO rowDAO;
     ServiceWord serviceWord;
     ServiceLanguage serviceLanguage;
     SuccessMessage successMessage;

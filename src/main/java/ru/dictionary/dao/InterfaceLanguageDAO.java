@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-public interface LanguageDAOInterface {
+public interface InterfaceLanguageDAO {
 
     List<Language> getAllLanguages();
 
-    Language searchByUUID(UUID languageUUID) throws IOException;
+    Language searchByUUID(UUID languageUUID);
 
     boolean saveLanguage(Language language);
 

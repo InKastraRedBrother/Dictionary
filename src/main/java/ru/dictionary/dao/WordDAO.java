@@ -15,7 +15,7 @@ import static ru.dictionary.dao.Util.Util.ELEMENTS_SEPARATOR;
 import static ru.dictionary.dao.Util.Util.PATH_TO_STORAGE_DIRECTORY;
 
 @Component
-public class WordDAO implements InterfaceDAOWord{
+public class WordDAO implements InterfaceWordDAO {
     private static final String TEMPORARY_FILENAME = "tempForWord.txt";
     private static final String TEMPORARY_FILE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + TEMPORARY_FILENAME;
     private final static String WORD_STORAGE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + "word.txt";
@@ -25,7 +25,6 @@ public class WordDAO implements InterfaceDAOWord{
     private final String wordPath;
 
     public WordDAO(String path) {
-        System.out.println(path);
         wordPath = path;
 
         this.codec = new Codec();

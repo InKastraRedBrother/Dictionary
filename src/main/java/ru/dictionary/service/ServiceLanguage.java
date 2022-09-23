@@ -2,7 +2,7 @@ package ru.dictionary.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.dictionary.dao.LanguageDAO;
+import ru.dictionary.dao.InterfaceLanguageDAO;
 import ru.dictionary.model.Language;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ServiceLanguage {
 
-    private final LanguageDAO languageDAO;
+    private final InterfaceLanguageDAO languageDAO;
 
     public List<Language> findAllLanguages() {
         return languageDAO.getAllLanguages();

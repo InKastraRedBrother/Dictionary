@@ -1,7 +1,6 @@
 package ru.dictionary.config;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
-import ru.dictionary.dao.InterfaceDAOWord;
-import ru.dictionary.dao.WordDAO;
+import ru.dictionary.dao.*;
 
 
 @EnableWebMvc
@@ -28,12 +26,22 @@ public class MvcConfig implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
 
+    @Bean
+    @Value("${row.path}")
+    InterfaceRowDAO rowDAO(String path) {
+        return new RowDAO(path);
+    }
 
     @Bean
     @Value("${word.path}")
-    InterfaceDAOWord wordDao(String path) {
-        System.out.println(path);
+    InterfaceWordDAO wordDAO(String path) {
         return new WordDAO(path);
+    }
+
+    @Bean
+    @Value("${language.path}")
+    InterfaceLanguageDAO languageDAO(String path) {
+        return new LanguageDAO(path);
     }
 
     @Bean
