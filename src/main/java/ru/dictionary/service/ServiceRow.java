@@ -2,7 +2,7 @@ package ru.dictionary.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.dictionary.dao.InterfaceDAOWord;
+import ru.dictionary.dao.RowDAO;
 import ru.dictionary.model.Language;
 import ru.dictionary.model.Row;
 import ru.dictionary.model.SuccessMessage;
@@ -23,14 +23,15 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ServiceRow {
 
-    InterfaceDAOWord dao;
+    RowDAO rowDAO;
     ServiceWord serviceWord;
     ServiceLanguage serviceLanguage;
     SuccessMessage successMessage;
 
+
     public List<BuiltRow> findAllRows() {
 
-        List<Row> listRow = dao.findAll();
+        List<Row> listRow = rowDAO.findAll();
         List<Language> listLanguage = serviceLanguage.findAllLanguages();
         List<Word> listWord = serviceWord.findAllWords();
 
@@ -62,12 +63,17 @@ public class ServiceRow {
 
 
     public List<BuiltRow> findAllBySelectedLanguageUUID(String languageSourceUUID, String languageTargetUUID) {
-
-        UUID languageSourceUUIDFromString = UUID.fromString(languageSourceUUID);
-        UUID languageTargetUUIDFromString = UUID.fromString(languageTargetUUID);
+        UUID languageSourceUUIDFromString = null;
+        UUID languageTargetUUIDFromString = null;
+        if (!languageSourceUUID.equals("")) {
+            languageSourceUUIDFromString = UUID.fromString(languageSourceUUID);
+        }
+        if (!languageTargetUUID.equals("")) {
+            languageTargetUUIDFromString = UUID.fromString(languageTargetUUID);
+        }
 
         List<Word> listWords = serviceWord.getListByLanguageUUID(languageSourceUUIDFromString);
-        List<Row> listRows = dao.findAll();
+        List<Row> listRows = rowDAO.findAll();
         List<BuiltRow> builtRowList = new ArrayList<>();
         for (Word word : listWords) {
             BuiltRow builtRow = new BuiltRow();
@@ -106,7 +112,7 @@ public class ServiceRow {
             row.setWordKeyUUID(wordKeyUUID);
             row.setWordValueUUID(wordValueUUID);
 
-            dao.save(row);
+            rowDAO.save(row);
 
             successMessage.setMessage("Pair have been added" + requestAddPairWordsDTO.getWordKey() + " : " + requestAddPairWordsDTO.getWordValue());
             successMessage.setSuccessful(true);
@@ -119,16 +125,16 @@ public class ServiceRow {
 
     public boolean deleteRowByKey(String uuid) {
         UUID uuidForDelete = UUID.fromString(uuid);
-        Row row = dao.findById(uuidForDelete);
+        Row row = rowDAO.findById(uuidForDelete);
         serviceWord.deleteWordByUUID(row.getWordKeyUUID());
         serviceWord.deleteWordByUUID(row.getWordValueUUID());
 
-        return dao.deleteById(uuidForDelete);
+        return rowDAO.deleteById(uuidForDelete);
     }
 
     public List<BuiltRow> findRowByWordValue(String wordValueFromView) {
 
-        List<Row> listRow = dao.findAll();
+        List<Row> listRow = rowDAO.findAll();
         List<Language> listLanguage = serviceLanguage.findAllLanguages();
         List<Word> listWord = serviceWord.getListWordsByWordValue(wordValueFromView);
 

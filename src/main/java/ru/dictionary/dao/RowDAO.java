@@ -15,7 +15,7 @@ import static ru.dictionary.dao.Util.Util.ELEMENTS_SEPARATOR;
 import static ru.dictionary.dao.Util.Util.PATH_TO_STORAGE_DIRECTORY;
 
 @Component
-public class RowDAO implements InterfaceDAOWord {
+public class RowDAO {
 
     private static final String TEMPORARY_FILENAME = "tempForRow.txt";
     private static final String TEMPORARY_FILE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + TEMPORARY_FILENAME;
@@ -126,7 +126,6 @@ public class RowDAO implements InterfaceDAOWord {
      *                                     If a security manager exists and its SecurityManager.checkDelete method denies delete access to the file (SecurityException).
      *                                     If parameter <code>mainFile</code> is <code>null</code> (NullPointerException).
      */
-    @Override
     public boolean deleteById(UUID rowUUID) {
         boolean isExistRowInStorage = false;
         boolean isFirstRow = true;

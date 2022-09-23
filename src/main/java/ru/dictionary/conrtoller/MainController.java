@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.dictionary.config.DictionaryConfiguration;
 import ru.dictionary.model.Language;
 import ru.dictionary.model.SuccessMessage;
 import ru.dictionary.model.dto.BuiltRow;
@@ -20,7 +19,6 @@ import java.util.List;
 public class MainController {
     ServiceRow serviceRow;
     ServiceLanguage serviceLanguage;
-    DictionaryConfiguration dictionaryConfiguration;
 
     @GetMapping("/main")
     public String sayHello() {
