@@ -3,6 +3,7 @@ package ru.dictionary.dao;
 import ru.dictionary.model.Word;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -45,4 +46,7 @@ public interface InterfaceWordDAO {
      */
     boolean deleteById(UUID uuid);
 
+    List<Word> searchListWordsByValue(String s);
+
+    Word searchWordByValue(String wordValueFromView);
 }

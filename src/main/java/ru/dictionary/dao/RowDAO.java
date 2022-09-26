@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
 import ru.dictionary.model.Row;
+import ru.dictionary.model.Word;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -161,6 +162,25 @@ public class RowDAO implements InterfaceRowDAO {
             throw new DictionaryNotFoundException("deleteByKey");
         }
         return isExistRowInStorage;
+    }
+
+    @Override
+    public List<Row> findAllByListWords(List<Word> listWord) {
+        List<Row> listRow = new ArrayList<>();
+        File rowFile = getRowStorageTxtFile();
+        try (Scanner sc = new Scanner(rowFile, StandardCharsets.UTF_8)) {
+            while (sc.hasNextLine()) {
+                Row row = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
+                for (Word word : listWord) {
+                    if (word.getWordUUID().equals(row.getWordValueUUID()) || word.getWordUUID().equals(row.getWordKeyUUID())) {
+                        listRow.add(row);
+                    }
+                }
+            }
+        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
+            throw new DictionaryNotFoundException("findAll");
+        }
+        return listRow;
     }
 
     private File getRowStorageTxtFile() {

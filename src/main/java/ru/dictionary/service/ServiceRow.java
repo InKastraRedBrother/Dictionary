@@ -28,7 +28,6 @@ public class ServiceRow {
     ServiceLanguage serviceLanguage;
     SuccessMessage successMessage;
 
-
     public List<BuiltRow> findAllRows() {
 
         List<Row> listRow = rowDAO.findAll();
@@ -60,7 +59,6 @@ public class ServiceRow {
         }
         return builtRowList;
     }
-
 
     public List<BuiltRow> findAllBySelectedLanguageUUID(String languageSourceUUID, String languageTargetUUID) {
         UUID languageSourceUUIDFromString = null;
@@ -98,16 +96,33 @@ public class ServiceRow {
         Language languageSource = serviceLanguage.getLanguageByUUID(requestAddPairWordsDTO.getLanguageSourceUUID());
         Language languageTarget = serviceLanguage.getLanguageByUUID(requestAddPairWordsDTO.getLanguageTargetUUID());
 
+        Word wordKeyFromStorage = serviceWord.findWordByWordsValue(requestAddPairWordsDTO.getWordKey());
+        Word wordValueFromStorage = serviceWord.findWordByWordsValue(requestAddPairWordsDTO.getWordValue());
+
+
         if (requestAddPairWordsDTO.getWordKey().matches(languageSource.getLanguageRule()) && requestAddPairWordsDTO.getWordValue().matches(languageTarget.getLanguageRule())) {
 
-
+            Row row = new Row();
             UUID wordKeyUUID = UUID.randomUUID();
             UUID wordValueUUID = UUID.randomUUID();
 
-            serviceWord.addWord(wordKeyUUID, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceUUID());
-            serviceWord.addWord(wordValueUUID, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetUUID());
+            if (wordKeyFromStorage == null && wordValueFromStorage == null) {
+                serviceWord.addWord(wordKeyUUID, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceUUID());
+                serviceWord.addWord(wordValueUUID, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetUUID());
+            }
+            if (wordKeyFromStorage != null && wordValueFromStorage == null) {
+                wordKeyUUID = wordKeyFromStorage.getWordUUID();
+                serviceWord.addWord(wordValueUUID, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetUUID());
+            }
+            if (wordKeyFromStorage == null && wordValueFromStorage != null) {
+                serviceWord.addWord(wordKeyUUID, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceUUID());
+                wordValueUUID = wordValueFromStorage.getWordUUID();
+            }
+            if (wordKeyFromStorage != null && wordValueFromStorage != null) {
+                wordKeyUUID = wordKeyFromStorage.getWordUUID();
+                wordValueUUID = wordValueFromStorage.getWordUUID();
+            }
 
-            Row row = new Row();
             row.setRowUUID(UUID.randomUUID());
             row.setWordKeyUUID(wordKeyUUID);
             row.setWordValueUUID(wordValueUUID);
@@ -132,26 +147,18 @@ public class ServiceRow {
         return rowDAO.deleteById(uuidForDelete);
     }
 
-    public List<BuiltRow> findRowByWordValue(String wordValueFromView) {
+    public List<BuiltRow> findRowsByWordValue(String wordValueFromView) {
 
-        List<Row> listRow = rowDAO.findAll();
-        List<Language> listLanguage = serviceLanguage.findAllLanguages();
-        List<Word> listWord = serviceWord.getListWordsByWordValue(wordValueFromView);
+        List<Word> listWord = serviceWord.findListWordsByWordsValue(wordValueFromView);
+        List<Row> listRow = rowDAO.findAllByListWords(listWord);
+        List<Language> listLanguage = serviceLanguage.findAllLanguagesByWordList(listWord);
 
         Map<UUID, Language> hashMapLanguage = listLanguage.stream().collect(Collectors.toMap(Language::getLanguageUUID, language -> language));
         Map<UUID, Word> hashMapWord = listWord.stream().collect(Collectors.toMap(Word::getWordUUID, word -> word));
-        List<Row> cleanListRow = new ArrayList<>();
-        for (Row row : listRow) {
-            for (Word word : listWord) {
-                if (row.getWordKeyUUID().equals(word.getWordUUID()) || row.getWordValueUUID().equals(word.getWordUUID())) {
-                    cleanListRow.add(row);
-                }
-            }
 
-        }
         List<BuiltRow> builtRowList = new ArrayList<>();
 
-        for (Row row : cleanListRow) {
+        for (Row row : listRow) {
             BuiltRow builtRow = new BuiltRow();
             Word wordKey;
             Word wordValue;

@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.dictionary.dao.InterfaceLanguageDAO;
 import ru.dictionary.model.Language;
+import ru.dictionary.model.Word;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -25,5 +27,9 @@ public class ServiceLanguage {
 
     public Language getLanguageByUUID(UUID languageUUID) {
         return languageDAO.searchByUUID(languageUUID);
+    }
+
+    public List<Language> findAllLanguagesByWordList(List<Word> listWord) {
+        return languageDAO.findAllLanguagesByWordList(listWord);
     }
 }
