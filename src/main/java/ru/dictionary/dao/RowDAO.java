@@ -32,6 +32,7 @@ public class RowDAO implements InterfaceRowDAO {
      *
      * @throws DictionaryNotFoundException If a security manager exists and its SecurityManager.checkRead(String) method denies read access to the file(SecurityException).
      *                                     If the <code>pathname</code> argument is <code>null</code> (NullPointerException).
+     *                                     If directory or file can't be created and don't exist
      */
     public RowDAO(String path) {
         wordPath = path;
@@ -47,10 +48,6 @@ public class RowDAO implements InterfaceRowDAO {
         } catch (IOException e) {
             throw new DictionaryNotFoundException("Error creating storage");
         }
-    }
-
-    private File getRowStorageTxtFile() {
-        return new File(wordPath);
     }
 
     /**
@@ -164,6 +161,10 @@ public class RowDAO implements InterfaceRowDAO {
             throw new DictionaryNotFoundException("deleteByKey");
         }
         return isExistRowInStorage;
+    }
+
+    private File getRowStorageTxtFile() {
+        return new File(wordPath);
     }
 
     /**
