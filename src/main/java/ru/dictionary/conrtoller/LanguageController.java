@@ -8,7 +8,6 @@ import ru.dictionary.model.Language;
 import ru.dictionary.service.ServiceLanguage;
 
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/language")
@@ -25,8 +24,8 @@ public class LanguageController {
     }
 
     @GetMapping("/add")
-    public String showAddLanguage(Model model) {
-        model.addAttribute("language", new Language()); //без этого ошибка таймлифа при отображении страницы add-language
+    public String showAddLanguage(Language language, Model model) { //TODO в чём разница если не кидать сюда Language в передаваемые и в model явно new Language() и этот вариант. Работают оба
+        model.addAttribute("language", language); //без этого ошибка таймлифа при отображении страницы add-language
         return "language/add";
     }
 

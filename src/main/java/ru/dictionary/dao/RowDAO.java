@@ -1,5 +1,6 @@
 package ru.dictionary.dao;
 
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
 import ru.dictionary.model.Row;
@@ -15,21 +16,26 @@ import static ru.dictionary.dao.Util.Util.ELEMENTS_SEPARATOR;
 import static ru.dictionary.dao.Util.Util.PATH_TO_STORAGE_DIRECTORY;
 
 @Component
-public class RowDAO implements InterfaceDAOWord {
+public class RowDAO implements InterfaceRowDAO {
 
     private static final String TEMPORARY_FILENAME = "tempForRow.txt";
     private static final String TEMPORARY_FILE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + TEMPORARY_FILENAME;
     private final static String ROW_STORAGE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + "row.txt";
 
     private final Codec codec;
+    @Getter
+    private final String wordPath;
+
 
     /**
      * Empty constructor that create directory for storage files, if they not exist.
      *
      * @throws DictionaryNotFoundException If a security manager exists and its SecurityManager.checkRead(String) method denies read access to the file(SecurityException).
      *                                     If the <code>pathname</code> argument is <code>null</code> (NullPointerException).
+     *                                     If directory or file can't be created and don't exist
      */
-    public RowDAO() {
+    public RowDAO(String path) {
+        wordPath = path;
         this.codec = new Codec();
 
         File directory = new File(PATH_TO_STORAGE_DIRECTORY);
@@ -42,10 +48,6 @@ public class RowDAO implements InterfaceDAOWord {
         } catch (IOException e) {
             throw new DictionaryNotFoundException("Error creating storage");
         }
-    }
-
-    private File getRowStorageTxtFile() {
-        return new File(ROW_STORAGE_PATH_AND_FILENAME);
     }
 
     /**
@@ -72,13 +74,12 @@ public class RowDAO implements InterfaceDAOWord {
      * Save given pair - key value in storage.
      *
      * @param row class that contains String key, String value
-     * @return boolean. if row added - true.
      * @throws DictionaryNotFoundException if the file exists but is a directory rather than
      *                                     a regular file, does not exist but cannot be created,
      *                                     or cannot be opened for any other reason (IOException).
      *                                     If a security manager exists and its SecurityManager.checkRead(String) method denies read access to the file(SecurityException).
      */
-    public boolean save(Row row) {
+    public void save(Row row) {
         File rowsStorage = getRowStorageTxtFile();
         try (FileWriter fileWriter = new FileWriter(rowsStorage, StandardCharsets.UTF_8, true)) {
             if (rowsStorage.length() != 0) {
@@ -88,7 +89,6 @@ public class RowDAO implements InterfaceDAOWord {
         } catch (IOException | SecurityException e) {
             throw new DictionaryNotFoundException("problem with save method");
         }
-        return true;
     }
 
     /**
@@ -126,7 +126,6 @@ public class RowDAO implements InterfaceDAOWord {
      *                                     If a security manager exists and its SecurityManager.checkDelete method denies delete access to the file (SecurityException).
      *                                     If parameter <code>mainFile</code> is <code>null</code> (NullPointerException).
      */
-    @Override
     public boolean deleteById(UUID rowUUID) {
         boolean isExistRowInStorage = false;
         boolean isFirstRow = true;
@@ -162,6 +161,10 @@ public class RowDAO implements InterfaceDAOWord {
             throw new DictionaryNotFoundException("deleteByKey");
         }
         return isExistRowInStorage;
+    }
+
+    private File getRowStorageTxtFile() {
+        return new File(wordPath);
     }
 
     /**

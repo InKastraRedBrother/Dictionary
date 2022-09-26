@@ -1,6 +1,6 @@
 package ru.dictionary.dao;
 
-import ru.dictionary.model.Row;
+import ru.dictionary.model.Word;
 
 import java.util.List;
 import java.util.UUID;
@@ -8,21 +8,26 @@ import java.util.UUID;
 /**
  * Interface provide methods to work with data which stored in file.
  */
-public interface InterfaceDAOWord {
+public interface InterfaceWordDAO {
+
+    List<Word> searchAllByUUID(UUID languageUUID);
+    List<Word> searchAllByListUUID(List<UUID> keyUUIDList);
+
+    public List<Word> getWordsByWordValue(String wordValue);
     /**
      * Save given row in given file.
      *
-     * @param row entity.
+     * @param word entity.
      * @return true if row is stored, else false.
      */
-    boolean save(Row row);
+    void saveWord(Word word);
 
     /**
      * Show all data from storage.
      *
      * @return <code>List<code/> which contains data from file.
      */
-    List<Row> findAll();
+    List<Word> getAllWords();
 
     /**
      * Search one row from file.
@@ -30,7 +35,7 @@ public interface InterfaceDAOWord {
      * @param uuid id by which the entire string will be searched in the file.
      * @return one row or null.
      */
-    Row findById(UUID uuid);
+    Word searchByUUID(UUID UUIDWord);
 
     /**
      * delete row.

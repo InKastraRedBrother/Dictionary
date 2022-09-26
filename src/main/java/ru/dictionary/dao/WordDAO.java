@@ -1,5 +1,6 @@
 package ru.dictionary.dao;
 
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
 import ru.dictionary.model.Word;
@@ -14,14 +15,18 @@ import static ru.dictionary.dao.Util.Util.ELEMENTS_SEPARATOR;
 import static ru.dictionary.dao.Util.Util.PATH_TO_STORAGE_DIRECTORY;
 
 @Component
-public class WordDAO {
+public class WordDAO implements InterfaceWordDAO {
     private static final String TEMPORARY_FILENAME = "tempForWord.txt";
     private static final String TEMPORARY_FILE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + TEMPORARY_FILENAME;
     private final static String WORD_STORAGE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + "word.txt";
     private final Codec codec;
 
+    @Getter
+    private final String wordPath;
 
-    public WordDAO() {
+    public WordDAO(String path) {
+        wordPath = path;
+
         this.codec = new Codec();
 
         File directory = new File(PATH_TO_STORAGE_DIRECTORY);
@@ -37,7 +42,7 @@ public class WordDAO {
     }
 
     private File getWordStorageTxtFile() {
-        return new File(WORD_STORAGE_PATH_AND_FILENAME);
+        return new File(wordPath);
     }
 
     public void saveWord(Word word) {

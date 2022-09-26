@@ -1,10 +1,12 @@
 package ru.dictionary.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -12,18 +14,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import ru.dictionary.dao.*;
+
 
 @EnableWebMvc
 @Configuration
 @ComponentScan(basePackages = {"ru.dictionary"})
+@AllArgsConstructor
 public class MvcConfig implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
-
-    @Autowired
-    public MvcConfig(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
