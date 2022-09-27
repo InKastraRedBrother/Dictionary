@@ -34,7 +34,7 @@ public class MainController {
 
     @GetMapping("/view-rows")
     public String showAllRows(@ModelAttribute BuiltRow builtRow, Model model) {
-        List<Language> listLanguage = serviceLanguage.findAllLanguages();
+        List<Language> listLanguage = serviceLanguage.getAllLanguages();
         model.addAttribute("listLanguage", listLanguage);
 
         List<BuiltRow> listBuiltRows = serviceRow.findAllRows();
@@ -49,7 +49,7 @@ public class MainController {
                                               @RequestParam(name = "dropDownListTargetLanguage", required = false) String languageTargetUUID,
                                               Model model) {
 
-        List<Language> listLanguage = serviceLanguage.findAllLanguages();
+        List<Language> listLanguage = serviceLanguage.getAllLanguages();
         model.addAttribute("listLanguage", listLanguage);
 
         List<BuiltRow> listBuiltRows = serviceRow.findAllBySelectedLanguageUUID(languageSourceUUID, languageTargetUUID);
@@ -59,15 +59,15 @@ public class MainController {
 
     @GetMapping("/view-rows/search/result")
     public String home(@ModelAttribute BuiltRow builtRow, Model model,
-                       @RequestParam(name = "wordValue") String wordValue) {
-        List<BuiltRow> listBuiltRows = serviceRow.findRowsByWordValue(wordValue);
+                       @RequestParam(name = "wordTranslation") String wordValue) {
+        List<BuiltRow> listBuiltRows = serviceRow.findRowsByWordTranslation(wordValue);
         model.addAttribute("listBuiltRows", listBuiltRows);
         return "view-rows";
     }
 
     @GetMapping("/add-row")
     public String showSaveRowPage(Model model) {
-        List<Language> listLanguage = serviceLanguage.findAllLanguages();
+        List<Language> listLanguage = serviceLanguage.getAllLanguages();
         model.addAttribute("listLanguage", listLanguage);
         model.addAttribute("requestAddPairWordsDTO", new RequestAddPairWordsDTO());
         return "add-row";
@@ -86,7 +86,7 @@ public class MainController {
 
     @PostMapping("/delete-row/{rowUUID}")
     public String deleteRow(@PathVariable("rowUUID") String rowUUID) {
-        serviceRow.deleteRowById(rowUUID);
+        serviceRow.deleteById(rowUUID);
         return "redirect:/view-rows";
     }
 }

@@ -7,7 +7,6 @@ import ru.dictionary.model.Language;
 import ru.dictionary.model.Word;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -16,7 +15,7 @@ public class ServiceLanguage {
 
     private final InterfaceLanguageDAO languageDAO;
 
-    public List<Language> findAllLanguages() {
+    public List<Language> getAllLanguages() {
         return languageDAO.getAllLanguages();
     }
 

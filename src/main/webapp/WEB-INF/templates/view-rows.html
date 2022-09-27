@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:formth="http://www.w3.org/1999/html" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>View All Rows</title>
@@ -12,7 +12,7 @@
     <form th:action="@{/view-rows/search/result}"
           th:method="GET"
           accept-charset="UTF-8">
-        <input type="text" name="wordValue" th:value="${wordValue}" placeholder="Find by Word Value" size="50">
+        <input type="text" name="wordValue" th:value="${wordValue}" placeholder="Find by Word Translation" size="50">
 
         <button>Поиск</button>
     </form>
@@ -49,10 +49,10 @@
         </thead>
         <tbody>
         <tr th:each="builtRows : ${listBuiltRows}">
-            <td th:text="${builtRows.key}"></td>
+            <td th:text="${builtRows.wordKey}"></td>
             <td th:text="${builtRows.nameLanguageOfKey}"></td>
-            <td th:text="${builtRows.value}"></td>
-            <td th:text="${builtRows.nameLanguageOfValue}"></td>
+            <td th:text="${builtRows.wordTranslation}"></td>
+            <td th:text="${builtRows.nameLanguageOfTranslation}"></td>
             <td>
                 <form th:method="POST"
                       th:action="@{delete-row/{rowUUID}(rowUUID=${builtRows.rowUUID})}">
