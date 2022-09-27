@@ -7,6 +7,7 @@ import ru.dictionary.model.Language;
 import ru.dictionary.model.Word;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -51,5 +52,13 @@ public class ServiceWord {
 
     public List<Word> findAllWords() {
         return wordDAO.getAllWords();
+    }
+
+
+    public List<Word> findListWordsByWordsValue(String wordValueFromView) {
+        return wordDAO.searchListWordsByValue(wordValueFromView);
+    }
+    public Word findWordByWordsValue(String wordValueFromView) {
+        return wordDAO.searchWordByValue(wordValueFromView);
     }
 }

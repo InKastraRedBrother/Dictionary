@@ -1,8 +1,10 @@
 package ru.dictionary.dao;
 
 import ru.dictionary.model.Row;
+import ru.dictionary.model.Word;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -41,4 +43,9 @@ public interface InterfaceRowDAO {
      */
     boolean deleteById(UUID uuid);
 
+    List<Row> findAllByListWords(List<Word> listWord);
+
+    List<Row> findListRowByWordUUID(UUID uuid);
+
+    Row findRowByKeyAndValue(UUID keyWordUUID, UUID valueWordUUID);
 }

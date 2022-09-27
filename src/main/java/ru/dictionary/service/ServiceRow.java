@@ -22,12 +22,12 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class ServiceRow {
+    private static final int SINGLE_ENTRY = 1;
 
     InterfaceRowDAO rowDAO;
     ServiceWord serviceWord;
     ServiceLanguage serviceLanguage;
     SuccessMessage successMessage;
-
 
     public List<BuiltRow> findAllRows() {
 
@@ -60,7 +60,6 @@ public class ServiceRow {
         }
         return builtRowList;
     }
-
 
     public List<BuiltRow> findAllBySelectedLanguageUUID(String languageSourceUUID, String languageTargetUUID) {
         UUID languageSourceUUIDFromString = null;
@@ -98,24 +97,44 @@ public class ServiceRow {
         Language languageSource = serviceLanguage.getLanguageByUUID(requestAddPairWordsDTO.getLanguageSourceUUID());
         Language languageTarget = serviceLanguage.getLanguageByUUID(requestAddPairWordsDTO.getLanguageTargetUUID());
 
+        Word wordKeyFromStorage = serviceWord.findWordByWordsValue(requestAddPairWordsDTO.getWordKey());
+        Word wordValueFromStorage = serviceWord.findWordByWordsValue(requestAddPairWordsDTO.getWordValue());
+
+
         if (requestAddPairWordsDTO.getWordKey().matches(languageSource.getLanguageRule()) && requestAddPairWordsDTO.getWordValue().matches(languageTarget.getLanguageRule())) {
 
-
+            Row row = new Row();
             UUID wordKeyUUID = UUID.randomUUID();
             UUID wordValueUUID = UUID.randomUUID();
 
-            serviceWord.addWord(wordKeyUUID, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceUUID());
-            serviceWord.addWord(wordValueUUID, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetUUID());
+            if (wordKeyFromStorage == null && wordValueFromStorage == null) {
+                serviceWord.addWord(wordKeyUUID, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceUUID());
+                serviceWord.addWord(wordValueUUID, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetUUID());
+            } else if (wordKeyFromStorage != null && wordValueFromStorage == null) {
+                wordKeyUUID = wordKeyFromStorage.getWordUUID();
+                serviceWord.addWord(wordValueUUID, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetUUID());
+            } else if (wordKeyFromStorage == null && wordValueFromStorage != null) {
+                serviceWord.addWord(wordKeyUUID, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceUUID());
+                wordValueUUID = wordValueFromStorage.getWordUUID();
+            } else if (wordKeyFromStorage != null && wordValueFromStorage != null) {
+                wordKeyUUID = wordKeyFromStorage.getWordUUID();
+                wordValueUUID = wordValueFromStorage.getWordUUID();
+            }
+            if (rowDAO.findRowByKeyAndValue(wordKeyFromStorage.getWordUUID(), wordValueFromStorage.getWordUUID()) == null) {
 
-            Row row = new Row();
-            row.setRowUUID(UUID.randomUUID());
-            row.setWordKeyUUID(wordKeyUUID);
-            row.setWordValueUUID(wordValueUUID);
+                row.setRowUUID(UUID.randomUUID());
+                row.setWordKeyUUID(wordKeyUUID);
+                row.setWordValueUUID(wordValueUUID);
 
-            rowDAO.save(row);
-
+                rowDAO.save(row);
+            } else {
+                successMessage.setMessage("Row already exists");
+                successMessage.setSuccessful(false);
+                return successMessage;
+            }
             successMessage.setMessage("Pair have been added" + requestAddPairWordsDTO.getWordKey() + " : " + requestAddPairWordsDTO.getWordValue());
             successMessage.setSuccessful(true);
+
         } else {
             successMessage.setMessage("Pattern mismatch");
             successMessage.setSuccessful(false);
@@ -123,35 +142,30 @@ public class ServiceRow {
         return successMessage;
     }
 
-    public boolean deleteRowByKey(String uuid) {
+    public boolean deleteRowById(String uuid) {
         UUID uuidForDelete = UUID.fromString(uuid);
         Row row = rowDAO.findById(uuidForDelete);
-        serviceWord.deleteWordByUUID(row.getWordKeyUUID());
-        serviceWord.deleteWordByUUID(row.getWordValueUUID());
-
+        if (rowDAO.findListRowByWordUUID(row.getWordKeyUUID()).size() <= SINGLE_ENTRY) {
+            serviceWord.deleteWordByUUID(row.getWordKeyUUID());
+        }
+        if (rowDAO.findListRowByWordUUID(row.getWordValueUUID()).size() <= SINGLE_ENTRY) {
+            serviceWord.deleteWordByUUID(row.getWordValueUUID());
+        }
         return rowDAO.deleteById(uuidForDelete);
     }
 
-    public List<BuiltRow> findRowByWordValue(String wordValueFromView) {
+    public List<BuiltRow> findRowsByWordValue(String wordValueFromView) {
 
-        List<Row> listRow = rowDAO.findAll();
+        List<Word> listWord = serviceWord.findListWordsByWordsValue(wordValueFromView);//TODO КОСЯК, ЛИСТ ВОРДОВ И ЛИСТ ЗНАЧЕНИЙ
+        List<Row> listRow = rowDAO.findAllByListWords(listWord);
         List<Language> listLanguage = serviceLanguage.findAllLanguages();
-        List<Word> listWord = serviceWord.getListWordsByWordValue(wordValueFromView);
 
         Map<UUID, Language> hashMapLanguage = listLanguage.stream().collect(Collectors.toMap(Language::getLanguageUUID, language -> language));
         Map<UUID, Word> hashMapWord = listWord.stream().collect(Collectors.toMap(Word::getWordUUID, word -> word));
-        List<Row> cleanListRow = new ArrayList<>();
-        for (Row row : listRow) {
-            for (Word word : listWord) {
-                if (row.getWordKeyUUID().equals(word.getWordUUID()) || row.getWordValueUUID().equals(word.getWordUUID())) {
-                    cleanListRow.add(row);
-                }
-            }
 
-        }
         List<BuiltRow> builtRowList = new ArrayList<>();
 
-        for (Row row : cleanListRow) {
+        for (Row row : listRow) {
             BuiltRow builtRow = new BuiltRow();
             Word wordKey;
             Word wordValue;

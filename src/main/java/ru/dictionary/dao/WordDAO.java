@@ -175,6 +175,42 @@ public class WordDAO implements InterfaceWordDAO {
         return isExistWordInStorage;
     }
 
+    @Override
+    public List<Word> searchListWordsByValue(String wordFromSearchForm) {
+
+        File fileWithWords = getWordStorageTxtFile();
+        List<Word> listWord = new ArrayList<>();
+        try (Scanner sc = new Scanner(fileWithWords, StandardCharsets.UTF_8)) {
+            while (sc.hasNextLine()) {
+                var wordFromFileEncodedFromString = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
+                if (wordFromFileEncodedFromString.getWordValue().equals(wordFromSearchForm)) {
+                    listWord.add(wordFromFileEncodedFromString);
+                }
+            }
+        } catch (IOException e) {
+            throw new DictionaryNotFoundException("WORD searchByValue");
+        }
+        return listWord;
+    }
+
+    @Override
+    public Word searchWordByValue(String wordValueFromView) {
+        File fileWithWords = getWordStorageTxtFile();
+        Word word = null; //TODO chto delat'. problema s optional
+        try (Scanner sc = new Scanner(fileWithWords, StandardCharsets.UTF_8)) {
+            while (sc.hasNextLine()) {
+                Word wordFromFileEncodedFromString = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
+                if (wordFromFileEncodedFromString.getWordValue().equals(wordValueFromView)) {
+                    word = wordFromFileEncodedFromString;
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            throw new DictionaryNotFoundException("WORD searchByValue");
+        }
+        return word;
+    }
+
     private static class Codec {
 
         private static final int NUMBER_FOR_SPLIT = Word.class.getFields().length;

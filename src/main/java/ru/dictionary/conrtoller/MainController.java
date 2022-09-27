@@ -60,7 +60,7 @@ public class MainController {
     @GetMapping("/view-rows/search/result")
     public String home(@ModelAttribute BuiltRow builtRow, Model model,
                        @RequestParam(name = "wordValue") String wordValue) {
-        List<BuiltRow> listBuiltRows = serviceRow.findRowByWordValue(wordValue);
+        List<BuiltRow> listBuiltRows = serviceRow.findRowsByWordValue(wordValue);
         model.addAttribute("listBuiltRows", listBuiltRows);
         return "view-rows";
     }
@@ -86,7 +86,7 @@ public class MainController {
 
     @PostMapping("/delete-row/{rowUUID}")
     public String deleteRow(@PathVariable("rowUUID") String rowUUID) {
-        serviceRow.deleteRowByKey(rowUUID);
+        serviceRow.deleteRowById(rowUUID);
         return "redirect:/view-rows";
     }
 }

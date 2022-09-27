@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
 import ru.dictionary.model.Language;
+import ru.dictionary.model.Word;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -58,6 +59,25 @@ public class LanguageDAO implements InterfaceLanguageDAO {
     @Override
     public boolean deleteLanguage(Language language) {
         return false;
+    }
+
+    @Override
+    public List<Language> findAllLanguagesByWordList(List<Word> listWord) {
+        List<Language> listLanguage = new ArrayList<>();
+        File rowFile = getLanguageTxtFile();
+        try (Scanner sc = new Scanner(rowFile, StandardCharsets.UTF_8)) {
+            while (sc.hasNextLine()) {
+                Language language = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
+                for (Word word : listWord) {
+                    if (word.getWordLanguageUUID().equals(language.getLanguageUUID())) {
+                        listLanguage.add(language);
+                    }
+                }
+            }
+        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
+            throw new DictionaryNotFoundException("findAll");
+        }
+        return listLanguage;
     }
 
     @Override
