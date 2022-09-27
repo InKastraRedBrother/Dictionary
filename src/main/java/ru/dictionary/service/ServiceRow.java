@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class ServiceRow {
+    private static final int SINGLE_ENTRY = 1;
 
     InterfaceRowDAO rowDAO;
     ServiceWord serviceWord;
@@ -109,28 +110,31 @@ public class ServiceRow {
             if (wordKeyFromStorage == null && wordValueFromStorage == null) {
                 serviceWord.addWord(wordKeyUUID, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceUUID());
                 serviceWord.addWord(wordValueUUID, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetUUID());
-            }
-            if (wordKeyFromStorage != null && wordValueFromStorage == null) {
+            } else if (wordKeyFromStorage != null && wordValueFromStorage == null) {
                 wordKeyUUID = wordKeyFromStorage.getWordUUID();
                 serviceWord.addWord(wordValueUUID, requestAddPairWordsDTO.getWordValue(), requestAddPairWordsDTO.getLanguageTargetUUID());
-            }
-            if (wordKeyFromStorage == null && wordValueFromStorage != null) {
+            } else if (wordKeyFromStorage == null && wordValueFromStorage != null) {
                 serviceWord.addWord(wordKeyUUID, requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageSourceUUID());
                 wordValueUUID = wordValueFromStorage.getWordUUID();
-            }
-            if (wordKeyFromStorage != null && wordValueFromStorage != null) {
+            } else if (wordKeyFromStorage != null && wordValueFromStorage != null) {
                 wordKeyUUID = wordKeyFromStorage.getWordUUID();
                 wordValueUUID = wordValueFromStorage.getWordUUID();
             }
+            if (rowDAO.findRowByKeyAndValue(wordKeyFromStorage.getWordUUID(), wordValueFromStorage.getWordUUID()) == null) {
 
-            row.setRowUUID(UUID.randomUUID());
-            row.setWordKeyUUID(wordKeyUUID);
-            row.setWordValueUUID(wordValueUUID);
+                row.setRowUUID(UUID.randomUUID());
+                row.setWordKeyUUID(wordKeyUUID);
+                row.setWordValueUUID(wordValueUUID);
 
-            rowDAO.save(row);
-
+                rowDAO.save(row);
+            } else {
+                successMessage.setMessage("Row already exists");
+                successMessage.setSuccessful(false);
+                return successMessage;
+            }
             successMessage.setMessage("Pair have been added" + requestAddPairWordsDTO.getWordKey() + " : " + requestAddPairWordsDTO.getWordValue());
             successMessage.setSuccessful(true);
+
         } else {
             successMessage.setMessage("Pattern mismatch");
             successMessage.setSuccessful(false);
@@ -138,20 +142,23 @@ public class ServiceRow {
         return successMessage;
     }
 
-    public boolean deleteRowByKey(String uuid) {
+    public boolean deleteRowById(String uuid) {
         UUID uuidForDelete = UUID.fromString(uuid);
         Row row = rowDAO.findById(uuidForDelete);
-        serviceWord.deleteWordByUUID(row.getWordKeyUUID());
-        serviceWord.deleteWordByUUID(row.getWordValueUUID());
-
+        if (rowDAO.findListRowByWordUUID(row.getWordKeyUUID()).size() <= SINGLE_ENTRY) {
+            serviceWord.deleteWordByUUID(row.getWordKeyUUID());
+        }
+        if (rowDAO.findListRowByWordUUID(row.getWordValueUUID()).size() <= SINGLE_ENTRY) {
+            serviceWord.deleteWordByUUID(row.getWordValueUUID());
+        }
         return rowDAO.deleteById(uuidForDelete);
     }
 
     public List<BuiltRow> findRowsByWordValue(String wordValueFromView) {
 
-        List<Word> listWord = serviceWord.findListWordsByWordsValue(wordValueFromView);
+        List<Word> listWord = serviceWord.findListWordsByWordsValue(wordValueFromView);//TODO КОСЯК, ЛИСТ ВОРДОВ И ЛИСТ ЗНАЧЕНИЙ
         List<Row> listRow = rowDAO.findAllByListWords(listWord);
-        List<Language> listLanguage = serviceLanguage.findAllLanguagesByWordList(listWord);
+        List<Language> listLanguage = serviceLanguage.findAllLanguages();
 
         Map<UUID, Language> hashMapLanguage = listLanguage.stream().collect(Collectors.toMap(Language::getLanguageUUID, language -> language));
         Map<UUID, Word> hashMapWord = listWord.stream().collect(Collectors.toMap(Word::getWordUUID, word -> word));

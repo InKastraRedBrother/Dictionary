@@ -86,7 +86,7 @@ public class MainController {
 
     @PostMapping("/delete-row/{rowUUID}")
     public String deleteRow(@PathVariable("rowUUID") String rowUUID) {
-        serviceRow.deleteRowByKey(rowUUID);
+        serviceRow.deleteRowById(rowUUID);
         return "redirect:/view-rows";
     }
 }

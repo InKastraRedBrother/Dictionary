@@ -44,4 +44,8 @@ public interface InterfaceRowDAO {
     boolean deleteById(UUID uuid);
 
     List<Row> findAllByListWords(List<Word> listWord);
+
+    List<Row> findListRowByWordUUID(UUID uuid);
+
+    Row findRowByKeyAndValue(UUID keyWordUUID, UUID valueWordUUID);
 }
