@@ -22,7 +22,6 @@ public class RowDAO implements InterfaceRowDAO {
 
     private static final String TEMPORARY_FILENAME = "tempForRow.txt";
     private static final String TEMPORARY_FILE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + TEMPORARY_FILENAME;
-    private final static String ROW_STORAGE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + "row.txt";
 
     private final Codec codec;
     @Getter

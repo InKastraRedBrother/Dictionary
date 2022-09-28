@@ -19,7 +19,6 @@ import static ru.dictionary.dao.Util.Util.PATH_TO_STORAGE_DIRECTORY;
 public class WordDAO implements InterfaceWordDAO {
     private static final String TEMPORARY_FILENAME = "tempForWord.txt";
     private static final String TEMPORARY_FILE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + TEMPORARY_FILENAME;
-    private final static String WORD_STORAGE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + "word.txt";
     private final Codec codec;
 
     @Getter
@@ -70,7 +69,7 @@ public class WordDAO implements InterfaceWordDAO {
         } catch (IOException | NoSuchElementException | IllegalStateException e) {
             throw new DictionaryNotFoundException("findByKey");
         }
-        return null; //TODO вернуть Optional
+        return null;
     }
 
     public List<Word> searchAllByUUID(UUID languageUUID) {
@@ -89,7 +88,7 @@ public class WordDAO implements InterfaceWordDAO {
         }
     }
 
-    public List<Word> searchAllByListUUID(List<UUID> keyUUIDList) { //TODO как правильно реализовать? 1) Вытащить все word в List и сравнить внутри цикла здесь 2) Брать по одному ключу и каждый раз заново идти в файл и искать совпадение?
+    public List<Word> searchAllByListUUID(List<UUID> keyUUIDList) {
         File fileWithWords = getWordStorageTxtFile();
         List<Word> wordList = new ArrayList<>();
         try (Scanner sc = new Scanner(fileWithWords, StandardCharsets.UTF_8)) {
