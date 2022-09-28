@@ -18,7 +18,7 @@ public class LanguageController {
 
     @GetMapping("/view-all")
     public String showAllLanguages(Model model) {
-        List<Language> listLanguages = (serviceLanguage.getAllLanguages());
+        List<Language> listLanguages = (serviceLanguage.getAll());
         model.addAttribute("listLanguages", listLanguages);
         return "language/view-all";
     }

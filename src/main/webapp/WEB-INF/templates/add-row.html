@@ -7,18 +7,18 @@
 <body>
 <div class="container">
 
-    <p th:text="${successMessage?.getMessage}">Here will be a Player age</p>
+    <p th:text="${successMessage?.getMessage}">Something wrong will be there</p>
 
     <form th:action="@{/add-row}" th:object="${requestAddPairWordsDTO}" method="post"
           accept-charset="UTF-8">
 
-        <select class="form-control" name="languageSourceUUID" id="languageSourceUUID">
+        <select class="form-control" name="languageOfKeyUUID" id="languageOfKeyUUID">
             <option value="0">Выберите язык слова</option>
             <option th:each="languageWord : ${listLanguage}" th:value="${languageWord.getLanguageUUID}"
                     th:text="${languageWord.languageName}"></option>
         </select>
 
-        <select class="form-control" name="languageTargetUUID" id="languageTargetUUID">
+        <select class="form-control" name="languageOfTranslationUUID" id="languageOfTranslationUUID">
             <option value="0">Выберите язык перевода</option>
             <option th:each="languageTranslate : ${listLanguage}" th:value="${languageTranslate.getLanguageUUID}"
                     th:text="${languageTranslate.languageName}"></option>

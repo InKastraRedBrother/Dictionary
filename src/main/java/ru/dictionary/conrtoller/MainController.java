@@ -34,10 +34,10 @@ public class MainController {
 
     @GetMapping("/view-rows")
     public String showAllRows(@ModelAttribute BuiltRow builtRow, Model model) {
-        List<Language> listLanguage = serviceLanguage.getAllLanguages();
+        List<Language> listLanguage = serviceLanguage.getAll();
         model.addAttribute("listLanguage", listLanguage);
 
-        List<BuiltRow> listBuiltRows = serviceRow.findAllRows();
+        List<BuiltRow> listBuiltRows = serviceRow.getAllRows();
         model.addAttribute("listBuiltRows", listBuiltRows);
 
         return "view-rows";
@@ -49,10 +49,10 @@ public class MainController {
                                               @RequestParam(name = "dropDownListTargetLanguage", required = false) String languageTargetUUID,
                                               Model model) {
 
-        List<Language> listLanguage = serviceLanguage.getAllLanguages();
+        List<Language> listLanguage = serviceLanguage.getAll();
         model.addAttribute("listLanguage", listLanguage);
 
-        List<BuiltRow> listBuiltRows = serviceRow.findAllBySelectedLanguageUUID(languageSourceUUID, languageTargetUUID);
+        List<BuiltRow> listBuiltRows = serviceRow.getListByLanguageUUID(languageSourceUUID, languageTargetUUID);
         model.addAttribute("listBuiltRows", listBuiltRows);
         return "view-rows";
     }
@@ -60,14 +60,14 @@ public class MainController {
     @GetMapping("/view-rows/search/result")
     public String home(@ModelAttribute BuiltRow builtRow, Model model,
                        @RequestParam(name = "wordTranslation") String wordValue) {
-        List<BuiltRow> listBuiltRows = serviceRow.findRowsByWordTranslation(wordValue);
+        List<BuiltRow> listBuiltRows = serviceRow.getListByWordTranslation(wordValue);
         model.addAttribute("listBuiltRows", listBuiltRows);
         return "view-rows";
     }
 
     @GetMapping("/add-row")
     public String showSaveRowPage(Model model) {
-        List<Language> listLanguage = serviceLanguage.getAllLanguages();
+        List<Language> listLanguage = serviceLanguage.getAll();
         model.addAttribute("listLanguage", listLanguage);
         model.addAttribute("requestAddPairWordsDTO", new RequestAddPairWordsDTO());
         return "add-row";
@@ -75,7 +75,7 @@ public class MainController {
 
     @PostMapping("/add-row")
     public String saveRow(@ModelAttribute RequestAddPairWordsDTO requestAddPairWordsDTO, RedirectAttributes redirectAttributes) {
-        SuccessMessage successMessage = serviceRow.addPair(requestAddPairWordsDTO);
+        SuccessMessage successMessage = serviceRow.addRow(requestAddPairWordsDTO);
         redirectAttributes.addFlashAttribute("successMessage", successMessage);
         if (successMessage.isSuccessful()) {
             return "redirect:/view-rows";

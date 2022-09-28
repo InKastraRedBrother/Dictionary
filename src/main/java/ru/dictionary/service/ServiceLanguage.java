@@ -15,7 +15,7 @@ public class ServiceLanguage {
 
     private final InterfaceLanguageDAO languageDAO;
 
-    public List<Language> getAllLanguages() {
+    public List<Language> getAll() {
         return languageDAO.getAllLanguages();
     }
 

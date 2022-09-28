@@ -101,7 +101,7 @@ public class RowDAO implements InterfaceRowDAO {
      *                                     if scanner is closed (IllegalStateException).
      *                                     if the file is not found (IOException).
      */
-    public Row findById(UUID rowUUID) {
+    public Row getById(UUID rowUUID) {
         File file = getRowStorageTxtFile();
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
@@ -165,7 +165,7 @@ public class RowDAO implements InterfaceRowDAO {
     }
 
     @Override
-    public List<Row> findAllByListWords(List<Word> listWord) {
+    public List<Row> getListByListWords(List<Word> listWord) {
         List<Row> listRow = new ArrayList<>();
         File rowFile = getRowStorageTxtFile();
         try (Scanner sc = new Scanner(rowFile, StandardCharsets.UTF_8)) {
@@ -184,7 +184,7 @@ public class RowDAO implements InterfaceRowDAO {
     }
 
     @Override
-    public List<Row> findListRowByWordUUID(UUID uuid) {
+    public List<Row> getListRowByWordUUID(UUID uuid) {
         List<Row> listRow = new ArrayList<>();
         File rowFile = getRowStorageTxtFile();
         try (Scanner sc = new Scanner(rowFile, StandardCharsets.UTF_8)) {
