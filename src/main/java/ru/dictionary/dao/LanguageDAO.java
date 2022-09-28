@@ -43,7 +43,7 @@ public class LanguageDAO implements InterfaceLanguageDAO {
     }
 
     @Override
-    public boolean saveLanguage(Language language) {
+    public boolean save(Language language) {
         File file = getLanguageTxtFile();
         try (FileWriter fileWriter = new FileWriter(file, StandardCharsets.UTF_8, true)) {
             if (file.length() != 0) {
@@ -57,12 +57,29 @@ public class LanguageDAO implements InterfaceLanguageDAO {
     }
 
     @Override
-    public boolean deleteLanguage(Language language) {
+    public boolean delete(Language language) {
         return false;
     }
 
     @Override
-    public List<Language> findAllLanguagesByWordList(List<Word> listWord) {
+    public List<Language> getAll() {
+
+        File file = getLanguageTxtFile();
+
+        List<Language> listLanguagesFromStorage = new ArrayList<>();
+
+        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
+            while (sc.hasNextLine()) {
+                listLanguagesFromStorage.add(codec.convertFromStorageFormatToObjectFormat(sc.nextLine()));
+            }
+        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
+            throw new DictionaryNotFoundException("findAll languages");
+        }
+        return listLanguagesFromStorage;
+    }
+
+    @Override
+    public List<Language> find(List<Word> listWord) {
         List<Language> listLanguage = new ArrayList<>();
         File rowFile = getLanguageTxtFile();
         try (Scanner sc = new Scanner(rowFile, StandardCharsets.UTF_8)) {
@@ -81,24 +98,7 @@ public class LanguageDAO implements InterfaceLanguageDAO {
     }
 
     @Override
-    public List<Language> getAllLanguages() {
-
-        File file = getLanguageTxtFile();
-
-        List<Language> listLanguagesFromStorage = new ArrayList<>();
-
-        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
-            while (sc.hasNextLine()) {
-                listLanguagesFromStorage.add(codec.convertFromStorageFormatToObjectFormat(sc.nextLine()));
-            }
-        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
-            throw new DictionaryNotFoundException("findAll languages");
-        }
-        return listLanguagesFromStorage;
-    }
-
-    @Override
-    public Language searchByUUID(UUID languageUUID) {
+    public Language find(UUID languageUUID) {
         File file = getLanguageTxtFile();
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {

@@ -59,7 +59,7 @@ public class MainController {
 
     @GetMapping("/view-rows/search/result")
     public String home(@ModelAttribute BuiltRow builtRow, Model model,
-                       @RequestParam(name = "wordTranslation") String wordValue) {
+                       @RequestParam(name = "wordValue") String wordValue) {
         List<BuiltRow> listBuiltRows = serviceRow.getListByWordTranslation(wordValue);
         model.addAttribute("listBuiltRows", listBuiltRows);
         return "view-rows";

@@ -51,24 +51,8 @@ public class RowDAO implements InterfaceRowDAO {
         }
     }
 
-    /**
-     * Get all rows from file.
-     *
-     * @return String that have all rows.
-     * @throws DictionaryNotFoundException if no line was found (NoSuchElementException).
-     *                                     if scanner is closed (IllegalStateException).
-     */
-    public List<Row> findAll() {
-        List<Row> listRow = new ArrayList<>();
-        File rowFile = getRowStorageTxtFile();
-        try (Scanner sc = new Scanner(rowFile, StandardCharsets.UTF_8)) {
-            while (sc.hasNextLine()) {
-                listRow.add(codec.convertFromStorageFormatToObjectFormat(sc.nextLine()));
-            }
-        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
-            throw new DictionaryNotFoundException("findAll");
-        }
-        return listRow;
+    private File getRowStorageTxtFile() {
+        return new File(wordPath);
     }
 
     /**
@@ -93,31 +77,6 @@ public class RowDAO implements InterfaceRowDAO {
     }
 
     /**
-     * Find row in storage by ID.
-     *
-     * @param rowUUID by what parameter to search for a string.
-     * @return String message that contains null or searched row.
-     * @throws DictionaryNotFoundException if no line was found (NoSuchElementException).
-     *                                     if scanner is closed (IllegalStateException).
-     *                                     if the file is not found (IOException).
-     */
-    public Row getById(UUID rowUUID) {
-        File file = getRowStorageTxtFile();
-        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
-                Row row = codec.convertFromStorageFormatToObjectFormat(line);
-                if (row.getRowUUID().equals(rowUUID)) {
-                    return row;
-                }
-            }
-        } catch (IOException | NoSuchElementException | IllegalStateException e) {
-            throw new DictionaryNotFoundException("findByKey");
-        }
-        return null;
-    }
-
-    /**
      * Delete row by ID.
      *
      * @param rowUUID by what parameter to search for a row that should be deleted.
@@ -127,7 +86,7 @@ public class RowDAO implements InterfaceRowDAO {
      *                                     If a security manager exists and its SecurityManager.checkDelete method denies delete access to the file (SecurityException).
      *                                     If parameter <code>mainFile</code> is <code>null</code> (NullPointerException).
      */
-    public boolean deleteById(UUID rowUUID) {
+    public boolean delete(UUID rowUUID) {
         boolean isExistRowInStorage = false;
         boolean isFirstRow = true;
         File rowsStorage = getRowStorageTxtFile();
@@ -164,8 +123,28 @@ public class RowDAO implements InterfaceRowDAO {
         return isExistRowInStorage;
     }
 
+    /**
+     * Get all rows from file.
+     *
+     * @return String that have all rows.
+     * @throws DictionaryNotFoundException if no line was found (NoSuchElementException).
+     *                                     if scanner is closed (IllegalStateException).
+     */
+    public List<Row> findAll() {
+        List<Row> listRow = new ArrayList<>();
+        File rowFile = getRowStorageTxtFile();
+        try (Scanner sc = new Scanner(rowFile, StandardCharsets.UTF_8)) {
+            while (sc.hasNextLine()) {
+                listRow.add(codec.convertFromStorageFormatToObjectFormat(sc.nextLine()));
+            }
+        } catch (NullPointerException | NoSuchElementException | IllegalStateException | IOException e) {
+            throw new DictionaryNotFoundException("findAll");
+        }
+        return listRow;
+    }
+
     @Override
-    public List<Row> getListByListWords(List<Word> listWord) {
+    public List<Row> find(List<Word> listWord) {
         List<Row> listRow = new ArrayList<>();
         File rowFile = getRowStorageTxtFile();
         try (Scanner sc = new Scanner(rowFile, StandardCharsets.UTF_8)) {
@@ -183,14 +162,39 @@ public class RowDAO implements InterfaceRowDAO {
         return listRow;
     }
 
+    /**
+     * Find row in storage by ID.
+     *
+     * @param rowUUID by what parameter to search for a string.
+     * @return String message that contains null or searched row.
+     * @throws DictionaryNotFoundException if no line was found (NoSuchElementException).
+     *                                     if scanner is closed (IllegalStateException).
+     *                                     if the file is not found (IOException).
+     */
+    public Row findById(UUID rowUUID) {
+        File file = getRowStorageTxtFile();
+        try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
+            while (sc.hasNextLine()) {
+                String line = sc.nextLine();
+                Row row = codec.convertFromStorageFormatToObjectFormat(line);
+                if (row.getRowUUID().equals(rowUUID)) {
+                    return row;
+                }
+            }
+        } catch (IOException | NoSuchElementException | IllegalStateException e) {
+            throw new DictionaryNotFoundException("findByKey");
+        }
+        return null;
+    }
+
     @Override
-    public List<Row> getListRowByWordUUID(UUID uuid) {
+    public List<Row> findListById(UUID wordUUID) {
         List<Row> listRow = new ArrayList<>();
         File rowFile = getRowStorageTxtFile();
         try (Scanner sc = new Scanner(rowFile, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
                 Row row = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
-                if(row.getWordKeyUUID().equals(uuid) || row.getWordTranslationUUID().equals(uuid)){
+                if(row.getWordKeyUUID().equals(wordUUID) || row.getWordTranslationUUID().equals(wordUUID)){
                     listRow.add(row);
                 }
             }
@@ -202,7 +206,7 @@ public class RowDAO implements InterfaceRowDAO {
     }
 
     @Override
-    public Row findRowByKeyAndValue(UUID keyWordUUID, UUID valueWordUUID) {
+    public Row find(UUID keyWordUUID, UUID valueWordUUID) {
         File rowFile = getRowStorageTxtFile();
         try (Scanner sc = new Scanner(rowFile, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
@@ -217,9 +221,6 @@ public class RowDAO implements InterfaceRowDAO {
         return null;
     }
 
-    private File getRowStorageTxtFile() {
-        return new File(wordPath);
-    }
 
     /**
      * Encapsulates the format in which the line in the file is stored.

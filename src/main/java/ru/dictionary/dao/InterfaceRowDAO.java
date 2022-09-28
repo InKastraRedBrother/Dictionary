@@ -27,24 +27,25 @@ public interface InterfaceRowDAO {
     List<Row> findAll();
 
     /**
-     * Search one row from file.
-     *
-     * @param uuid id by which the entire string will be searched in the file.
-     * @return one row or null.
-     */
-    Row getById(UUID uuid);
-
-    /**
      * delete row.
      *
      * @param uuid id by which the entire string will be deleted from storage.
      * @return true if row was found and deleted, else false.
      */
-    boolean deleteById(UUID uuid);
 
-    List<Row> getListByListWords(List<Word> listWord);
+    boolean delete(UUID uuid);
 
-    List<Row> getListRowByWordUUID(UUID uuid);
+    /**
+     * Search one row from file.
+     *
+     * @param uuid id by which the entire string will be searched in the file.
+     * @return one row or null.
+     */
+    Row findById(UUID uuid);
 
-    Row findRowByKeyAndValue(UUID keyWordUUID, UUID valueWordUUID);
+    List<Row> find(List<Word> listWord);
+
+    List<Row> findListById(UUID uuid);
+
+    Row find(UUID keyWordUUID, UUID valueWordUUID);
 }

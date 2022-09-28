@@ -26,7 +26,6 @@ public class ServiceWord {
 
     public UUID addWordIfRequired(String wordValue, UUID wordLanguageUUID) {
         Word wordKeyFromStorage = this.getByValue(wordValue);
-
         if (wordKeyFromStorage != null) {
             return wordKeyFromStorage.getWordUUID();
         }
@@ -40,20 +39,16 @@ public class ServiceWord {
         return word.getWordUUID();
     }
 
-    public void deleteWordByUUID(UUID wordUUID) {
+    public void delete(UUID wordUUID) {
         wordDAO.deleteById(wordUUID);
     }
 
-    public List<Word> getListByLanguageUUID(UUID languageUUID) {
+    public List<Word> getByLanguageId(UUID languageUUID) {
         return wordDAO.searchAllByUUID(languageUUID);
     }
 
-    public Word getWordByUUID(UUID wordUUID) {
+    public Word getById(UUID wordUUID) {
         return wordDAO.searchByUUID(wordUUID);
-    }
-
-    public List<Word> getListWordsByWordValue(String wordValue) {
-        return wordDAO.getWordsByWordValue(wordValue);
     }
 
     public Language getLanguageByWordUUID(UUID wordUUID) {
@@ -61,14 +56,9 @@ public class ServiceWord {
 
     }
 
-    public List<Word> getListWordByListUUID(List<UUID> keyUUIDList) {
-        return wordDAO.searchAllByListUUID(keyUUIDList);
-    }
-
     public List<Word> getAll() {
         return wordDAO.getAllWords();
     }
-
 
     public List<Word> getListByValue(String wordValueFromView) {
         return wordDAO.searchListWordsByValue(wordValueFromView);

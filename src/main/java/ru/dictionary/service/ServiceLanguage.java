@@ -16,19 +16,19 @@ public class ServiceLanguage {
     private final InterfaceLanguageDAO languageDAO;
 
     public List<Language> getAll() {
-        return languageDAO.getAllLanguages();
+        return languageDAO.getAll();
     }
 
     public boolean addLanguage(Language language) {
         language.setLanguageUUID(UUID.randomUUID());
-        return languageDAO.saveLanguage(language);
+        return languageDAO.save(language);
     }
 
     public Language getLanguageByUUID(UUID languageUUID) {
-        return languageDAO.searchByUUID(languageUUID);
+        return languageDAO.find(languageUUID);
     }
 
     public List<Language> findAllLanguagesByWordList(List<Word> listWord) {
-        return languageDAO.findAllLanguagesByWordList(listWord);
+        return languageDAO.find(listWord);
     }
 }

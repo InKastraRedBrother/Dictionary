@@ -61,7 +61,7 @@ public class ServiceRow {
         return builtRowList;
     }
 
-    public List<BuiltRow> getListByLanguageUUID(String languageSourceUUID, String languageTargetUUID) { //todo unarn
+    public List<BuiltRow> getListByLanguageUUID(String languageSourceUUID, String languageTargetUUID) { //TODD здесь ошибка при выборе двух языков язык перевода устанавливается неправильный
         UUID languageSourceUUIDFromString = null;
         UUID languageTargetUUIDFromString = null;
 
@@ -72,7 +72,7 @@ public class ServiceRow {
             languageTargetUUIDFromString = UUID.fromString(languageTargetUUID);
         }
 
-        List<Word> listWords = serviceWord.getListByLanguageUUID(languageSourceUUIDFromString);
+        List<Word> listWords = serviceWord.getByLanguageId(languageSourceUUIDFromString);
         List<Row> listRows = rowDAO.findAll();
         List<BuiltRow> builtRowList = new ArrayList<>();
         for (Word word : listWords) {
@@ -83,7 +83,7 @@ public class ServiceRow {
                 if (row.getWordKeyUUID().equals(keyWord)) {
                     builtRow.setNameLanguageOfKey(serviceLanguage.getLanguageByUUID(languageSourceUUIDFromString).getLanguageName());
                     builtRow.setWordKey(word.getWordValue());
-                    Word wordTemp = serviceWord.getWordByUUID(row.getWordTranslationUUID());
+                    Word wordTemp = serviceWord.getById(row.getWordTranslationUUID());
                     builtRow.setWordTranslation(wordTemp.getWordValue());
                     builtRow.setNameLanguageOfTranslation(serviceWord.getLanguageByWordUUID(languageTargetUUIDFromString).getLanguageName());
                     builtRowList.add(builtRow);
@@ -99,6 +99,7 @@ public class ServiceRow {
         Language languageTarget = serviceLanguage.getLanguageByUUID(requestAddPairWordsDTO.getLanguageOfTranslationUUID());
 
         if (!requestAddPairWordsDTO.getWordKey().matches(languageSource.getLanguageRule()) || !requestAddPairWordsDTO.getWordTranslation().matches(languageTarget.getLanguageRule())) {
+
             successMessage.setMessage("Pattern mismatch");
             successMessage.setSuccessful(false);
             return successMessage;
@@ -107,7 +108,7 @@ public class ServiceRow {
         var wordKeyUUID = serviceWord.addWordIfRequired(requestAddPairWordsDTO.getWordKey(), requestAddPairWordsDTO.getLanguageOfKeyUUID());
         var wordTranslationUUID = serviceWord.addWordIfRequired(requestAddPairWordsDTO.getWordTranslation(), requestAddPairWordsDTO.getLanguageOfTranslationUUID());
 
-        if (rowDAO.findRowByKeyAndValue(wordKeyUUID, wordTranslationUUID) != null) {
+        if (rowDAO.find(wordKeyUUID, wordTranslationUUID) != null) {
             successMessage.setMessage("Row already exists");
             successMessage.setSuccessful(false);
             return successMessage;
@@ -121,25 +122,26 @@ public class ServiceRow {
 
         rowDAO.save(row);
 
+        successMessage.setSuccessful(true);
         return successMessage;
     }
 
     public boolean deleteById(String uuid) {
         UUID uuidForDelete = UUID.fromString(uuid);
-        Row row = rowDAO.getById(uuidForDelete);
-        if (rowDAO.getListRowByWordUUID(row.getWordKeyUUID()).size() <= SINGLE_ENTRY) {
-            serviceWord.deleteWordByUUID(row.getWordKeyUUID());
+        Row row = rowDAO.findById(uuidForDelete);
+        if (rowDAO.findListById(row.getWordKeyUUID()).size() <= SINGLE_ENTRY) {
+            serviceWord.delete(row.getWordKeyUUID());
         }
-        if (rowDAO.getListRowByWordUUID(row.getWordTranslationUUID()).size() <= SINGLE_ENTRY) {
-            serviceWord.deleteWordByUUID(row.getWordTranslationUUID());
+        if (rowDAO.findListById(row.getWordTranslationUUID()).size() <= SINGLE_ENTRY) {
+            serviceWord.delete(row.getWordTranslationUUID());
         }
-        return rowDAO.deleteById(uuidForDelete);
+        return rowDAO.delete(uuidForDelete);
     }
 
     public List<BuiltRow> getListByWordTranslation(String wordValueFromView) {
 
         List<Word> listWord = serviceWord.getListByValue(wordValueFromView);//TODO КОСЯК, ЛИСТ ВОРДОВ И ЛИСТ ЗНАЧЕНИЙ
-        List<Row> listRow = rowDAO.getListByListWords(listWord);
+        List<Row> listRow = rowDAO.find(listWord);
         List<Language> listLanguage = serviceLanguage.getAll();
 
         Map<UUID, Language> hashMapLanguage = listLanguage.stream().collect(Collectors.toMap(Language::getLanguageUUID, language -> language));
@@ -153,9 +155,9 @@ public class ServiceRow {
             Word wordValue;
             if (hashMapWord.get(row.getWordKeyUUID()) != null) {
                 wordKey = hashMapWord.get(row.getWordKeyUUID());
-                wordValue = serviceWord.getWordByUUID(row.getWordTranslationUUID());
+                wordValue = serviceWord.getById(row.getWordTranslationUUID());
             } else {
-                wordKey = serviceWord.getWordByUUID(row.getWordKeyUUID());
+                wordKey = serviceWord.getById(row.getWordKeyUUID());
                 wordValue = hashMapWord.get(row.getWordTranslationUUID());
             }
 
