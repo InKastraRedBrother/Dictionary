@@ -1,6 +1,7 @@
 package ru.dictionary.dao;
 
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
 import ru.dictionary.model.Language;
@@ -17,12 +18,11 @@ import static ru.dictionary.dao.Util.Util.ELEMENTS_SEPARATOR;
 @Component
 public class LanguageDAO implements InterfaceLanguageDAO {
     private final static String LANGUAGE_STORAGE_DIRECTORY = System.getProperty("user.dir");
-    private final static String LANGUAGE_STORAGE_PATH_AND_FILENAME = LANGUAGE_STORAGE_DIRECTORY + File.separator + "language.txt";
     private final Codec codec;
     @Getter
     private final String wordPath;
 
-    public LanguageDAO(String path) {
+    public LanguageDAO(@Value("${language.path}") String path) {
         wordPath = path;
         this.codec = new Codec();
 

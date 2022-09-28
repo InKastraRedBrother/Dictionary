@@ -7,7 +7,6 @@ import ru.dictionary.model.Language;
 import ru.dictionary.model.Word;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -23,6 +22,22 @@ public class ServiceWord {
         word.setWordLanguageUUID(wordLanguageUUID);
 
         wordDAO.saveWord(word);
+    }
+
+    public UUID addWordIfRequired(String wordValue, UUID wordLanguageUUID) {
+        Word wordKeyFromStorage = this.getByValue(wordValue);
+
+        if (wordKeyFromStorage != null) {
+            return wordKeyFromStorage.getWordUUID();
+        }
+
+        Word word = new Word();
+        word.setWordUUID(UUID.randomUUID());
+        word.setWordValue(wordValue);
+        word.setWordLanguageUUID(wordLanguageUUID);
+
+        wordDAO.saveWord(word);
+        return word.getWordUUID();
     }
 
     public void deleteWordByUUID(UUID wordUUID) {
@@ -50,15 +65,16 @@ public class ServiceWord {
         return wordDAO.searchAllByListUUID(keyUUIDList);
     }
 
-    public List<Word> findAllWords() {
+    public List<Word> getAll() {
         return wordDAO.getAllWords();
     }
 
 
-    public List<Word> findListWordsByWordsValue(String wordValueFromView) {
+    public List<Word> getListByValue(String wordValueFromView) {
         return wordDAO.searchListWordsByValue(wordValueFromView);
     }
-    public Word findWordByWordsValue(String wordValueFromView) {
+
+    public Word getByValue(String wordValueFromView) {
         return wordDAO.searchWordByValue(wordValueFromView);
     }
 }

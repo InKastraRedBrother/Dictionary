@@ -13,5 +13,5 @@ import java.util.UUID;
 public class Row {
     private UUID rowUUID;
     private UUID wordKeyUUID;
-    private UUID wordValueUUID;
+    private UUID wordTranslationUUID;
 }

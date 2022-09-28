@@ -4,7 +4,6 @@ import ru.dictionary.model.Row;
 import ru.dictionary.model.Word;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -33,7 +32,7 @@ public interface InterfaceRowDAO {
      * @param uuid id by which the entire string will be searched in the file.
      * @return one row or null.
      */
-    Row findById(UUID uuid);
+    Row getById(UUID uuid);
 
     /**
      * delete row.
@@ -43,9 +42,9 @@ public interface InterfaceRowDAO {
      */
     boolean deleteById(UUID uuid);
 
-    List<Row> findAllByListWords(List<Word> listWord);
+    List<Row> getListByListWords(List<Word> listWord);
 
-    List<Row> findListRowByWordUUID(UUID uuid);
+    List<Row> getListRowByWordUUID(UUID uuid);
 
     Row findRowByKeyAndValue(UUID keyWordUUID, UUID valueWordUUID);
 }

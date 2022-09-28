@@ -9,8 +9,8 @@ import java.util.UUID;
 @ToString
 public class BuiltRow {
     private UUID rowUUID;
-    private String key;
-    private String value;
+    private String wordKey;
+    private String wordTranslation;
     private String nameLanguageOfKey;
-    private String nameLanguageOfValue;
+    private String nameLanguageOfTranslation;
 }

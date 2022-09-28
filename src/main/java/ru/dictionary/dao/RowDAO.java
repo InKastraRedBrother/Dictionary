@@ -1,6 +1,7 @@
 package ru.dictionary.dao;
 
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.dictionary.exception.DictionaryNotFoundException;
 import ru.dictionary.model.Row;
@@ -21,7 +22,6 @@ public class RowDAO implements InterfaceRowDAO {
 
     private static final String TEMPORARY_FILENAME = "tempForRow.txt";
     private static final String TEMPORARY_FILE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + TEMPORARY_FILENAME;
-    private final static String ROW_STORAGE_PATH_AND_FILENAME = PATH_TO_STORAGE_DIRECTORY + File.separator + "row.txt";
 
     private final Codec codec;
     @Getter
@@ -35,7 +35,7 @@ public class RowDAO implements InterfaceRowDAO {
      *                                     If the <code>pathname</code> argument is <code>null</code> (NullPointerException).
      *                                     If directory or file can't be created and don't exist
      */
-    public RowDAO(String path) {
+    public RowDAO(@Value("${row.path}") String path) {
         wordPath = path;
         this.codec = new Codec();
 
@@ -101,7 +101,7 @@ public class RowDAO implements InterfaceRowDAO {
      *                                     if scanner is closed (IllegalStateException).
      *                                     if the file is not found (IOException).
      */
-    public Row findById(UUID rowUUID) {
+    public Row getById(UUID rowUUID) {
         File file = getRowStorageTxtFile();
         try (Scanner sc = new Scanner(file, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
@@ -165,14 +165,14 @@ public class RowDAO implements InterfaceRowDAO {
     }
 
     @Override
-    public List<Row> findAllByListWords(List<Word> listWord) {
+    public List<Row> getListByListWords(List<Word> listWord) {
         List<Row> listRow = new ArrayList<>();
         File rowFile = getRowStorageTxtFile();
         try (Scanner sc = new Scanner(rowFile, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
                 Row row = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
                 for (Word word : listWord) {
-                    if (word.getWordUUID().equals(row.getWordValueUUID()) || word.getWordUUID().equals(row.getWordKeyUUID())) {
+                    if (word.getWordUUID().equals(row.getWordTranslationUUID()) || word.getWordUUID().equals(row.getWordKeyUUID())) {
                         listRow.add(row);
                     }
                 }
@@ -184,13 +184,13 @@ public class RowDAO implements InterfaceRowDAO {
     }
 
     @Override
-    public List<Row> findListRowByWordUUID(UUID uuid) {
+    public List<Row> getListRowByWordUUID(UUID uuid) {
         List<Row> listRow = new ArrayList<>();
         File rowFile = getRowStorageTxtFile();
         try (Scanner sc = new Scanner(rowFile, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
                 Row row = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
-                if(row.getWordKeyUUID().equals(uuid) || row.getWordValueUUID().equals(uuid)){
+                if(row.getWordKeyUUID().equals(uuid) || row.getWordTranslationUUID().equals(uuid)){
                     listRow.add(row);
                 }
             }
@@ -207,7 +207,7 @@ public class RowDAO implements InterfaceRowDAO {
         try (Scanner sc = new Scanner(rowFile, StandardCharsets.UTF_8)) {
             while (sc.hasNextLine()) {
                 Row row = codec.convertFromStorageFormatToObjectFormat(sc.nextLine());
-                if(row.getWordKeyUUID().equals(keyWordUUID) && row.getWordValueUUID().equals(valueWordUUID)){
+                if(row.getWordKeyUUID().equals(keyWordUUID) && row.getWordTranslationUUID().equals(valueWordUUID)){
                     return row;
                 }
             }
@@ -237,7 +237,7 @@ public class RowDAO implements InterfaceRowDAO {
          * @return String consisting of a key and value with a given separator.
          */
         public String convertFromObjectFormatToStorageFormat(Row row) {
-            return row.getRowUUID() + ELEMENTS_SEPARATOR + row.getWordKeyUUID() + ELEMENTS_SEPARATOR + row.getWordValueUUID();
+            return row.getRowUUID() + ELEMENTS_SEPARATOR + row.getWordKeyUUID() + ELEMENTS_SEPARATOR + row.getWordTranslationUUID();
         }
 
         /**
@@ -253,7 +253,7 @@ public class RowDAO implements InterfaceRowDAO {
                 Row row = new Row();
                 row.setRowUUID(UUID.fromString(encode[UUID_ROW_SERIAL_NUMBER]));
                 row.setWordKeyUUID(UUID.fromString(encode[ID_WORD_KEY_SERIAL_NUMBER]));
-                row.setWordValueUUID(UUID.fromString(encode[ID_WORD_VALUE_SERIAL_NUMBER]));
+                row.setWordTranslationUUID(UUID.fromString(encode[ID_WORD_VALUE_SERIAL_NUMBER]));
                 return row;
 
             } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
